@@ -17,7 +17,7 @@ Sherwood_2014		= True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "pdf"
+plot_type			= "x11"
 
 select_idx			= 0	; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
