@@ -11,9 +11,10 @@ begin
 ;fdir_append			= "/atm/hist/"
 
 pattern_correlation	= True
-regime_contribution = False
-lat_lon_plot		= True
-Sherwood_2014		= True
+regime_contribution = True
+regime_mask_plot	= False
+lat_lon_plot		= False
+Sherwood_2014		= False
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -21,6 +22,8 @@ plot_type			= "x11"
 
 select_idx			= 0	; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
+regime_mask_val		= (/0,1,2,3,4,5,6/)
+
 
 fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
@@ -28,6 +31,8 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 ;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
 case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
 case_p4K		 		= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+
+case_name				= (/"RH","PDF"/)
 
 case					= (/case_nor,case_p4K/)
 tag					= (/"nor", "p4K"/)
@@ -420,6 +425,16 @@ regimes				= new((/nregimes,dimsizes(vars),dimsizes(tag),dimsizes(case_nor)/),fl
 data2regimes		= new((/nregimes,dimsizes(vars),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float) 
 data2regimes(0,:,:,:,:,:)		= vars_all
 
+; this array is used to store each regime together, so the dimension (nregimes) is eliminated. 
+data2regimes_mask					= new((/dimsizes(vars),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float) 
+data2regimes_mask(:,:,:,:,:)		= vars_all
+
+; this array is used to store each regime in each bin, with another added dimension (nregimes,....)
+data2regimes_mask_s					= new((/nregimes,dimsizes(vars),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float) 
+data2regimes_mask_s(0,:,:,:,:,:)		= vars_all
+
+
+
 lon					= vars_all&lon
 lat                 = vars_all&lat
 clat                = tofloat(cos(0.01745329*lat))
@@ -442,7 +457,12 @@ do icase=0,dimsizes(case_nor)-1
 	; mid- and high- latitudes: SH-high, SH-mid, NH-mid, NH-high
 	do ilat=0,dimsizes(latSs)-1
 		tmp1			= where(lat2d.gt.latSs(ilat) .and. lat2d.lt.latEs(ilat) .and. lon2d.gt.lonSs(ilat) .and. lon2d.lt.lonEs(ilat),vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
+		tmp2			= where(lat2d.gt.latSs(ilat) .and. lat2d.lt.latEs(ilat) .and. lon2d.gt.lonSs(ilat) .and. lon2d.lt.lonEs(ilat),regime_mask_val(ilat),data2regimes_mask(ivar,itag,icase,:,:))
+		tmp3			= where(lat2d.gt.latSs(ilat) .and. lat2d.lt.latEs(ilat) .and. lon2d.gt.lonSs(ilat) .and. lon2d.lt.lonEs(ilat),0,1)
 		data2regimes(ilat,ivar,itag,icase,:,:)		= (/tmp1/)
+		data2regimes_mask(ivar,itag,icase,:,:)		= (/tmp2/)
+		data2regimes_mask_s(ilat,ivar,itag,icase,:,:)		= (/tmp3/)
+
 ;		regimes(ilat,:,:,:)		= wgt_areaave_Wrap(vars_all(:,:,:,{latSs(ilat):latEs(ilat)},{lonSs(ilat):lonEs(ilat)}),clat({latSs(ilat):latEs(ilat)}),1,0)
 		regimes(ilat,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
 		delete(tmp1)
@@ -452,50 +472,107 @@ do icase=0,dimsizes(case_nor)-1
 	crit1					= (OCNFRAC.lt.0.2).and.(lat2d.gt.-30.and.lat2d.lt.30.)
 	crit2					= (omega500.lt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.)
 	tmp1					= where(crit1 .or. crit2, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
+	tmp2					= where(crit1 .or. crit2, regime_mask_val(4),data2regimes_mask(ivar,itag,icase,:,:))
+	tmp3					= where(crit1 .or. crit2, 0,1)
+
 	data2regimes(4,ivar,itag,icase,:,:)		= (/tmp1/)
+	data2regimes_mask(ivar,itag,icase,:,:)		= (/tmp2/)
+	data2regimes_mask_s(4,ivar,itag,icase,:,:)		= (/tmp3/)
 	regimes(4,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
 	delete([/crit1, crit2, tmp1/])
 	
 	; tropical trade cumulus
 	crit1					= (OCNFRAC.gt.0.8) .and. (omega500.gt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.).and.(LTS(itag,icase,:,:).lt.17)
 	tmp1					= where(crit1, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
+	tmp2					= where(crit1, regime_mask_val(5),data2regimes_mask(ivar,itag,icase,:,:))
+	tmp3					= where(crit1, 0,1)
+
 	data2regimes(5,ivar,itag,icase,:,:)		= (/tmp1/)
+	data2regimes_mask(ivar,itag,icase,:,:)		= (/tmp2/)
+	data2regimes_mask_s(5,ivar,itag,icase,:,:)		= (/tmp3/)
+
 	regimes(5,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
 	delete([/crit1, tmp1/])
 	
 	; tropical stratocumulus
 	crit1					= (OCNFRAC.gt.0.8) .and. (omega500.gt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.).and.(LTS(itag,icase,:,:).gt.17)
 	tmp1					= where(crit1, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
+	tmp2					= where(crit1, regime_mask_val(6),data2regimes_mask(ivar,itag,icase,:,:))
+	tmp3					= where(crit1, 0,1)
+
 	data2regimes(6,ivar,itag,icase,:,:)		= (/tmp1/)
+	data2regimes_mask(ivar,itag,icase,:,:)		= (/tmp2/)
+	data2regimes_mask_s(6,ivar,itag,icase,:,:)		= (/tmp3/)
+
 	regimes(6,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
-	delete([/crit1, tmp1/])
+	delete([/crit1, tmp1, tmp2, tmp3/])
 end do ; do itag=
 end do ; do icase=
 end do ; do ivar=
 
 printVarSummary(data2regimes)
 
-;;; ======== the following part is used to verify whether the regime-sorting is right.
-; ---- yes, plots indicate that all regimes are right.
-;;wks			= gsn_open_wks("x11","test")
-;;
-;;res			= True
-;;res@cnFillOn		= True
-;;res@cnLinesOn		= False
-;;res@cnLineLabelsOn	= False
-;;
-;;res@mpCenterLonF	= 180
-;;
-;;do ir=0,dimsizes(regimes_name)-1
-;;do ivar=0,0;dimsizes(vars)-1
-;;do itag=0,dimsizes(tag)-1
-;;do icase=0,0;dimsizes(case_nor)-1
-;;plot		= gsn_csm_contour_map_ce(wks,data2regimes(ir,ivar,itag,icase,:,:),res)
-;;end do 
-;;end do
-;;end do
-;;end do
-;;; ======================================================
+if(regime_mask_plot)then
+
+; ======== the following part is used to verify whether the regime-sorting is right.
+; ======== ---- yes, plots indicate that all regimes are right.
+
+wks			= gsn_open_wks("pdf","./figure/distribution-of-7-regimes")
+
+res							= True
+
+res@gsnFrame				= False
+res@gsnDraw					= False
+
+res@cnFillOn				= True
+res@cnLinesOn				= False
+res@cnLineLabelsOn			= False
+res@cnFillMode       		= "RasterFill"
+res@cnLevelSelectionMode	= "ExplicitLevels"
+res@cnLevels         		= regime_mask_val(1:)
+res@cnFillColors			= (/"lightcyan2","lightgoldenrod2","lightyellow2","lightgrey","lightskyblue2","lightseagreen","lightpink2"/)
+
+res@lbLabelPosition  		= "Center"           ; label position
+res@lbLabelAlignment 		= "BoxCenters"       ; label orientation
+;res@lbLabelStrings   		= ""+ res@cnLevels   ; trick 
+res@lbLabelStrings   		= ""+ (/ 0,1,2,3,4,5,6/)
+
+res@pmLabelBarHeightF		=  0.100
+res@pmLabelBarWidthF 		=  0.80
+
+res@mpCenterLonF			= 180
+
+res@gsnLeftString			= "Selected regimes"
+
+res1						= res
+delete([/res1@cnLevels, res1@cnFillColors, res1@lbLabelStrings/])
+;--------------------------- These settings are for regimes_mask_s -----------
+; each regime is colored in single plot rather than all in one plot.
+res1@cnLevels				= (/1/)
+res1@cnFillColors			= (/"lightcyan2","white"/)
+res1@lbLabelStrings   		= ""+ (/ 0,1/)
+
+plot						= new((/dimsizes(tag),dimsizes(case_nor)/),graphic)
+do ivar=0,0;dimsizes(vars)-1
+do itag=0,dimsizes(tag)-1
+do icase=0,dimsizes(case_nor)-1
+res@gsnRightString = tag(itag)+"_"+case_name(icase)
+plot(itag,icase)		= gsn_csm_contour_map_ce(wks,data2regimes_mask(ivar,itag,icase,:,:),res)
+
+;do ir=0,dimsizes(regimes_name)-1
+;plot1		= gsn_csm_contour_map_ce(wks,data2regimes_mask_s(ir,ivar,itag,icase,:,:),res1)
+;end do 
+
+end do
+end do
+end do
+
+gsn_panel(wks,ndtooned(plot),(/2,2/),False)
+
+
+exit
+end if ; regime_mask_plot
+; ======================================================
 
 printVarSummary(regimes)
 ;print(regimes_name+"		"+regimes(:,0,0,0))
