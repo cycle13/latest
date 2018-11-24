@@ -18,11 +18,12 @@ Sherwood_2014		= False
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "x11"
+plot_type			= "pdf"
 
 select_idx			= 0	; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
 regime_mask_val		= (/0,1,2,3,4,5,6/)
+LTS_criteria		= 17.
 
 
 fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
@@ -86,19 +87,39 @@ TGCLDLWP_dlevs_1	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
 TGCLDLWP_dlevs_2	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
 TGCLDLWP_dlevs_sp	= (/-100.,-50., 50., 100. /)
 
+sgm_tota_levs		= fspan(0.,0.84,15)
+sgm_tota_dlevs_1	= fspan(-0.28,0.28,15)
+sgm_tota_dlevs_2	= sgm_tota_dlevs_1
+sgm_tota_dlevs_sp	= (/-1, -0.5, 0.5, 1/)
+print(sgm_tota_levs+"	"+sgm_tota_dlevs_1)
+
+N1_levs				= fspan(0,0.84,15)
+N1_dlevs_1			= fspan(-0.28,0.28,15)
+N1_dlevs_2			= N1_dlevs_1
+N1_dlevs_sp			= (/-1, -0.5, 0., 1/)
+
+netCRF_levs			= (/-80,-75,-70,-65,-60,-55,-50,-45,-40,-30,-20,-10,0,10,20/)
+netCRF_dlevs_1		= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
+netCRF_dlevs_2		= netCRF_dlevs_1
+netCRF_dlevs_sp		= (/-20,-10,10,20/)
+print(netCRF_levs+"		"+netCRF_dlevs_1)
+
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
 
-;				   0            1          2           3           4            5          6	    7      8       9		10	
-varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP"/)
-varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs/)
-varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1/)
-varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2/)
-varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp/)
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2"/)
+;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13
+varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF"/)
+varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs/)
+varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1/)
+varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2/)
+varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "No", "No", "W/m~S~2~N~"/)
 
-use_idx		= (/3,4,5,10/)
+;use_idx		= (/3,4,5,10/)
 ;use_idx			= (/9,7,8/)
+use_idx			= (/13,3,5,10,11,12/)
+;use_idx			= (/13,3,5,10/)
+
 vars			= varsA(use_idx)
 vars_levs		= varsA_levs(use_idx,:)
 vars_dlevs_1		= varsA_dlevs_1(use_idx,:)
@@ -144,10 +165,20 @@ do icase=0,dimsizes(case_nor)-1
 
 	do ivar=0,dimsizes(vars)-1
 		if(isfilevar(ftmp1,vars(ivar))) then
-			vars_all(ivar,itag,icase,:,:)	 	= ftmp1->$vars(ivar)$(0,:,:)
+			tmp									= ftmp1->$vars(ivar)$
+			if(dimsizes(dimsizes(tmp)).eq.4)then ; figure out variables having vertical level coordinate
+				vars_all(ivar,itag,icase,:,:)		= ftmp1->$vars(ivar)$(0,{887},:,:)
+			else
+				vars_all(ivar,itag,icase,:,:)	 	= ftmp1->$vars(ivar)$(0,:,:)
+			end if
+
 			if(vars(ivar).eq."TGCLDLWP")then
 				vars_all(ivar,itag,icase,:,:)	= vars_all(ivar,itag,icase,:,:)*1e3
 			end if
+			if(vars(ivar).eq."sgm_tota")then
+				vars_all(ivar,itag,icase,:,:)	= sqrt(abs(vars_all(ivar,itag,icase,:,:)))*1e3
+			end if
+			delete(tmp)
 		else
 			if(vars(ivar).eq."LTS")then
 				result					= cal_ECTEI(vars_mid(0,itag,icase,:,:,:),vars_mid(1,itag,icase,:,:,:),lev)
@@ -167,6 +198,15 @@ do icase=0,dimsizes(case_nor)-1
 				vars_all(ivar,itag,icase,:,:)	= (/ECTEI_tmp/)
 				delete(ECTEI_tmp)
 			end if
+			if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1")then
+				vars_all(ivar,itag,icase,:,:)	= vars_all@_FillValue
+			end if
+			if(vars(ivar).eq."netCRF")then
+				SWCF						= ftmp1->SWCF(0,:,:)
+				LWCF						= ftmp1->LWCF(0,:,:)
+				netCRF						= (/SWCF+LWCF/)
+				vars_all(ivar,itag,icase,:,:)	= (/netCRF/)
+			end if
 
 		end if
 		printMinMax(vars_all(ivar,itag,icase,:,:),True)
@@ -175,6 +215,8 @@ do icase=0,dimsizes(case_nor)-1
 end do ; do icase=
 end do ; do itag=
 printVarSummary(vars_all)
+;printMinMax(vars_all(2,:,0,:,:),True)
+;printMinMax(vars_all(2,:,1,:,:),True)
 printVarSummary(vars_mid)
 
 if(Sherwood_2014)then
@@ -420,6 +462,8 @@ printMinMax(LTS,True)
 
 ; 1.2 regime separation
 regimes_name		= (/"SH-high", "SH-mid", "NH-mid", "NH-high", "Trop_deep_lnd", "Trop_Shcu", "Trop_StCu"/)
+;regimes_name		= (/"SH-high", "SH-mid", "NH-mid", "NH-high", "deep_lnd", "Shcu", "StCu"/)
+
 nregimes			= dimsizes(regimes_name)
 regimes				= new((/nregimes,dimsizes(vars),dimsizes(tag),dimsizes(case_nor)/),float) 
 data2regimes		= new((/nregimes,dimsizes(vars),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float) 
@@ -465,7 +509,7 @@ do icase=0,dimsizes(case_nor)-1
 
 ;		regimes(ilat,:,:,:)		= wgt_areaave_Wrap(vars_all(:,:,:,{latSs(ilat):latEs(ilat)},{lonSs(ilat):lonEs(ilat)}),clat({latSs(ilat):latEs(ilat)}),1,0)
 		regimes(ilat,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
-		delete(tmp1)
+		delete([/tmp1,tmp2,tmp3/])
 	end do ; do ilat=
 	
 	; tropical deep convection and land regions
@@ -479,10 +523,10 @@ do icase=0,dimsizes(case_nor)-1
 	data2regimes_mask(ivar,itag,icase,:,:)		= (/tmp2/)
 	data2regimes_mask_s(4,ivar,itag,icase,:,:)		= (/tmp3/)
 	regimes(4,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
-	delete([/crit1, crit2, tmp1/])
+	delete([/crit1, crit2, tmp1, tmp2, tmp3/])
 	
 	; tropical trade cumulus
-	crit1					= (OCNFRAC.gt.0.8) .and. (omega500.gt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.).and.(LTS(itag,icase,:,:).lt.17)
+	crit1					= (OCNFRAC.gt.0.8) .and. (omega500.gt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.).and.(LTS(itag,icase,:,:).lt.LTS_criteria)
 	tmp1					= where(crit1, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
 	tmp2					= where(crit1, regime_mask_val(5),data2regimes_mask(ivar,itag,icase,:,:))
 	tmp3					= where(crit1, 0,1)
@@ -492,10 +536,10 @@ do icase=0,dimsizes(case_nor)-1
 	data2regimes_mask_s(5,ivar,itag,icase,:,:)		= (/tmp3/)
 
 	regimes(5,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
-	delete([/crit1, tmp1/])
+	delete([/crit1, tmp1, tmp2, tmp3/])
 	
 	; tropical stratocumulus
-	crit1					= (OCNFRAC.gt.0.8) .and. (omega500.gt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.).and.(LTS(itag,icase,:,:).gt.17)
+	crit1					= (OCNFRAC.gt.0.8) .and. (omega500.gt.0).and.(lat2d.gt.-30.and.lat2d.lt.30.).and.(LTS(itag,icase,:,:).gt.LTS_criteria)
 	tmp1					= where(crit1, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
 	tmp2					= where(crit1, regime_mask_val(6),data2regimes_mask(ivar,itag,icase,:,:))
 	tmp3					= where(crit1, 0,1)
@@ -517,7 +561,7 @@ if(regime_mask_plot)then
 ; ======== the following part is used to verify whether the regime-sorting is right.
 ; ======== ---- yes, plots indicate that all regimes are right.
 
-wks			= gsn_open_wks("pdf","./figure/distribution-of-7-regimes")
+wks			= gsn_open_wks(plot_type,"./figure/distribution-of-7-regimes-crit_LTS_"+LTS_criteria)
 
 res							= True
 
@@ -570,7 +614,6 @@ end do
 gsn_panel(wks,ndtooned(plot),(/2,2/),False)
 
 
-exit
 end if ; regime_mask_plot
 ; ======================================================
 
@@ -611,9 +654,17 @@ regimes_tagdiff				= (/regimes(:,:,1,:)-regimes(:,:,0,:)/) ; (regime, var, case_
 regimes_diff2				= (/regimes_tagdiff(:,:,1)-regimes_tagdiff(:,:,0)/)
 
 regimes_areawgt			 	= (/data2regimes_1_percent*regimes/)
+
+; use the same area for cntl and p4K simulation: both comes from cntl simulation
+regimes_areawgt_1			 = (/regimes/)
+regimes_areawgt_1(:,:,0,:)	= (/data2regimes_1_percent(:,:,0,:)*regimes(:,:,0,:)/)
+regimes_areawgt_1(:,:,1,:)	= (/data2regimes_1_percent(:,:,0,:)*regimes(:,:,1,:)/)
+
 regimes_tagdiff_areawgt		= (/regimes_areawgt(:,:,1,:)-regimes_areawgt(:,:,0,:)/) ; (regime, var, case_nor)
+regimes_tagdiff_areawgt_1	= (/regimes_areawgt_1(:,:,1,:)-regimes_areawgt_1(:,:,0,:)/)
 ; 2018.10.04
 regimes_diff2_areawgt		= (/regimes_tagdiff_areawgt(:,:,1)-regimes_tagdiff_areawgt(:,:,0)/)
+regimes_diff2_areawgt_1		= (/regimes_tagdiff_areawgt_1(:,:,1)-regimes_tagdiff_areawgt_1(:,:,0)/)
 
 Vars_out                    = regimes_name
 Vars_out_fix                = Vars_out
@@ -627,7 +678,7 @@ end do ; do ivar=
 do ivar = 0,dimsizes(vars)-1
 print("For "+vars(ivar))
 print("regimes	area-weight_RH	area-weight_PDF		tagdiff_RH	tagdiff_PDF tagdiff_PDF-RH	tagdiff_areawgt_RH	tagdiff_areawgt_PDF	tagdiff_areawgt_PDF-RH")
-print(Vars_out_fix+" "+sprintf("%9.5f",data2regimes_1_percent(:,ivar,0,0))+"	"+sprintf("%9.5f",data2regimes_1_percent(:,ivar,0,1))+"	"+sprintf("%9.5f",regimes_tagdiff(:,ivar,0))+"	"+sprintf("%9.5f",regimes_tagdiff(:,ivar,1))+"	"+sprintf("%9.5f",regimes_diff2(:,ivar))+"	"+sprintf("%9.5f",regimes_tagdiff_areawgt(:,ivar,0))+"	"+sprintf("%9.5f",regimes_tagdiff_areawgt(:,ivar,1))+"	"+sprintf("%9.5f",regimes_diff2_areawgt(:,ivar)))
+print(Vars_out_fix+" "+sprintf("%7.3e",data2regimes_1_percent(:,ivar,0,0))+"	"+sprintf("%7.3e",data2regimes_1_percent(:,ivar,0,1))+"	"+sprintf("%7.3e",regimes_tagdiff(:,ivar,0))+"	"+sprintf("%7.3e",regimes_tagdiff(:,ivar,1))+"	"+sprintf("%7.3e",regimes_diff2(:,ivar))+"	"+sprintf("%7.3e",regimes_tagdiff_areawgt(:,ivar,0))+"	"+sprintf("%7.3e",regimes_tagdiff_areawgt(:,ivar,1))+"	"+sprintf("%7.3e",regimes_diff2_areawgt(:,ivar)))
 
 ; ---- check whether adding the weigting could equal to the global mean value got from direct calculation. -- the answer is yes.
 print("verify the correctness of weighting:		"+dim_sum_n(regimes_tagdiff_areawgt(:,ivar,0),0)+"	"+dim_sum_n(regimes_tagdiff_areawgt(:,ivar,1),0))
@@ -636,7 +687,7 @@ end do ; do ivar=
 
 nregimes_used				= dimsizes(regimes_name(select_idx:))
 
-wks					 	= gsn_open_wks(plot_type, "figure/Global-regime-contribution-p4K-"+vars(dimsizes(vars)-1))
+wks					 	= gsn_open_wks(plot_type, "figure/Global-regime-contribution-p4K-"+vars(dimsizes(vars)-1)+"-crit_LTS_"+LTS_criteria)
 
 sres 						= True
 sres@gsnDraw               = False
@@ -670,9 +721,14 @@ sres@gsnRightString        = ""
 ;sres@tiYAxisString         = "W/m2"
 
 sres2						= sres
+sres3						= sres
 
 plots 						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+dum0						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 plots_wgt					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+dum1						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+plots_wgt_1					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+dum2						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 
 ;colors 						= (/"lightpink",   "lightblue"/)
 colors 						= (/"grey",   "black",	"blue"/)
@@ -680,15 +736,23 @@ colors 						= (/"grey",   "black",	"blue"/)
 ; The X values for each plot is different, ensuring that the bars don't overlap.
 do ivar=0,dimsizes(vars)-1
 	sres@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
-	sres@trYMinF			= -1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.1
-	sres@trYMaxF			= 1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.1
+	sres@trYMinF			= -1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.2
+	sres@trYMaxF			= 1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.2
 	sres@gsnLeftString		= "un-weighted"
 
 	sres2@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
-	sres2@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.1
-	sres2@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.1
-	sres2@gsnLeftString		= "area-weighted"
+	sres2@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.2
+	sres2@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.2
 
+	sres3@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
+	sres3@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt_1(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt_1(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)))/))*1.2
+	sres3@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt_1(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt_1(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)))/))*1.2
+
+	sres2@gsnLeftString		= "area-weighted"
+	sres3@gsnLeftString		= "area-weighted-but-same"
+
+  lnres                   = True
+	lnres@gsLineThicknessF  = 3.0 
 
 	; For un-weighted
 	sres@gsnXYBarChartColors = colors(0)
@@ -705,7 +769,6 @@ do ivar=0,dimsizes(vars)-1
 	sres@xyLineColors=(/colors(2),colors(2)/)
 	plots(ivar,2) = gsn_csm_xy(wks,fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2(select_idx:,ivar)*scale_factor,sres)
 
-
 	; For area-weighted
 	sres2@gsnXYBarChartColors = colors(0)
 	sres2@xyLineColors = (/colors(0),colors(0)/)
@@ -721,10 +784,44 @@ do ivar=0,dimsizes(vars)-1
 	sres2@xyLineColors	= (/colors(2),colors(2)/)
 	plots_wgt(ivar,2) = gsn_csm_xy(wks,fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2_areawgt(select_idx:,ivar)*scale_factor,sres2)
 
+	; For area-weighted but the same area
+	sres3@gsnXYBarChartColors = colors(0)
+	sres3@xyLineColors = (/colors(0),colors(0)/)
+	plots_wgt_1(ivar,0) = gsn_csm_xy(wks,fspan(1-2*barwidth/2.,nregimes_used-2*barwidth/2,nregimes_used),regimes_tagdiff_areawgt_1(select_idx:,ivar,0),sres3)
+
+	sres3@gsnLeftString			= ""
+	sres3@gsnXYBarChartColors = colors(1)
+	sres3@xyLineColors	= (/colors(1),colors(1)/)
+	plots_wgt_1(ivar,1) = gsn_csm_xy(wks,fspan(1+0*barwidth/2,nregimes_used+0*barwidth/2,nregimes_used),regimes_tagdiff_areawgt_1(select_idx:,ivar,1),sres3)
+
+	sres3@gsnLeftString			= ""
+	sres3@gsnXYBarChartColors = colors(2)
+	sres3@xyLineColors	= (/colors(2),colors(2)/)
+	plots_wgt_1(ivar,2) = gsn_csm_xy(wks,fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2_areawgt_1(select_idx:,ivar)*scale_factor,sres3)
+
+	lnres@gsLineColor       = colors(1)
+	dum0(ivar,1)			= gsn_add_polyline(wks,plots(ivar,1),fspan(1+0*barwidth/2,nregimes_used+0*barwidth/2,nregimes_used),regimes_tagdiff(select_idx:,ivar,1),lnres)
+	dum1(ivar,1)			= gsn_add_polyline(wks,plots_wgt(ivar,1),fspan(1+0*barwidth/2,nregimes_used+0*barwidth/2,nregimes_used),regimes_tagdiff_areawgt(select_idx:,ivar,1),lnres)
+	dum2(ivar,1)			= gsn_add_polyline(wks,plots_wgt_1(ivar,1),fspan(1+0*barwidth/2,nregimes_used+0*barwidth/2,nregimes_used),regimes_tagdiff_areawgt_1(select_idx:,ivar,1),lnres)
+
+	if(vars(ivar).ne."sgm_tota" .and.  vars(ivar).ne."N1")then
+	lnres@gsLineColor       = colors(0)
+	dum0(ivar,0)			= gsn_add_polyline(wks,plots(ivar,0),fspan(1-2*barwidth/2.,nregimes_used-2*barwidth/2,nregimes_used),regimes_tagdiff(select_idx:,ivar,0),lnres)
+	dum1(ivar,0)			= gsn_add_polyline(wks,plots_wgt(ivar,0),fspan(1-2*barwidth/2.,nregimes_used-2*barwidth/2,nregimes_used),regimes_tagdiff_areawgt(select_idx:,ivar,0),lnres)
+	dum2(ivar,0)			= gsn_add_polyline(wks,plots_wgt_1(ivar,0),fspan(1-2*barwidth/2.,nregimes_used-2*barwidth/2,nregimes_used),regimes_tagdiff_areawgt_1(select_idx:,ivar,0),lnres)
+
+	lnres@gsLineColor		= colors(2)
+	dum0(ivar,2) 			= gsn_add_polyline(wks,plots(ivar,2),fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2(select_idx:,ivar)*scale_factor,lnres)
+	dum1(ivar,2) 			= gsn_add_polyline(wks,plots_wgt(ivar,2),fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2_areawgt(select_idx:,ivar)*scale_factor,lnres)
+	dum2(ivar,2) 			= gsn_add_polyline(wks,plots_wgt_1(ivar,2),fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2_areawgt_1(select_idx:,ivar)*scale_factor,lnres)
+	end if
+
+
 ; Overlay the last three plots on the first one.
        do j=1,dimsizes(case_nor)-1+1
          overlay(plots(ivar,0),plots(ivar,j))
 		 overlay(plots_wgt(ivar,0),plots_wgt(ivar,j))
+		 overlay(plots_wgt_1(ivar,0),plots_wgt_1(ivar,j))
        end do
 end do
 
@@ -750,12 +847,20 @@ lbres@lbPerimOn          = False
 
 labels = (/"Park-RH", "Gauss-PDF","PDF-RH"/)
 xpos   = (/0.15,  0.25, 0.37/)
-ypos	 = 0.75
+
+if(dimsizes(plots(:,0))/2.eq.3)then
+ypos	 = 0.20
+end if
+if(dimsizes(plots(:,0))/2.eq.2)then
+ypos	= 0.75
+end if
 
 ; Panel the plots.
 ;First plot
-gsn_panel(wks,plots(:,0),(/2,2/),pres)
+;gsn_panel(wks,plots(:,0),(/2,2/),pres)
+gsn_panel(wks,plots(:,0),(/dimsizes(plots(:,0))/2,2/),pres)
 ;drawNDCGrid(wks)
+
 do i=0,dimsizes(case_nor)-1+1
   lbres@lbFillColors = colors(i)
   gsn_labelbar_ndc(wks,1,labels(i),xpos(i),ypos,lbres)
@@ -763,7 +868,17 @@ end do
 frame(wks)   ; Advance the frame.
 
 ; Second plot
-gsn_panel(wks,plots_wgt(:,0),(/2,2/),pres)
+;gsn_panel(wks,plots_wgt(:,0),(/2,2/),pres)
+gsn_panel(wks,plots_wgt(:,0),(/dimsizes(plots_wgt(:,0))/2,2/),pres)
+
+do i=0,dimsizes(case_nor)-1+1
+  lbres@lbFillColors = colors(i)
+  gsn_labelbar_ndc(wks,1,labels(i),xpos(i),ypos,lbres)
+end do	
+frame(wks)
+
+; Third plot
+gsn_panel(wks,plots_wgt_1(:,0),(/dimsizes(plots_wgt_1(:,0))/2,2/),pres)
 
 do i=0,dimsizes(case_nor)-1+1
   lbres@lbFillColors = colors(i)
