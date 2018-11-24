@@ -24,6 +24,9 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
 ;case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_MG15_amip-p4K"/)
 ;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+
+; !!!!!! pay attention: the case_nor(0) and case_nor(1) are the same case. 
+; therefore, even though two or more plots are obtained in one figure, they are the same thing. 
 case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
 case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
 
