@@ -11,8 +11,8 @@ begin
 ;fdir_append			= "/atm/hist/"
 
 pattern_correlation	= False
-regime_contribution = True
-lat_lon_plot		= False
+regime_contribution = False
+lat_lon_plot		= True
 
 plot_type				= "pdf"
 
@@ -27,8 +27,11 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
 ; !!!!!! pay attention: the case_nor(0) and case_nor(1) are the same case. 
 ; therefore, even though two or more plots are obtained in one figure, they are the same thing. 
-case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
-case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+;case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
+;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
+case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
+
 
 case					= (/case_nor,case_p4K/)
 tag					= (/"nor", "p4K"/)
@@ -37,69 +40,91 @@ append 				= ".ANN.climo.nc"
 
 SWCF_levs	= (/-170,-150,-135,-120,-105,-90,-75,-60,-45,-30,-15,0,15,30,45/)
 ;SWCF_dlevs	= (/-80,-60,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,80/)
-SWCF_dlevs	= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
+SWCF_dlevs_1	= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
+SWCF_dlevs_2	= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
 SWCF_dlevs_sp	= (/-10,-5,5,10/)
 
 LWCF_levs	= (/-45,-30,-20,-10,0,10,20,30,40,50,60,70,85,100,115/) 
-LWCF_dlevs	= (/-35,-30,-15,-10,-6,-4,-2, 0, 2,4,6,10,15,30,35/)/2.
+LWCF_dlevs_1	= (/-35,-30,-15,-10,-6,-4,-2, 0, 2,4,6,10,15,30,35/)/2.
+LWCF_dlevs_2	= (/-35,-30,-15,-10,-6,-4,-2, 0, 2,4,6,10,15,30,35/)/2.
 LWCF_dlevs_sp	= (/-10,-5,5,10/)
 
 PRECT_levs	= (/.2,.5,1,2,3,4,5,6,7,8,9,10,12,14,17/)
 ;PRECT_dlevs	= (/-6,-5,-4,-3,-2,-1,-.5,0,.5,1,2,3,4,5,6/)
-PRECT_dlevs	= (/-4,-3,-2.5,-2,-1.5,-1,-.5,0,.5,1,1.5,2,2.5,3,4/)
+PRECT_dlevs_1	= (/-4,-3,-2.5,-2,-1.5,-1,-.5,0,.5,1,1.5,2,2.5,3,4/)
+PRECT_dlevs_2	= (/-4,-3,-2.5,-2,-1.5,-1,-.5,0,.5,1,1.5,2,2.5,3,4/)
 PRECT_dlevs_sp	= (/-2,-1,1,2/)
 
 CLDLOW_levs	= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
-CLDLOW_dlevs	= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+CLDLOW_dlevs_1	= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+CLDLOW_dlevs_2	= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
 CLDLOW_dlevs_sp	= (/-0.1,-0.05,0.05,0.1/)
 
 CLDHGH_levs	= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
-CLDHGH_dlevs	= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+CLDHGH_dlevs_1	= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+CLDHGH_dlevs_2	= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
 CLDHGH_dlevs_sp	= (/-0.1,-0.05,0.05,0.1/)
 
 LTS_levs			= (/5.,6,7,8,9,10,12,14,16,18,20,22,24,26,28/)
-LTS_dlevs			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
+LTS_dlevs_1			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
+LTS_dlevs_2			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
 LTS_dlevs_sp		= (/-1.0, -0.5, 0.5, 1.0/)
 
 EIS_levs			= (/-3.,-2,-1,0,1,2,3,4,5,6,8,10,12,13,14/)
-EIS_dlevs			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
+EIS_dlevs_1			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
+EIS_dlevs_2			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
 EIS_dlevs_sp		= (/-1.0, -0.5, 0.5, 1.0/)
 
 ECTEI_levs			= (/-3.,-2,-1,0,1,2,3,4,5,6,8,10,12,13,14/)
-ECTEI_dlevs			= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
+ECTEI_dlevs_1		= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
+ECTEI_dlevs_2		= (/-1.2,-1.,-0.8,-0.6,-0.4,-0.2,-0.1,0,0.1,0.2,0.4,0.6,0.8,1,1.2/)
 ECTEI_dlevs_sp		= (/-1.0, -0.5, 0.5, 1.0/)
 
 TGCLDLWP_levs 		= (/10,25,50,75,100,150,175,200,250,300,350,400,450,500,550/)
-TGCLDLWP_dlevs	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
+TGCLDLWP_dlevs_1	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
+TGCLDLWP_dlevs_2	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
 TGCLDLWP_dlevs_sp	= (/-100.,-50., 50., 100. /)
 
 alst_def_levs		= CLDLOW_levs
-alst_def_dlevs		= CLDLOW_dlevs
+alst_def_dlevs_1		= CLDLOW_dlevs_1
+alst_def_dlevs_2		= CLDLOW_dlevs_2
 alst_def_dlevs_sp	= CLDLOW_dlevs_sp
 
 alst_gp_levs		= CLDLOW_levs
-alst_gp_dlevs		= CLDLOW_dlevs
+alst_gp_dlevs_1		= CLDLOW_dlevs_1
+alst_gp_dlevs_2		= CLDLOW_dlevs_2
 alst_gp_dlevs_sp	= CLDLOW_dlevs_sp
 
+al_st_gpd_levs		= CLDLOW_levs
+al_st_gpd_dlevs_1		= CLDLOW_dlevs_1
+al_st_gpd_dlevs_2		= CLDLOW_dlevs_2
+al_st_gpd_dlevs_sp	= CLDLOW_dlevs_sp
 
-
+al_st_prh_levs		= CLDLOW_levs
+al_st_prh_dlevs_1		= CLDLOW_dlevs_1
+al_st_prh_dlevs_2	= CLDLOW_dlevs_2
+al_st_prh_dlevs_sp	= CLDLOW_dlevs_sp
 
 Vars_mid	= (/"T", "Q", "OMEGA"/)
 
-;				   0            1          2           3           4            5          6	    7      8       9		10          11           12
-varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP",	"alst_def", "alst_gp"/)
-varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,alst_def_levs, alst_gp_levs/)
-varsA_dlevs	= (/PRECT_dlevs,PRECT_dlevs,    PRECT_dlevs,    SWCF_dlevs,     LWCF_dlevs,	CLDLOW_dlevs,	CLDHGH_dlevs, LTS_dlevs, EIS_dlevs,	ECTEI_dlevs,TGCLDLWP_dlevs, alst_def_dlevs, alst_gp_dlevs/)
-varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, alst_def_dlevs_sp, alst_gp_dlevs_sp/)
+;				   0            1          2           3           4            5          6	    7      8       9		10          11           12        13          14
+varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP",	"alst_def", "alst_gp", "al_st_prh", "al_st_gpd"/)
+varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,alst_def_levs, alst_gp_levs, al_st_prh_levs, al_st_gpd_levs/)
+varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, alst_def_dlevs_1, alst_gp_dlevs_1, al_st_prh_dlevs_1, al_st_gpd_dlevs_1/)
+varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, alst_def_dlevs_2, alst_gp_dlevs_2, al_st_prh_dlevs_2, al_st_gpd_dlevs_2/)
+varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, alst_def_dlevs_sp, alst_gp_dlevs_sp, al_st_prh_dlevs_sp, al_st_gpd_dlevs_sp/)
 
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "fraction", "fraction"/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "fraction", "fraction", "fraction" , "fraction"/)
 
-use_idx		= (/11,12/)
-vars			= varsA(use_idx)
-vars_levs		= varsA_levs(use_idx,:)
-vars_dlevs		= varsA_dlevs(use_idx,:)
-vars_dlevs_sp	= varsA_dlevs_sp(use_idx,:)
-vars_units		= varsA_units(use_idx)
+;use_idx		= (/11,12/)
+use_idx		= (/13,14/)
+
+vars				= varsA(use_idx)
+vars_levs			= varsA_levs(use_idx,:)
+vars_dlevs_1		= varsA_dlevs_1(use_idx,:)
+vars_dlevs_2		= varsA_dlevs_2(use_idx,:)
+vars_dlevs_sp		= varsA_dlevs_sp(use_idx,:)
+vars_units			= varsA_units(use_idx)
 
 nlat				= 192
 nlon				= 288
@@ -146,9 +171,9 @@ do icase=0,dimsizes(case_nor)-1
 
 	do ivar=0,dimsizes(vars)-1
 		if(isfilevar(ftmp1,vars(ivar))) then
-			if(vars(ivar).eq."alst_def".or.vars(ivar).eq."alst_gp")then
+			if(vars(ivar).eq."alst_def".or.vars(ivar).eq."alst_gp" .or. vars(ivar).eq."al_st_prh" .or. vars(ivar).eq."al_st_gpd")then
 				tmp								= ftmp1->$vars(ivar)$(0,{lev_max},:,:)
-				tmp								= tmp*100.	; change units
+;				tmp								= tmp*100.	; change units
 				vars_all(ivar,itag,icase,:,:)	= tmp
 			else
 				vars_all(ivar,itag,icase,:,:)	 	= ftmp1->$vars(ivar)$(0,:,:)
@@ -202,6 +227,19 @@ vars_all_diff2		= new((/dimsizes(vars),nlat,nlon/),float)
 vars_all_diff2		= (/vars_all_tagdiff(:,1,:,:)-vars_all_tagdiff(:,0,:,:)/)
 copy_VarCoords_1(vars_all_tagdiff(var|:,lat|:,lon|:,case|:),vars_all_diff2)
 printVarSummary(vars_all_diff2)
+
+; ===================== var difference ==========================
+vars_all_vardiff		= new((/dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float)
+vars_all_vardiff		= (/vars_all(1,:,:,:,:)-vars_all(0,:,:,:,:)/)
+copy_VarCoords_1(vars_all(tag|:,case|:,lat|:,lon|:,var|:),vars_all_vardiff)
+printVarSummary(vars_all_vardiff)
+
+; ===================== difference of var difference ==========================
+vars_all_diff3		= new((/dimsizes(case_nor),nlat,nlon/),float)
+vars_all_diff3		= (/vars_all_vardiff(1,:,:,:)-vars_all_vardiff(0,:,:,:)/)
+copy_VarCoords_1(vars_all_vardiff(case|:,lat|:,lon|:,tag|:),vars_all_diff3)
+printVarSummary(vars_all_diff3)
+
 
 if (regime_contribution)then
 ; ================= broken down by regions and regimes =====================================
@@ -520,5 +558,148 @@ frame(wks)   ; Advance the frame.
 exit
 
 end if ; regime_contribution
+
+;************************create plot***************
+if(lat_lon_plot)then
+
+do ivar=0,dimsizes(vars)-1
+
+;wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-HammerProj")
+;wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-p4K-"+vars(dimsizes(vars)-1))
+wks 					= gsn_open_wks(plot_type,"figure/lat-lon-p4K-"+vars(dimsizes(vars)-1))
+
+plot 					= new(9,graphic)
+plot1 					= new(9,graphic)
+
+;gsn_define_colormap(wks,"BlueDarkRed18")
+
+cmap1 					= read_colormap_file("WhiteBlueGreenYellowRed")
+;cmap2 					= read_colormap_file("BlueRed")
+;cmap2					= read_colormap_file("BlueWhiteOrangeRed")
+;cmap2				 	= read_colormap_file("NCV_roullet")
+cmap2				 	= read_colormap_file("NCV_blue_red")
+
+res                      	= True
+res@gsnDraw 				= False
+res@gsnFrame 				= False
+;res@mpProjection			= "Hammer"
+;res@mpPerimOn              = False	 
+
+res@cnFillOn            		= True
+res@cnLinesOn           		= False
+res@cnLineLabelsOn      		= False
+res@cnFillPalette       		= cmap1(:240,:)
+
+res@mpLandFillColor				= "gray"
+
+res@mpCenterLonF         		= 180.
+
+fontheight						= 0.035
+res@gsnStringFontHeightF		= fontheight
+res@tmXBLabelFontHeightF		= fontheight
+res@tmYLLabelFontHeightF		= fontheight
+
+res@tmXBOn			 			= False
+res@tmYLOn						= False
+res@tmXTOn						= False
+res@tmYROn						= False
+res@tmXBTickSpacingF			= 60.
+res@tmYLTickSpacingF			= 45.
+
+res@cnLevelSelectionMode       	= "ExplicitLevels"
+res@cnLevels                   	= vars_levs(ivar,:)
+
+;res@gsnCenterString			= vars(ivar)
+res@gsnRightString				= vars_units(ivar)
+
+res@lbOrientation				= "vertical"
+res@lbLabelFontHeightF			= fontheight
+
+;;;;;; resl
+resl							= res
+delete(resl@cnFillPalette)
+delete(resl@cnLevels)
+delete(resl@mpCenterLonF)
+delete(resl@mpLandFillColor)
+resl@cnFillOn				 	= False
+resl@cnLinesOn					= True
+;resl@cnLevels					= vars_dlevs(ivar,::3)
+resl@cnLevels					= vars_dlevs_sp(ivar,:)
+resl@gsnLeftString				= ""
+resl@gsnRightString				= ""
+
+;;;;;;;res2
+res2 							= res
+delete(res2@cnFillPalette)
+
+res2@cnFillPalette 				= cmap2(:,:)
+res2@gsnSpreadColorStart		= 30
+res2@gsnSpreadColorEnd			= 227
+
+res2@cnLevelSelectionMode     	= "ExplicitLevels"
+res2@cnLevels                 	= vars_dlevs_1(ivar,:)
+
+res3							= res2
+res3@cnLevels					= vars_dlevs_2(ivar,:)
+
+var4K					= new((/9,nlat,nlon/),float)
+var4K(0,:,:)				= vars_all(ivar,0,0,:,:)
+var4K					= (/vars_all(0,0,0,:,:),vars_all(1,0,0,:,:),vars_all_vardiff(0,0,:,:),\ ; (var,tag,case,lat,lon)
+					    vars_all(0,1,0,:,:),vars_all(1,1,0,:,:),vars_all_vardiff(1,0,:,:),\ 
+					    vars_all_tagdiff(0,0,:,:),vars_all_tagdiff(1,0,:,:), vars_all_diff3(0,:,:)/) 
+printVarSummary(var4K)
+
+strings4K				= (/"RH","PDF","PDF-RH",\
+					    "RH_4K","PDF_4K","PDF_4K-RH_4K",\
+					    "RH_4K-RH","PDF_4K-PDF","dlt_PDF-dlt_RH"/)
+
+
+plot					= new(9,graphic)
+plotov					= new(9,graphic)
+
+p = 0.5
+q = -0.25
+
+
+do it=0,8
+if(it.eq.0.or.it.eq.1.or.it.eq.3.or.it.eq.4)then
+	res@gsnLeftString			= strings4K(it)
+;	plot(it)				= gsn_csm_contour_map(wks,var4K(it,:,:),res)
+	plot(it)				= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res)
+
+;	plot_ov					= gsn_csm_contour(wks,var4K(it,:,:),resl)
+;	overlay(plot(it),plot_ov)
+else
+	if(it.eq.6 .or. it.eq.7)then
+		res3@gsnLeftString			= strings4K(it)
+		plot(it)					= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res3)
+	else
+		res2@gsnLeftString			= strings4K(it)
+;		if(it.eq.8)then
+;			res2@gsnCenterString	= sprintf("%5.2f",ra(ivar))
+;		else
+;			res2@gsnCenterString	= ""
+;		end if
+		plot(it)				= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res2)
+	end if
+end if
+end do ; do it=
+
+
+resP = True
+resP@gsnPanelMainString = vars(ivar)
+
+resP@gsnPanelXWhiteSpacePercent		= 2.5
+resP@gsnPanelYWhiteSpacePercent		= 5.
+
+;if(vars(ivar).eq."SWCF".or.vars(ivar).eq."CLDLOW")then
+gsn_panel(wks,plot,(/3,3/),resP)
+;gsn_panel(wks,plot1,(/3,3/),resP)
+;end if
+
+end do ; do ivar=
+
+end if ; lat_lon_plot
+
 
 end
