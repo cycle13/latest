@@ -14,8 +14,8 @@ case_4K						= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_MG10_amip-p4K","
 case_all					= (/case_nor,case_4K/)
 
 tag							= (/"nor","p4K"/)
-
-Vars						= (/"FLNT","FSNT","FLNTC","FSNTC","LWCF","SWCF","netCRF"/)
+;								  0       1     2        3      4      5      6       7
+Vars						= (/"FLNT","FSNT","FLNTC","FSNTC","LWCF","SWCF","netCRF","TS"/)
 Vars_dlt					= "dlt_"+Vars
 
 nlat						= 192
@@ -96,7 +96,11 @@ Gc							= vars_all_aave_diff(2,:) - vars_all_aave_diff(3,:)	; FLNTC - FSNTC
 
 ; lambda: \dlt_TS / G
 ; lambda_c: \dlt_Ts / Gc
-dlt_Ts						= 4.
+
+; 2018-12-10: change \dlt_TS from constant 4K to varied value from calculation
+;dlt_Ts						= 4.
+dlt_Ts						= vars_all_aave_diff(7,:)
+;print(dlt_Ts)
 lambda		 				= dlt_Ts/G
 lambda_c					= dlt_Ts/Gc
 
