@@ -7,17 +7,27 @@
 #casename=(FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K \
 #	  FAMIPC5_f09f09_mac2_amip_outSGM FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM)
 
+#casename=(FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K)
 #casename=(FAMIPC5_f09f09_mac2_amip_outSGM FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM)
-casename=(FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K)
+#casename=(FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K)
+
+#casename=(FAMIPC5_f09f09_MG10_amip FAMIPC5_f09f09_MG10_amip-p4K FAMIPC5_f09f09_mac2_amip_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10 \
+#		  FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10 \
+#		  FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K \
+#	      FAMIPC5_f09f09_mac2_amip_outSGM FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM)
+
 
 #casename=(FAMIPC5_f09f09_MG10_amip FAMIPC5_f09f09_MG10_amip-p4K FAMIPC5_f09f09_mac2_amip_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10)
 #casename=(FAMIPC5_f09f09_mac2_amip_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10)
-#casename=(FAMIPC5_f09f09_mac2_amip)
+
+casename=(FAMIPC5_f09f09_mac2_amip)
 
 ann_mean=true
 climatology=true
 refine=false
 regrid=false
+glb_mean=true
+db_check_TS=false
 
 int_year=1980
 end_year=1984
@@ -25,8 +35,9 @@ end_year=1984
 int_year_4d=`printf %04d $int_year`
 end_year_4d=`printf %04d $end_year`
 
-#vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,sgm_tota,sgm_shal,sgm_turb,delta_q,deltaq_uns,deltaq_sat,N1,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,alst_def,alst_gp,CLOUD)
-vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD)
+#vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,sgm_tota,sgm_shal,sgm_turb,delta_q,deltaq_uns,deltaq_sat,N1,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,alst_def,alst_gp,CLOUD,TS,TREFHT)
+vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD,TS,TREFHT)
+#vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD,al_st_prh,al_st_gpd,al_st_nc_prh,al_st_nc_gpd,conden_st_nc_gpd,sgm_gpd)
 
 echo $vars
 #--------------------------------Settings End-------------------------------------------------------------
@@ -97,6 +108,10 @@ cp $workdir/${casename[icase]}.ANN.climo.nc $outdir
 
 fi
 
+if [ ${glb_mean} == "true" ]; then
+	ncwa -a lat,lon -w gw $outdir/${casename[icase]}.ANN.climo.nc $outdir/${casename[icase]}.ANN.climo.globmean.nc
+fi
+
 #-------------------------------------------------------------------------
 cd $outdir
 
@@ -128,5 +143,17 @@ rm tmp.nc
 fi
 
 done # icase
+
+if [ ${db_check_TS} == "true" ]; then
+	cd $outdir
+	appends=(ANN.climo.globmean)
+	ncdiff -O -v TS FAMIPC5_f09f09_MG10_amip-p4K.$appends.nc FAMIPC5_f09f09_MG10_amip.$appends.nc MG10_diff_TS_globmean.nc
+	ncdiff -O -v TS FAMIPC5_f09f09_MG15_amip-p4K.$appends.nc FAMIPC5_f09f09_MG15_amip.$appends.nc MG15_diff_TS_globmean.nc
+	ncdiff -O -v TS FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM.$appends.nc FAMIPC5_f09f09_mac2_amip_outSGM.$appends.nc Mac2_MG15_diff_TS_globmean.nc
+	ncdiff -O -v TS FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10.$appends.nc FAMIPC5_f09f09_mac2_amip_outSGM_MG10.$appends.nc Mac2_MG10_debugoff_diff_TS_globmean.nc
+	ncdiff -O -v TS FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10.$appends.nc FAMIPC5_f09f09_mac2_amip_outSGM_MG10.$appends.nc Mac2_MG10_debugon_diff_TS_globmean.nc
+
+	
+fi 
 
 echo "Well done!"
