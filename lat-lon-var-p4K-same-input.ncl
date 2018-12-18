@@ -11,8 +11,8 @@ begin
 ;fdir_append			= "/atm/hist/"
 
 pattern_correlation	= False
-regime_contribution = False
-lat_lon_plot		= True
+regime_contribution = True
+lat_lon_plot		= False
 
 plot_type				= "pdf"
 
@@ -27,10 +27,10 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
 ; !!!!!! pay attention: the case_nor(0) and case_nor(1) are the same case. 
 ; therefore, even though two or more plots are obtained in one figure, they are the same thing. 
-;case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
-;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
-case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
-case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
+case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
+case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+;case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
+;case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
 
 
 case					= (/case_nor,case_p4K/)
@@ -116,8 +116,8 @@ varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dle
 
 varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "fraction", "fraction", "fraction" , "fraction"/)
 
-;use_idx		= (/11,12/)
-use_idx		= (/13,14/)
+use_idx		= (/11,12/)
+;use_idx		= (/13,14/)
 
 vars				= varsA(use_idx)
 vars_levs			= varsA_levs(use_idx,:)
@@ -419,7 +419,7 @@ end do ; do icase=
 
 nregimes_used				= dimsizes(regimes_name(select_idx:))
 
-wks					 	= gsn_open_wks(plot_type, "figure/Global-regime-contribution-p4K-"+vars(dimsizes(vars)-1))
+wks					 	= gsn_open_wks(plot_type, "figure/Global-regime-contribution-p4K-"+vars(dimsizes(vars)-1)+"_"+case_nor(1))
 
 sres 						= True
 sres@gsnDraw               = False
@@ -451,7 +451,7 @@ sres@tmYLLabelFontHeightF  = 0.0225
 
 sres@gsnRightString        = ""
 ;sres@tiYAxisString         = "W/m2"
-
+sres@tiMainFontHeightF		= 0.020
 sres2						= sres
 
 plots 						= new((/dimsizes(case_nor),dimsizes(case_nor)+1/),graphic)
@@ -462,12 +462,12 @@ colors 						= (/"grey",   "black",	"blue"/)
 
 ; The X values for each plot is different, ensuring that the bars don't overlap.
 do icase=0,dimsizes(case_nor)-1
-	sres@tiYAxisString		= case_nor(icase)
+	sres@tiMainString		= case_nor(icase)
 	sres@trYMinF			= -1.*max((/max(regimes_tagdiff(select_idx:,:,icase)),abs(min(regimes_tagdiff(select_idx:,:,icase))),max(scale_factor*regimes_diff2(select_idx:,icase)),abs(min(scale_factor*regimes_diff2(select_idx:,icase)))/))*1.1
 	sres@trYMaxF			= 1.*max((/max(regimes_tagdiff(select_idx:,:,icase)),abs(min(regimes_tagdiff(select_idx:,:,icase))),max(scale_factor*regimes_diff2(select_idx:,icase)),abs(min(scale_factor*regimes_diff2(select_idx:,icase)))/))*1.1
 	sres@gsnLeftString		= "un-weighted"
 
-	sres2@tiYAxisString		= case_nor(icase)
+	sres2@tiMainString		= case_nor(icase)
 	sres2@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt(select_idx:,:,icase)),abs(min(regimes_tagdiff_areawgt(select_idx:,:,icase))),max(scale_factor*regimes_diff2_areawgt(select_idx:,icase)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,icase)))/))*1.1
 	sres2@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt(select_idx:,:,icase)),abs(min(regimes_tagdiff_areawgt(select_idx:,:,icase))),max(scale_factor*regimes_diff2_areawgt(select_idx:,icase)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,icase)))/))*1.1
 	sres2@gsnLeftString		= "area-weighted"
@@ -512,7 +512,7 @@ do icase=0,dimsizes(case_nor)-1
 end do
 
 pres					= True
-pres@gsnMaximize    	= True   ; Maximize in frame
+;pres@gsnMaximize    	= True   ; Maximize in frame
 pres@gsnFrame       	= False  ; Don't advance frame.
 pres@gsnPanelBottom 	= 0.13   ; Leave room for labelbar
 
