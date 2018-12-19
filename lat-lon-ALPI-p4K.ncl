@@ -10,13 +10,14 @@ begin
 ;fdir 				= "/home/lyl/WORK4/cesm1_2_1/archive/"
 ;fdir_append			= "/atm/hist/"
 
-pattern_correlation	= False
-regime_contribution = False
-regime_mask_plot	= False
-lat_lon_plot		= False
-Sherwood_2014		= False
-ALPI_mask_plot		= False
-ALPI_bin			= True
+pattern_correlation		= False
+regime_contribution 	= False
+regime_mask_plot		= False
+lat_lon_plot			= False
+Sherwood_2014			= False
+ALPI_bin_cal			= True
+ALPIsub_mask_plot		= True
+ALPIsub_bin_plot		= True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -25,9 +26,14 @@ plot_type			= "pdf"
 select_idx			= 0	; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
 regime_mask_val		= (/0,1,2,3,4,5,6/)
-ALPI_mask_val		= fspan(0,9,10)
 LTS_criteria		= 17.
 
+nbins				= 5
+;ALPI_mask_val		= fspan(0,nbins-1,nbins)
+ALPI_mask_val		= fspan(0,nbins-1,nbins)+0.5 ;-- the addition of 0.5 is to make sure that 
+												 ;-- the value is in the center of cnLevels rather 
+												 ;-- than the edge. After this change, RasterFill
+												 ;-- is not needed and masking plot would be right as well.
 
 fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
@@ -905,7 +911,7 @@ end if ; regime_contribution
 
 ;=================================================
 ; ALPI IS DEFINE BY LTS AND PRECIPITATION.
-if(ALPI_bin)then
+if(ALPI_bin_cal)then
 
 ; ----------- 1.1 calculate LTS
 LTS					= new((/dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float) ; unit is degreeC
@@ -927,8 +933,8 @@ printMinMax(LTS,True)
 ; ---------- 1.2 get precipitation
 do ivar=0,dimsizes(vars)-1
 	if(vars(ivar).eq."PRECT")then
-	print(vars(ivar))
-		prect					= vars_all(0,:,:,:,:)
+		print(vars(ivar))
+		prect					= vars_all(ivar,:,:,:,:)
 		break
 	end if
 end do ; do ivar=
@@ -1004,8 +1010,7 @@ printMinMax(ALPI,True)
 ; =========== bin based on ALPI percentile
 ; ----- 1.1 sorting based on ALPI index: increasing
 
-nbins						= 10
-full_length						= dimsizes(ndtooned(ALPI(0,0,{-30:30},:)))
+full_length					= dimsizes(ndtooned(ALPI(0,0,{-30:30},:)))
 nlength						= num(.not.ismissing(ndtooned(ALPI(0,0,{-30:30},:))))
 ALPI_bins					= new((/dimsizes(tag),dimsizes(case_nor),nbins/),float)
 vars_all_bin				= new((/dimsizes(vars),dimsizes(tag),dimsizes(case_nor),full_length,nbins/),float)
@@ -1016,36 +1021,71 @@ ALPI_mask					= new((/dimsizes(tag),dimsizes(case_nor),full_length/),float)
 
 print(nlength)
 
-do ivar=0,dimsizes(vars)-1
 do itag=0,dimsizes(tag)-1
 do icase=0,dimsizes(case_nor)-1
 	ALPI_1D						= ndtooned(ALPI(itag,icase,{-30:30},:))
-	ip							= dim_pqsort(ALPI_1D,2) ; sorting and change the raw data
+	ALPI_1D_sorted				= ALPI_1D
+	ip							= dim_pqsort(ALPI_1D_sorted,2) ; sorting and change the raw data
+	printVarSummary(ALPI_1D_sorted)
+
+do ivar=0,dimsizes(vars)-1
 	vars_all_1D					= ndtooned(vars_all(ivar,itag,icase,{-30:30},:))
-	printVarSummary(ALPI_1D)
 	printVarSummary(vars_all_1D)
 
+	lat							= vars_all&lat
+	clat                		= tofloat(cos(0.01745329*lat))
+	clat!0              		= "lat"
+	clat&lat            		= vars_all&lat
+	clat_2D						= conform_dims(dimsizes(vars_all(ivar,itag,icase,:,:)),clat,0)
+	copy_VarCoords(vars_all(ivar,itag,icase,:,:),clat_2D)
+	clat_2D_1D					= ndtooned(clat_2D({-30:30},:))
+
+;	print(ALPI_1D_sorted+"		"+clat_2D_1D(ip))
+
 	do ibin=0,nbins-1
-		tmp1		= ALPI_1D(toint(nlength/10)*ibin)
+		tmp1		= ALPI_1D_sorted(toint(nlength/nbins)*ibin)
 		if(ibin.eq.(nbins-1))then ; avoid missing some points at the end --- notion: pls dont write "tmp2 = ALPI_1D(dimsizes(ALPI_1D)-1)" when missing value exists.
-			tmp2		= ALPI_1D(nlength-1)
+			tmp2		= ALPI_1D_sorted(nlength-1)
 		else
-			tmp2		= ALPI_1D(toint(nlength/10)*(ibin+1))
+			tmp2		= ALPI_1D_sorted(toint(nlength/nbins)*(ibin+1))
 		end if
-;		print(tmp1+"		"+tmp2)
-		vars_all_bin(ivar,itag,icase,:,ibin)		= where(ALPI_1D.gt.tmp1 .and. ALPI_1D.lt.tmp2, vars_all_1D(ip), vars_all@_FillValue)
-		vars_all_bin_mean(ivar,itag,icase,ibin)		= dim_avg(vars_all_bin(ivar,itag,icase,:,ibin))
+		vars_all_bin(ivar,itag,icase,:,ibin)		= where(ALPI_1D_sorted.gt.tmp1 .and. ALPI_1D_sorted.lt.tmp2, vars_all_1D(ip), vars_all@_FillValue)
+;		print(num(.not.ismissing(vars_all_bin(ivar,itag,icase,:,ibin)))) ; 1366
+
+;		vars_all_bin_mean(ivar,itag,icase,ibin)		= dim_avg(vars_all_bin(ivar,itag,icase,:,ibin))
+		vars_all_bin_mean(ivar,itag,icase,ibin)		= dim_avg_wgt_n_Wrap(vars_all_bin(ivar,itag,icase,:,ibin),clat_2D_1D(ip),1,0) 	; the weighting effect is small. 2018.12.18
 		vars_all_bin_std(ivar,itag,icase,ibin)		= dim_stddev(vars_all_bin(ivar,itag,icase,:,ibin))
 
 ; ========= very brillient idea suggested by Jishi! in order to reverse to the Lat-Lon plot, we need to keep the ip index always.
-		ALPI_mask(itag,icase,ip(ind(ALPI_1D.gt.tmp1 .and. ALPI_1D.lt.tmp2)))	=  ALPI_mask_val(ibin) 
+		ALPI_mask(itag,icase,ip(ind(ALPI_1D_sorted.gt.tmp1 .and. ALPI_1D_sorted.lt.tmp2)))	=  ALPI_mask_val(ibin) 
 ;		ALPI_mask(itag,icase,:)			= where(ALPI_1D.gt.tmp1 .and. ALPI_1D.lt.tmp2, ALPI_mask_val(ibin), ALPI_mask(itag,icase,:))  ; --- cannot work.
 ; ========
 	end do ; do ibin=
+
+;; -------- used to test the binned variables
+;wks						= gsn_open_wks(plot_type,"./figure/ALPI_binned_variable_test")
+;
+;dims					= dimsizes(vars_all_bin(ivar,itag,icase,:,:))
+;;tmps					= reshape(vars_all_bin(ivar,itag,icase,:,:),(/dims(1),dims(0)/)) ;--- reshape cannot work here, because it does not change the storage sequency of data actually.
+;tmps					= transpose(vars_all_bin(ivar,itag,icase,:,:))
+;
+;res						= True
+;res@vpWidthF			= 0.7
+;res@vpHeightF			= 0.4
+;res@xyLineColors		= ispan(2,250,250/dims(1))
+;res@tiYAxisString		= vars(ivar)
+;res@tiXAxisString		= "ndtooned vars [Lat-Lon]"
+;
+;plot					= gsn_csm_y(wks,tmps,res)
+;exit
+;delete([/plot,tmps,dims/])
+;; ---------- 
+
 delete([/tmp1,tmp2/])
+end do ; do ivar=
 end do ; do icase=
 end do ; do itag=
-end do ; do ivar=
+
 
 printVarSummary(vars_all_bin)
 printMinMax(vars_all_bin,True)
@@ -1054,17 +1094,26 @@ printMinMax(ALPI_mask,True)
 
 ; get mask variable to verify the correctness of ALPI bin
 dims			= dimsizes(ALPI(0,0,:,:))
+; reshape into Lat-Lon dimension variable
 ALPI_mask_latlon								= reshape(ALPI_mask,(/dimsizes(tag),dimsizes(case_nor),dims(0),dims(1)/))
 copy_VarCoords(ALPI,ALPI_mask_latlon(:,:,:,:))
 printVarSummary(ALPI_mask_latlon)
+; get the difference to identify the distinction of Gauss-PDF and Park-RH
+ALPI_mask_latlon_diff							= (/ALPI_mask_latlon(:,1,:,:)-ALPI_mask_latlon(:,0,:,:)/)
+copy_VarCoords(ALPI_mask_latlon(:,0,:,:),ALPI_mask_latlon_diff)
+ALPI_mask_latlon_diff2							= (/ALPI_mask_latlon(1,:,:,:)-ALPI_mask_latlon(0,:,:,:)/)
+copy_VarCoords(ALPI_mask_latlon(0,:,:,:),ALPI_mask_latlon_diff2)
 
-if(ALPI_mask_plot)then
+if(ALPIsub_mask_plot)then
 
 ; ======== the following part is used to verify whether the ALPI index sorting is right.
 ; ======== ---- yes, plots indicate that all regimes are right.
 
-wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot")
+;wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins+"_Raster")
+wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins)
+
 gsn_define_colormap(wks,"NCV_manga")
+;gsn_define_colormap(wks,"NCV_blue_red")
 
 res							= True
 
@@ -1076,13 +1125,13 @@ res@cnLinesOn				= False
 res@cnLineLabelsOn			= False
 ;res@cnFillMode       		= "RasterFill"
 res@cnLevelSelectionMode	= "ExplicitLevels"
-res@cnLevels         		= ALPI_mask_val(1:)
+res@cnLevels         		= ispan(1,nbins-1,1);ALPI_mask_val(1:)
 res@cnFillColors			= ispan(2,250,250/dimsizes(ALPI_mask_val)) ;(/"lightcyan2","lightgoldenrod2","lightyellow2","lightgrey","lightskyblue2","lightseagreen","lightpink2"/)
 
 res@lbLabelPosition  		= "Center"           ; label position
 res@lbLabelAlignment 		= "BoxCenters"       ; label orientation
 ;res@lbLabelStrings   		= ""+ res@cnLevels   ; trick 
-res@lbLabelStrings   		= ""+ ALPI_mask_val(:)
+res@lbLabelStrings   		= ""+ (ALPI_mask_val(:)-0.5) ; --- slightly tricky here: to make the labeled value look clear.
 
 fontheight					= 0.025
 res@lbLabelFontHeightF		= fontheight
@@ -1096,23 +1145,62 @@ res@mpMaxLatF				= 30.
 
 res@gsnStringFontHeightF	= fontheight
 res@gsnLeftString			= "ALPI regimes"
+res@tmXBLabelFontHeightF	= fontheight/2.
+res@tmYLLabelFontHeightF	= fontheight/2.
+
+; -------- resource for difference plot
+resd						= True
+resd@gsnFrame				= False
+resd@gsnDraw				= False
+
+;resd@cnFillMode       		= "RasterFill"
+
+resd@cnFillOn				= True
+resd@cnLinesOn				= False
+resd@mpCenterLonF			= 180
+resd@mpMinLatF				= -30.
+resd@mpMaxLatF				= 30.
+resd@tmXBLabelFontHeightF	= fontheight/2.
+resd@tmYLLabelFontHeightF	= fontheight/2.
+;resd@pmLabelBarParallelPosF	= 
+resd@pmLabelBarOrthogonalPosF	= 0.25
+resd@gsnLeftString			= "ALPI regimes"
+resd@cnLevelSelectionMode	= "ManualLevels"
+resd@cnMinLevelValF			= -2.
+resd@cnMaxLevelValF			= 2.
+resd@cnLevelSpacingF		= 0.5
 
 plot						= new((/dimsizes(tag),dimsizes(case_nor)/),graphic)
+plot_diff					= new((/dimsizes(tag)/),graphic)
+plot_diff2					= new((/dimsizes(tag)/),graphic)
 
 do itag=0,dimsizes(tag)-1
+resd@gsnRightString			= tag(itag)+"_"+"PDF-RH"
+plot_diff(itag)				= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon_diff(itag,:,:),resd)
+
 do icase=0,dimsizes(case_nor)-1
 res@gsnRightString = tag(itag)+"_"+case_name(icase)
 plot(itag,icase)		= gsn_csm_contour_map_ce(wks,ALPI_mask_latlon(itag,icase,:,:),res)
-
 end do ; do itag=
 end do ; do icase=
 
+do icase=0,dimsizes(case_nor)-1
+resd@gsnRightString			= "p4K-cntl_"+case_name(icase)
+plot_diff2(icase)			= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon_diff2(icase,:,:),resd)
+end do ; do icase=
+
 gsn_panel(wks,ndtooned(plot),(/2,2/),False)
+gsn_panel(wks,plot_diff,(/2,1/),False)
+gsn_panel(wks,plot_diff2,(/2,1/),False)
 exit
 end if ; ALPI_mask_plot
 
+; ----------------------------------------------------
 ; -------- ALPI_binned_vars
-wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars")
+; ----------------------------------------------------
+if(ALPIsub_bin_plot)then
+
+wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars_nbins_"+nbins)
 
 res  						= True
 res@gsnDraw					= False
@@ -1127,7 +1215,9 @@ res@tiXAxisString			= "ALPI percentile (%)"
 
 res@tmXBMode				= "Explicit"
 res@tmXBValues				= fspan(0,nbins,nbins+1)
-res@tmXBLabels				= fspan(0,nbins,nbins+1)*10
+;res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
+res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
+res@trXMaxF					= (nbins)
 
 res_diff					= res
 
@@ -1137,15 +1227,17 @@ upp_bound					= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor),nbins/),gr
 dwn_bound					= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor),nbins/),graphic)
 centers						= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor),nbins/),graphic)
 lines						= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor)/),graphic)
+polygons					= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor)/),graphic)
 
-plot_diff						= new(dimsizes(vars),graphic)
-lines_diff						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
-lines_ref0						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+plot_diff					= new(dimsizes(vars),graphic)
+lines_diff					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+lines_ref0					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+centers_diff				= new((/dimsizes(vars),dimsizes(case_nor)+1,nbins/),graphic)
 
 do ivar=0,dimsizes(vars)-1
 res@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 tmp							= reshape(vars_all_bin_mean(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
-tmp2							= reshape(vars_all_bin_std(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
+tmp2						= reshape(vars_all_bin_std(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
 
 tmp_diff1					= (/vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:)/) ; difference between p4K and cntl
 tmp_diff2					= (/tmp_diff1(1,:)-tmp_diff1(0,:)/) ; difference between PDF_p4K-cntl and RH_p4K-cntl
@@ -1179,23 +1271,52 @@ polyres@gsLineColor			= colors(idx1)
 polyres@gsLineDashPattern	= dashes(idx1)
 polyres@gsLineThicknessF	= thickes(idx1)
 
-lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp(idx1,:),polyres)
+;lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp(idx1,:),polyres)
+lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5,tmp(idx1,:),polyres)
+
+gsres							= True
+;gsres@tfPolyDrawOrder			= "Predraw"
+gsres@gsFillColor				= colors(idx1)
+gsres@gsFillOpacityF			= 0.1
+
+xp								= new( (/2*nbins/),float )
+yp								= new( (/2*nbins/),float )
+
+do idx2=0,nbins-1
+	yp(idx2)					= tmp(idx1,idx2)+tmp2(idx1,idx2)
+	xp(idx2)					= idx2+0.5
+	yp(2*nbins-1-idx2)			= tmp(idx1,idx2)-tmp2(idx1,idx2)
+	xp(2*nbins-1-idx2)			= idx2+0.5
+end do ; do idx2=
+
+;polygons(ivar,idx1)			= gsn_add_polygon(wks,plot(ivar),xp,yp,gsres)
+
 do idx2=0,nbins-1
 ;	centers(ivar,idx1,idx2)		= gsn_add_polymarker(wks,plot(ivar),idx2+0.5+idx1*0.1,tmp(idx1,idx2),polyres)
-	error_bar(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2,idx2/)+0.5+idx1*0.1,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
-	upp_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5+idx1*0.1,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)+tmp2(idx1,idx2)/),polyres)
-	dwn_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5+idx1*0.1,(/tmp(idx1,idx2)-tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
+;	error_bar(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2,idx2/)+0.5+idx1*0.1,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
+;	upp_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5+idx1*0.1,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)+tmp2(idx1,idx2)/),polyres)
+;	dwn_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5+idx1*0.1,(/tmp(idx1,idx2)-tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
+
+	error_bar(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2,idx2/)+0.5,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
+	upp_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)+tmp2(idx1,idx2)/),polyres)
+	dwn_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5,(/tmp(idx1,idx2)-tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
 
 end do ; do idx2=
 end do ; do idx1=
 
 do idx1=0,dimsizes(case_nor)
-	polyres@gsLineColor			= colors(idx1*2)
-	polyres@gsLineDashPattern 	= dashes(idx1*2)
-	polyres@gsLineThicknessF	= thickes(idx1*2)
-	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp_diff_final(idx1,:),polyres)
-	polyres@gsLineColor		= "grey"
-	lines_ref0(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1),fspan(0,0,nbins),polyres)
+	polyres@gsLineColor					= colors(idx1*2)
+	polyres@gsLineDashPattern 			= dashes(idx1*2)
+	polyres@gsLineThicknessF			= thickes(idx1*2)
+;	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp_diff_final(idx1,:),polyres)
+	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres)
+	do idx2=0,nbins-1
+		centers_diff(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres)
+	end do ; do idx2=
+
+	polyres@gsLineColor					= "grey"
+	polyres@gsLineDashPattern			= 14
+	lines_ref0(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres)
 
 end do ; do idx1=
 
@@ -1240,11 +1361,12 @@ pres							= True
 pres@gsnPanelYWhiteSpacePercent = 5.0
 pres@gsnPanelXWhiteSpacePercent = 5.0
 
-gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
 gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
+gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
 exit
+end if ; ALPI_bin_plot
 
-end if ; ALPI_bin
+end if ; ALPI_bin_cal
 
 ;************************create plot***************
 if(lat_lon_plot)then
