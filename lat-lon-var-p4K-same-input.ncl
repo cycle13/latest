@@ -27,10 +27,10 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
 ; !!!!!! pay attention: the case_nor(0) and case_nor(1) are the same case. 
 ; therefore, even though two or more plots are obtained in one figure, they are the same thing. 
-case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
-case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
-;case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
-;case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
+;case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
+;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
+case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
 
 
 case					= (/case_nor,case_p4K/)
@@ -116,8 +116,8 @@ varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dle
 
 varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "fraction", "fraction", "fraction" , "fraction"/)
 
-use_idx		= (/11,12/)
-;use_idx		= (/13,14/)
+;use_idx		= (/11,12/)
+use_idx		= (/13,14/)
 
 vars				= varsA(use_idx)
 vars_levs			= varsA_levs(use_idx,:)
@@ -451,6 +451,7 @@ sres@tmYLLabelFontHeightF  = 0.0225
 
 sres@gsnRightString        = ""
 ;sres@tiYAxisString         = "W/m2"
+sres@tiYAxisString			= "CLOUD_887hPa (fraction)"
 sres@tiMainFontHeightF		= 0.020
 sres2						= sres
 
