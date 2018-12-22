@@ -11,13 +11,13 @@ begin
 ;fdir_append			= "/atm/hist/"
 
 pattern_correlation		= False
-regime_contribution 	= False
+regime_contribution 	= True
 regime_mask_plot		= False
 lat_lon_plot			= False
 Sherwood_2014			= False
-ALPI_bin_cal			= True
-ALPIsub_mask_plot		= True
-ALPIsub_bin_plot		= True
+ALPI_bin_cal			= False;True
+ALPIsub_mask_plot		= False;True
+ALPIsub_bin_plot		= False;True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -122,13 +122,15 @@ varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_
 varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1/)
 varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2/)
 varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp/)
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "No", "No", "W/m~S~2~N~"/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~"/)
 
 ;use_idx		= (/3,4,5,10/)
 ;use_idx			= (/9,7,8/)
 ;use_idx			= (/13,3,5,10,11,12/)
-use_idx			= (/0,13,3,4,5,10/)
+;use_idx			= (/13,3,4,5,6,10/)
+;use_idx			= (/0,13,3,4,5,10/)
 ;use_idx			= (/13,3,5,10/)
+use_idx			= (/11,12/)
 
 vars			= varsA(use_idx)
 vars_levs		= varsA_levs(use_idx,:)
@@ -713,7 +715,7 @@ sres@gsnDraw               = False
 sres@gsnFrame              = False
 
 sres@vpWidthF              = 0.7
-sres@vpHeightF             = 0.5
+sres@vpHeightF             = 0.4 ; -- changed from 0.5 to 0.4; Dec 21, 2018
 
 sres@trXMinF               = 0.
 sres@trXMaxF               = nregimes_used+1
@@ -754,23 +756,31 @@ colors 						= (/"grey",   "black",	"blue"/)
 
 ; The X values for each plot is different, ensuring that the bars don't overlap.
 do ivar=0,dimsizes(vars)-1
+	if(vars(ivar).ne."sgm_tota" .and. vars(ivar).ne."N1")then
 	sres@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
+	sres2@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
+	sres3@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
+	else
+	sres@tiYAxisString		= vars(ivar)
+	sres2@tiYAxisString		= vars(ivar)
+	sres3@tiYAxisString		= vars(ivar)
+	end if
 	sres@trYMinF			= -1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.2
 	sres@trYMaxF			= 1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.2
 	sres@gsnLeftString		= "un-weighted"
 
-	sres2@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
+;	sres2@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
 	sres2@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.2
 	sres2@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.2
 
-	sres3@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
+;	sres3@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
 	sres3@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt_1(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt_1(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)))/))*1.2
 	sres3@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt_1(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt_1(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)))/))*1.2
 
 	sres2@gsnLeftString		= "area-weighted"
 	sres3@gsnLeftString		= "area-weighted-but-same"
 
-  lnres                   = True
+    lnres                   = True
 	lnres@gsLineThicknessF  = 3.0 
 
 	; For un-weighted
@@ -846,65 +856,58 @@ end do
 
 pres					= True
 pres@gsnMaximize    	= True   ; Maximize in frame
-pres@gsnFrame       	= False  ; Don't advance frame.
-pres@gsnPanelBottom 	= 0.13   ; Leave room for labelbar
+;pres@gsnFrame       	= False  ; Don't advance frame.
+;pres@gsnPanelBottom 	= 0.13   ; Leave room for labelbar
 
 pres@gsnPanelLeft		= 0.05
 pres@gsnPanelRight		= 0.95
-pres@gsnPanelXWhiteSpacePercent		= 5.0
-pres@gsnPanelYWhiteSpacePercent		= 5.0
+pres@gsnPanelXWhiteSpacePercent		= 3.0
+pres@gsnPanelYWhiteSpacePercent		= 3.0
 
 ; Create some labelbars for a legend
 lbres                    = True          ; labelbar only resources
-lbres@vpWidthF           = 0.1           ; labelbar width
-lbres@vpHeightF          = 0.1           ; labelbar height
-lbres@lbBoxMajorExtentF  = 0.10          ; puts space between color boxes
+lbres@lbAutoManage		= True
+lbres@vpWidthF           = 0.25          ; labelbar width
+lbres@vpHeightF          = 0.10           ; labelbar height
+lbres@lbBoxMajorExtentF  = 0.50          ; puts space between color boxes
 lbres@lbMonoFillPattern  = True          ; Solid fill pattern
-lbres@lbLabelFontHeightF = 0.010         ; font height. default is small
+lbres@lbLabelFontHeightF = 0.10        ; font height. default is small
+lbres@lbFillColors			= colors
+
 lbres@lbLabelJust        = "TopLeft"  ; left justify labels
-lbres@lbPerimOn          = False
+;lbres@lbPerimOn          = True
 
+;if(vars(0).eq."sgm_tota")then
+;lbres@vpHeightF				= 0.05
+;lbres@lbFillColor			= colors(1)
+;labels = (/"Gauss-PDF"/)
+;else
 labels = (/"Park-RH", "Gauss-PDF","PDF-RH"/)
-xpos   = (/0.15,  0.25, 0.37/)
+;end if
 
-if(dimsizes(plots(:,0))/2.eq.3)then
-ypos	 = 0.20
-end if
-if(dimsizes(plots(:,0))/2.eq.2)then
-ypos	= 0.75
-end if
+lbid						= gsn_create_labelbar(wks,dimsizes(labels),labels,lbres)
+lbid_wgt					= gsn_create_labelbar(wks,dimsizes(labels),labels,lbres)
+lbid_wgt_1					= gsn_create_labelbar(wks,dimsizes(labels),labels,lbres)
+
+amres						= True
+amres@amJust				= "BottomLeft"
+amres@amParallelPosF		= -0.5
+amres@amOrthogonalPosF		= 0.5
+annoid						= gsn_add_annotation(plots(0,0),lbid,amres)
+annoid_wgt					= gsn_add_annotation(plots_wgt(0,0),lbid_wgt,amres)
+annoid_wgt_1				= gsn_add_annotation(plots_wgt_1(0,0),lbid_wgt_1,amres)
 
 ; Panel the plots.
 ;First plot
-;gsn_panel(wks,plots(:,0),(/2,2/),pres)
 gsn_panel(wks,plots(:,0),(/dimsizes(plots(:,0))/2,2/),pres)
 ;drawNDCGrid(wks)
 
-do i=0,dimsizes(case_nor)-1+1
-  lbres@lbFillColors = colors(i)
-  gsn_labelbar_ndc(wks,1,labels(i),xpos(i),ypos,lbres)
-end do	
-frame(wks)   ; Advance the frame.
-
 ; Second plot
-;gsn_panel(wks,plots_wgt(:,0),(/2,2/),pres)
 gsn_panel(wks,plots_wgt(:,0),(/dimsizes(plots_wgt(:,0))/2,2/),pres)
-
-do i=0,dimsizes(case_nor)-1+1
-  lbres@lbFillColors = colors(i)
-  gsn_labelbar_ndc(wks,1,labels(i),xpos(i),ypos,lbres)
-end do	
-frame(wks)
 
 ; Third plot
 gsn_panel(wks,plots_wgt_1(:,0),(/dimsizes(plots_wgt_1(:,0))/2,2/),pres)
 
-do i=0,dimsizes(case_nor)-1+1
-  lbres@lbFillColors = colors(i)
-  gsn_labelbar_ndc(wks,1,labels(i),xpos(i),ypos,lbres)
-end do	
-
-frame(wks)   ; Advance the frame.
 exit
 
 end if ; regime_contribution
