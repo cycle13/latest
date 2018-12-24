@@ -27,6 +27,8 @@ plot_type			= "pdf"
 
 latS_trop			= -30.
 latE_trop			= 30.
+lonS_scatter		= 220.
+lonE_scatter		= 270.
 
 select_idx			= 0	; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
@@ -443,41 +445,77 @@ vars_all_diff2		= (/vars_all_tagdiff(:,1,:,:)-vars_all_tagdiff(:,0,:,:)/)
 copy_VarCoords_1(vars_all_tagdiff(var|:,lat|:,lon|:,case|:),vars_all_diff2)
 printVarSummary(vars_all_diff2)
 
+
+lon					= vars_all&lon
+lat                 = vars_all&lat
+nlat				= dimsizes(lat)
+nlon				= dimsizes(lon)
+clat                = tofloat(cos(0.01745329*lat))
+clat!0              = "lat"
+clat&lat            = vars_all&lat
+
+; ################# scatter_p2p ########################
 if(scatter_p2p)then
+
 ; ------ set the plotting variables
+
+vars_all_trop_ocn			= vars_all
+vars_all_tagdiff_trop_ocn	= vars_all_tagdiff
+vars_all_casediff_trop_ocn	= vars_all_casediff
+vars_all_diff2_trop_ocn		= vars_all_diff2
+
 do ivar=0,dimsizes(vars)-1
 do icase=0,dimsizes(case_nor)-1
 do itag=0,dimsizes(tag)-1
 
-vars_all_trop				= vars_all(ivar,itag,icase,{latS_trop:latE_trop},:)
-vars_all_tagdiff_trop		= vars_all_tagdiff(ivar,icase,{latS_trop:latE_trop},:)
-vars_all_casediff_trop		= vars_all_casediff(ivar,itag,{latS_trop:latE_trop},:)
-vars_all_diff2_trop			= vars_all_diff2(ivar,{latS_trop:latE_trop},:)
+omega500					= vars_mid(2,itag,icase,{500},:,:)
+lat2d						= conform_dims(dimsizes(omega500),lat,0)
+lon2d						= conform_dims(dimsizes(omega500),lon,1)
 
-; mask land region
 if(scatter_sub_ocn)then
-vars_all_trop_ocn				= where(OCNFRAC({latS_trop:latE_trop},:).gt.0.8,vars_all_trop,vars_all@_FillValue)
-vars_all_tagdiff_trop_ocn		= where(OCNFRAC({latS_trop:latE_trop},:).gt.0.8,vars_all_tagdiff_trop,vars_all@_FillValue)
-vars_all_casediff_trop_ocn		= where(OCNFRAC({latS_trop:latE_trop},:).gt.0.8,vars_all_casediff_trop,vars_all@_FillValue)
-vars_all_diff2_trop_ocn			= where(OCNFRAC({latS_trop:latE_trop},:).gt.0.8,vars_all_diff2_trop,vars_all@_FillValue)
+; mask land region
+	crit1					= (OCNFRAC.gt.0.8).and.(lat2d.gt.latS_trop.and.lat2d.lt.latE_trop).and.(omega500.gt.0)
+	vars_all_trop_ocn(ivar,itag,icase,:,:)					= where(crit1, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
+	vars_all_tagdiff_trop_ocn(ivar,icase,:,:)				= where(crit1, vars_all_tagdiff(ivar,icase,:,:),vars_all@_FillValue)
+	vars_all_casediff_trop_ocn(ivar,itag,:,:)				= where(crit1, vars_all_casediff(ivar,itag,:,:),vars_all@_FillValue)
+	vars_all_diff2_trop_ocn(ivar,:,:)						= where(crit1, vars_all_diff2(ivar,:,:),vars_all@_FillValue)
 else
-vars_all_trop_ocn				= vars_all_trop
-vars_all_tagdiff_trop_ocn		= vars_all_tagdiff_trop
-vars_all_casediff_trop_ocn		= vars_all_casediff_trop
-vars_all_diff2_trop_ocn			= vars_all_diff2_trop
+	crit1					= (lat2d.gt.latS_trop.and.lat2d.lt.latE_trop).and.(omega500.gt.0)
+	vars_all_trop_ocn(ivar,itag,icase,:,:)					= where(crit1,vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
+	vars_all_tagdiff_trop_ocn(ivar,icase,:,:)				= where(crit1,vars_all_tagdiff(ivar,icase,:,:),vars_all@_FillValue)
+	vars_all_casediff_trop_ocn(ivar,itag,:,:)				= where(crit1,vars_all_casediff(ivar,itag,:,:),vars_all@_FillValue)
+	vars_all_diff2_trop_ocn(ivar,:,:)						= where(crit1,vars_all_diff2(ivar,:,:),vars_all@_FillValue)
 end if
 
+end do ; do itag=
+end do ; do icase=
+end do ; do ivar=
 
-x							= ndtooned(vars_all_trop_ocn(::10,::10))
-y							= ndtooned(vars_all_tagdiff_trop_ocn(::10,::10))
+pltarry					 	= new((/dimsizes(vars),dimsizes(case_nor),2,nlat*nlon/),float)
+pltx						= new((/dimsizes(vars),dimsizes(case_nor),nlat*nlon/),float)
+rcarry						= new((/dimsizes(case_nor),2/),float)
 
-ii							= dim_pqsort_n(x,1,0)
-xx							= x(ii)
-yy							= y(ii)
 
-printVarSummary(xx)
-printVarSummary(yy)
-effnum						= (num(.not.ismissing(xx)))-1
+do ivar=0,dimsizes(vars)-1
+do icase=0,dimsizes(case_nor)-1
+
+x							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
+;y							= ndtooned(vars_all_casediff_trop_ocn(ivar,0,::3,::3))
+y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
+printVarSummary(x)
+printVarSummary(y)
+; -- make the match between x and y by eliminating any data in each one array
+ytmp						= where(x.ne.vars_all@_FillValue,y,vars_all@_FillValue)
+xtmp						= where(ytmp.ne.vars_all@_FillValue,x,vars_all@_FillValue)
+printVarSummary(ytmp)
+printVarSummary(xtmp)
+
+; --- sorting is used to eliminate those missing values.
+ii							= dim_pqsort_n(xtmp,1,0)
+xx							= xtmp(ii)
+yy							= ytmp(ii)
+effnum						= (num(.not.ismissing(xx)))-1 ; -- number of no-missing values
+print(effnum)
 
 ; linear regression
 rc							= regline_stats(xx(:effnum),yy(:effnum))
@@ -485,27 +523,71 @@ printVarSummary(rc)
 
 nx							= dimsizes(xx(:effnum))
 print(nx)
-pltarry					 	= new((/2,nx/),typeof(xx))
-pltarry(0,:)				= yy(:effnum)
-pltarry(1,:)				= rc@Yest
+
+pltarry(ivar,icase,0,:effnum)				= yy(:effnum)
+pltarry(ivar,icase,1,:effnum)				= rc@Yest
+
+pltx(ivar,icase,:effnum)				= xx(:effnum)
+rcarry(ivar,icase)							= rc
+
+
+end do ; do icase=
+end do ; do ivar=
 
 
 wks								= gsn_open_wks("x11","./figure/scatter")
+plot							= new((/dimsizes(vars)/),graphic)
+txid							= new((/dimsizes(vars)/),graphic)
+annoid							= new((/dimsizes(vars)/),graphic)
+colors							= (/"grey","lightskyblue"/)
 
+do ivar=0,dimsizes(vars)-1
 res								= True
+res@gsnDraw						= False
+res@gsnFrame					= False
 res@xyMarkLineModes 			= "Markers"
 res@xyMarkers					= 16
 res@xyMarkerSizeF				= 0.01
 res@tmLabelAutoStride			= True
 
-res@xyMarkerColor				= "grey"
+res@xyMarkerColor				= colors(0)
+res@xyLineColor					= colors(0)
+res@xyLineThicknessF			= 3.0
 
-plot							= gsn_csm_xy(wks,xx(:effnum),pltarry,res)
-exit
+res@tiXAxisString				= "CNTL_"+vars(ivar)
+res@tiYAxisString				= "P4K-CNTL_"+vars(ivar)
 
-end do ; do itag=
+plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,0,:),pltarry(ivar,0,:,:),res)
+
+do icase=1,dimsizes(case_nor)-1
+	res@xyMarkerColor		= colors(icase)
+	res@xyLineColor			= colors(icase)
+	res@xyLineThicknessF	= 3.0
+
+	ovplot					= gsn_csm_xy(wks,pltx(ivar,icase,:),pltarry(ivar,icase,:,:),res)
+	overlay(plot(ivar),ovplot)
+
 end do ; do icase=
+
+txres							= True
+txres@txPerimOn					= True
+txres@txFontHeightF				= 0.03
+txres@txBackgroundFillColor		= colors(ivar)
+
+txid(ivar)				= gsn_create_text(wks,"r="+sprintf("%6.3f",rcarry(ivar,0))+"; "+sprintf("%6.3f",rcarry(ivar,1)),txres)
+
+amres							= True
+amres@amJust					= "TopLeft"
+amres@amParallelPosF			= -0.5
+amres@amOrthogonalPosF			= -0.5
+
+annoid(ivar)				= gsn_add_annotation(plot(ivar),txid(ivar), amres)
+
+
 end do ; do ivar=
+
+gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/2,2/),False)
+exit
 
 end if ; scatter_p2p
 
