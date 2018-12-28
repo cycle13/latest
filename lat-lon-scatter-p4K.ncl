@@ -12,18 +12,18 @@ begin
 
 pattern_correlation		= False
 regime_contribution 	= False
-regime_mask_plot		= False
+regime_mask_plot		= False  ; this one depends on the regime_contribution
 lat_lon_plot			= False
 Sherwood_2014			= False
-ALPI_bin_cal			= False;True
-ALPIsub_mask_plot		= False;True
-ALPIsub_bin_plot		= False;True
-scatter_p2p				= True
+ALPI_bin_cal			= False
+ALPIsub_mask_plot		= False
+ALPIsub_bin_plot		= False
+scatter_p2p				= True ; -- some arrays are too small. only for two variables now.
 scatter_sub_ocn			= True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "pdf"
+plot_type			= "x11"
 
 latS_trop			= -30.
 latE_trop			= 30.
@@ -130,6 +130,7 @@ varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1
 varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2/)
 varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp/)
 varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~"/)
+plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)"/)
 
 ;use_idx		= (/3,4,5,10/)
 ;use_idx			= (/9,7,8/)
@@ -147,6 +148,7 @@ vars_dlevs_2		= varsA_dlevs_2(use_idx,:)
 
 vars_dlevs_sp	= varsA_dlevs_sp(use_idx,:)
 vars_units		= varsA_units(use_idx)
+plots_strings	= plotsA_strings
 
 
 nlat				= 192
@@ -493,7 +495,7 @@ end do ; do ivar=
 
 pltarry					 	= new((/dimsizes(vars),dimsizes(case_nor),2,nlat*nlon/),float)
 pltx						= new((/dimsizes(vars),dimsizes(case_nor),nlat*nlon/),float)
-rcarry						= new((/dimsizes(case_nor),2/),float)
+rcarry						= new((/dimsizes(vars),2/),float)
 
 
 do ivar=0,dimsizes(vars)-1
@@ -541,6 +543,7 @@ txid							= new((/dimsizes(vars)/),graphic)
 annoid							= new((/dimsizes(vars)/),graphic)
 colors							= (/"grey","lightskyblue"/)
 
+count	= 0
 do ivar=0,dimsizes(vars)-1
 res								= True
 res@gsnDraw						= False
@@ -554,10 +557,13 @@ res@xyMarkerColor				= colors(0)
 res@xyLineColor					= colors(0)
 res@xyLineThicknessF			= 3.0
 
+res@gsnStringFontHeightF		= 0.03
 res@tiXAxisString				= "CNTL_"+vars(ivar)
 res@tiYAxisString				= "P4K-CNTL_"+vars(ivar)
+res@gsnLeftString				= plots_strings(count)
 
 plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,0,:),pltarry(ivar,0,:,:),res)
+count	= count + 1
 
 do icase=1,dimsizes(case_nor)-1
 	res@xyMarkerColor		= colors(icase)
@@ -587,6 +593,7 @@ annoid(ivar)				= gsn_add_annotation(plot(ivar),txid(ivar), amres)
 end do ; do ivar=
 
 gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/2,2/),False)
+delete(count)
 exit
 
 end if ; scatter_p2p
@@ -763,7 +770,7 @@ res@pmLabelBarWidthF 		=  0.80
 
 res@mpCenterLonF			= 180
 
-res@gsnLeftString			= "Selected regimes"
+;res@gsnLeftString			= "Selected regimes"
 
 res1						= res
 delete([/res1@cnLevels, res1@cnFillColors, res1@lbLabelStrings/])
@@ -775,11 +782,15 @@ res1@lbLabelStrings   		= ""+ (/ 0,1/)
 
 plot						= new((/dimsizes(tag),dimsizes(case_nor)/),graphic)
 do ivar=0,0;dimsizes(vars)-1
+count						= 0
 do itag=0,dimsizes(tag)-1
 do icase=0,dimsizes(case_nor)-1
+print(count)
+res@gsnLeftString			= plots_strings(count)+" Selected regimes"
 res@gsnRightString = tag(itag)+"_"+case_name(icase)
 plot(itag,icase)		= gsn_csm_contour_map_ce(wks,data2regimes_mask(ivar,itag,icase,:,:),res)
 
+count						= count+1
 ;do ir=0,dimsizes(regimes_name)-1
 ;plot1		= gsn_csm_contour_map_ce(wks,data2regimes_mask_s(ir,ivar,itag,icase,:,:),res1)
 ;end do 
@@ -789,8 +800,8 @@ end do
 end do
 
 gsn_panel(wks,ndtooned(plot),(/2,2/),False)
-
-
+delete(count)
+exit
 end if ; regime_mask_plot
 ; ======================================================
 
@@ -911,6 +922,7 @@ dum2						= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 colors 						= (/"grey",   "black",	"blue"/)
 
 ; The X values for each plot is different, ensuring that the bars don't overlap.
+count			= 0
 do ivar=0,dimsizes(vars)-1
 	if(vars(ivar).ne."sgm_tota" .and. vars(ivar).ne."N1")then
 	sres@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
@@ -923,7 +935,7 @@ do ivar=0,dimsizes(vars)-1
 	end if
 	sres@trYMinF			= -1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.2
 	sres@trYMaxF			= 1.*max((/max(regimes_tagdiff(select_idx:,ivar,:)),abs(min(regimes_tagdiff(select_idx:,ivar,:))),max(scale_factor*regimes_diff2(select_idx,ivar)),abs(min(scale_factor*regimes_diff2(select_idx,ivar)))/))*1.2
-	sres@gsnLeftString		= "un-weighted"
+	sres@gsnLeftString		= plots_strings(count)+" un-weighted"
 
 ;	sres2@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
 	sres2@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt(select_idx:,ivar)))/))*1.2
@@ -933,8 +945,8 @@ do ivar=0,dimsizes(vars)-1
 	sres3@trYMinF			= -1.*max((/max(regimes_tagdiff_areawgt_1(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt_1(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)))/))*1.2
 	sres3@trYMaxF			= 1.*max((/max(regimes_tagdiff_areawgt_1(select_idx:,ivar,:)),abs(min(regimes_tagdiff_areawgt_1(select_idx:,ivar,:))),max(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)),abs(min(scale_factor*regimes_diff2_areawgt_1(select_idx:,ivar)))/))*1.2
 
-	sres2@gsnLeftString		= "area-weighted"
-	sres3@gsnLeftString		= "area-weighted-but-same"
+	sres2@gsnLeftString		= plots_strings(count)+" area-weighted"
+	sres3@gsnLeftString		= plots_strings(count)+" area-weighted-but-same"
 
     lnres                   = True
 	lnres@gsLineThicknessF  = 3.0 
@@ -1001,7 +1013,7 @@ do ivar=0,dimsizes(vars)-1
 	dum2(ivar,2) 			= gsn_add_polyline(wks,plots_wgt_1(ivar,2),fspan(1+2*barwidth/2,nregimes_used+2*barwidth/2,nregimes_used),regimes_diff2_areawgt_1(select_idx:,ivar)*scale_factor,lnres)
 	end if
 
-
+count = count+1
 ; Overlay the last three plots on the first one.
        do j=1,dimsizes(case_nor)-1+1
          overlay(plots(ivar,0),plots(ivar,j))
@@ -1064,6 +1076,7 @@ gsn_panel(wks,plots_wgt(:,0),(/dimsizes(plots_wgt(:,0))/2,2/),pres)
 ; Third plot
 gsn_panel(wks,plots_wgt_1(:,0),(/dimsizes(plots_wgt_1(:,0))/2,2/),pres)
 
+delete(count)
 exit
 
 end if ; regime_contribution
@@ -1323,7 +1336,7 @@ resd@tmXBLabelFontHeightF	= fontheight/2.
 resd@tmYLLabelFontHeightF	= fontheight/2.
 ;resd@pmLabelBarParallelPosF	= 
 resd@pmLabelBarOrthogonalPosF	= 0.25
-resd@gsnLeftString			= "ALPI regimes"
+;resd@gsnLeftString			= "ALPI regimes"
 resd@cnLevelSelectionMode	= "ManualLevels"
 resd@cnMinLevelValF			= -2.
 resd@cnMaxLevelValF			= 2.
@@ -1333,24 +1346,34 @@ plot						= new((/dimsizes(tag),dimsizes(case_nor)/),graphic)
 plot_diff					= new((/dimsizes(tag)/),graphic)
 plot_diff2					= new((/dimsizes(tag)/),graphic)
 
+count_1	= 0
+count_2	= 0
+count_3	= 0
 do itag=0,dimsizes(tag)-1
+resd@gsnLeftString			= plots_strings(count_1)
 resd@gsnRightString			= tag(itag)+"_"+"PDF-RH"
 plot_diff(itag)				= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon_diff(itag,:,:),resd)
+count_1 = count_1 + 1
 
 do icase=0,dimsizes(case_nor)-1
+res@gsnLeftString	= plots_strings(count_2)
 res@gsnRightString = tag(itag)+"_"+case_name(icase)
 plot(itag,icase)		= gsn_csm_contour_map_ce(wks,ALPI_mask_latlon(itag,icase,:,:),res)
+count_2	= count_2 + 1
 end do ; do itag=
 end do ; do icase=
 
 do icase=0,dimsizes(case_nor)-1
+resd@gsnLeftString			= plots_strings(count_3)
 resd@gsnRightString			= "p4K-cntl_"+case_name(icase)
 plot_diff2(icase)			= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon_diff2(icase,:,:),resd)
+count_3	= count_3 + 1
 end do ; do icase=
 
 gsn_panel(wks,ndtooned(plot),(/2,2/),False)
 gsn_panel(wks,plot_diff,(/2,1/),False)
 gsn_panel(wks,plot_diff2,(/2,1/),False)
+delete([/count_1, count_2, count_3 /])
 exit
 end if ; ALPI_mask_plot
 
@@ -1393,7 +1416,11 @@ lines_diff					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 lines_ref0					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 centers_diff				= new((/dimsizes(vars),dimsizes(case_nor)+1,nbins/),graphic)
 
+count_1		= 0
+count_2		= 0
+
 do ivar=0,dimsizes(vars)-1
+res@gsnLeftString			= plots_strings(count_1)
 res@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 tmp							= reshape(vars_all_bin_mean(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
 tmp2						= reshape(vars_all_bin_std(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
@@ -1409,9 +1436,12 @@ tmp_diff_final(2,:)			= tmp_diff2(:)
 res@trYMaxF					= max(tmp+tmp2)
 res@trYMinF					= min(tmp-tmp2)
 plot(ivar) 					= gsn_csm_y(wks, tmp, res)
+count_1 = count_1 + 1
 
+res_diff@gsnLeftString		= plots_strings(count_2)
 res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 plot_diff(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff)
+count_2	= count_2 + 1
 
 ;-------- add error bar ---------
 polyres						= True
@@ -1522,6 +1552,7 @@ pres@gsnPanelXWhiteSpacePercent = 5.0
 
 gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
 gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
+delete([/count_1, count_2/])
 exit
 end if ; ALPI_bin_plot
 
@@ -1529,7 +1560,6 @@ end if ; ALPI_bin_cal
 
 ;************************create plot***************
 if(lat_lon_plot)then
-
 do ivar=0,dimsizes(vars)-1
 
 ;wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-HammerProj")
@@ -1592,7 +1622,7 @@ resl@cnFillOn				 	= False
 resl@cnLinesOn					= True
 ;resl@cnLevels					= vars_dlevs(ivar,::3)
 resl@cnLevels					= vars_dlevs_sp(ivar,:)
-resl@gsnLeftString				= ""
+;resl@gsnLeftString				= ""
 resl@gsnRightString				= ""
 
 ;;;;;;;res2
@@ -1628,9 +1658,11 @@ p = 0.5
 q = -0.25
 
 
+count	= 0
+
 do it=0,8
 if(it.eq.0.or.it.eq.1.or.it.eq.3.or.it.eq.4)then
-	res@gsnLeftString			= strings4K(it)
+	res@gsnLeftString			= plots_strings(count)+" "+strings4K(it)
 ;	plot(it)				= gsn_csm_contour_map(wks,var4K(it,:,:),res)
 	plot(it)				= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res)
 
@@ -1638,10 +1670,10 @@ if(it.eq.0.or.it.eq.1.or.it.eq.3.or.it.eq.4)then
 ;	overlay(plot(it),plot_ov)
 else
 	if(it.eq.6 .or. it.eq.7)then
-		res3@gsnLeftString			= strings4K(it)
+		res3@gsnLeftString			= plots_strings(count)+" "+strings4K(it)
 		plot(it)					= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res3)
 	else
-		res2@gsnLeftString			= strings4K(it)
+		res2@gsnLeftString			= plots_strings(count)+" "+strings4K(it)
 ;		if(it.eq.8)then
 ;			res2@gsnCenterString	= sprintf("%5.2f",ra(ivar))
 ;		else
@@ -1650,6 +1682,7 @@ else
 		plot(it)				= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res2)
 	end if
 end if
+count = count + 1
 end do ; do it=
 
 
@@ -1661,6 +1694,7 @@ resP@gsnPanelYWhiteSpacePercent		= 5.
 
 ;if(vars(ivar).eq."SWCF".or.vars(ivar).eq."CLDLOW")then
 gsn_panel(wks,plot,(/3,3/),resP)
+delete(count)
 ;gsn_panel(wks,plot1,(/3,3/),resP)
 ;end if
 
