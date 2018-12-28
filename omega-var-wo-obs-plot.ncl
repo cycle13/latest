@@ -31,6 +31,11 @@ do_read_data			= False
 do_pdf_var 				= True
 do_pdf_omega			= True
 
+plot_type				= "pdf"
+plots_strings			= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)"/)
+
+
+
 nbinx 					= 25
 nbiny 					= 50
 nx_min 					= -140.
@@ -80,14 +85,16 @@ valminA		= (/-140,	-20,	0,		  0,	   0,		0 ,		0,        -60., 	0,	       0,     0
 valmaxA		= (/20,		100,	60,		 90,	   90,		90,		150,      0.,   	0.3,       1,     0.1,         0.3,          0.5/)
 unitsA		= (/"(W/m~S~2~N~)",	"(W/m~S~2~N~)",	"(fraction)",	"(fraction)",	"(fraction)",	"(fraction)","(g/m3)",	"(W/m~S~2~N~)", " ", "(fraction)", "(g/kg)", "", ""/)
 
-use_idx		= (/0,1,7,2,6,8/)
+;use_idx		= (/0,1,7,2,6,8/)
+use_idx		= (/7,0,1,2,4,6/)
 Vars_use	= Vars_bin(use_idx)
 strings		= stringsA(use_idx)
 valmin		= valminA(use_idx)
 valmax		= valmaxA(use_idx)
 units		= unitsA(use_idx)
 
-colors 		= (/"blue","red","cyan","darkseagreen","deepskyblue","firebrick","cyan3","darkseagreen3"/)
+colors 		= (/"blue","red","cyan","orange","deepskyblue","firebrick","cyan3","darkseagreen3"/)
+thicks		= (/4,2,4,2/)
 
 ; ------ setting for global grid information
 nlat		= 192
@@ -115,12 +122,12 @@ vars_all_diff&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
 
 if(landmask)then
-	infile = addfile("./tmp-data/omega-var-outdata-wo-obs-ocn.nc","r")
+	infile = addfile("../cfmip/tmp-data/omega-var-outdata-wo-obs-ocn.nc","r")
 else
 	if(ocnmask)then
-		infile = addfile("./tmp-data/omega-var-outdata-wo-obs-lnd.nc","r")
+		infile = addfile("../cfmip/tmp-data/omega-var-outdata-wo-obs-lnd.nc","r")
 	else
-		infile = addfile("./tmp-data/omega-var-outdata-wo-obs.nc","r")
+		infile = addfile("../cfmip/tmp-data/omega-var-outdata-wo-obs.nc","r")
 	end if
 end if
 	
@@ -177,15 +184,15 @@ end do ; do ivar=
 printVarSummary(omega_vars_1D_bin_diff)
 
 if(landmask)then
-	system("/bin/rm -f ./tmp-data/pdf-omega-var-wo-obs-ocn.nc")
-	outfile1 = addfile("./tmp-data/pdf-omega-var-wo-obs-ocn.nc","c")
+	system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-var-wo-obs-ocn.nc")
+	outfile1 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-ocn.nc","c")
 else
 	if(ocnmask)then
-		system("/bin/rm -f ./tmp-data/pdf-omega-var-wo-obs-lnd.nc")
-		outfile1 = addfile("./tmp-data/pdf-omega-var-wo-obs-lnd.nc","c")
+		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-var-wo-obs-lnd.nc")
+		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-lnd.nc","c")
 	else
-		system("/bin/rm -f ./tmp-data/pdf-omega-var-wo-obs.nc")
-		outfile1 = addfile("./tmp-data/pdf-omega-var-wo-obs.nc","c")
+		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-var-wo-obs.nc")
+		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs.nc","c")
 	end if
 end if
 
@@ -226,15 +233,15 @@ omega_PDF_bin&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 omega_PDF_bin_diff		= omega_PDF_bin(0,:,:)
 
 if(landmask)then
-	system("/bin/rm -f ./tmp-data/pdf-omega-only-wo-obs-ocn.nc")
-	outfile1 = addfile("./tmp-data/pdf-omega-only-wo-obs-ocn.nc","c")
+	system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-only-wo-obs-ocn.nc")
+	outfile1 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-ocn.nc","c")
 else
 	if(ocnmask)then
-		system("/bin/rm -f ./tmp-data/pdf-omega-only-wo-obs-lnd.nc")
-		outfile1 = addfile("./tmp-data/pdf-omega-only-wo-obs-lnd.nc","c")
+		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-only-wo-obs-lnd.nc")
+		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-lnd.nc","c")
 	else
-		system("/bin/rm -f ./tmp-data/pdf-omega-only-wo-obs.nc")
-		outfile1 = addfile("./tmp-data/pdf-omega-only-wo-obs.nc","c")
+		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-only-wo-obs.nc")
+		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs.nc","c")
 	end if
 end if
 
@@ -258,12 +265,12 @@ end if ; do_pdf_omega
 ; ==============================================================
 ;=============== Part2: read the omega-var-PDF data
 if(landmask)then
-	infile3 = addfile("./tmp-data/pdf-omega-var-wo-obs-ocn.nc","r")
+	infile3 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-ocn.nc","r")
 else
 	if(ocnmask)then
-		infile3 = addfile("./tmp-data/pdf-omega-var-wo-obs-lnd.nc","r")
+		infile3 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-lnd.nc","r")
 	else
-		infile3 = addfile("./tmp-data/pdf-omega-var-wo-obs.nc","r")
+		infile3 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs.nc","r")
 	end if
 end if
 	
@@ -312,12 +319,12 @@ omega_PDF_bin!1			= "case"
 omega_PDF_bin&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
 if(landmask)then
-	infile4 = addfile("./tmp-data/pdf-omega-only-wo-obs-ocn.nc","r")
+	infile4 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-ocn.nc","r")
 else
 	if(ocnmask)then
-		infile4 = addfile("./tmp-data/pdf-omega-only-wo-obs-lnd.nc","r")
+		infile4 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-lnd.nc","r")
 	else
-		infile4 = addfile("./tmp-data/pdf-omega-only-wo-obs.nc","r")
+		infile4 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs.nc","r")
 	end if
 end if
 	
@@ -431,7 +438,6 @@ print(Vars_out_fix+"Gaus-PDF	"+sprintf("%9.5f",CwPw_all_avg(:,0,1,1))+"	"+sprint
 print("")
 
 ;====================== Plotting starts here .... ===============================================
-plot_type			= "pdf"
 
 ;do itag=1,dimsizes(tag)-1
 do itag=1,1 ; only p4K experiment
@@ -446,7 +452,7 @@ else
 	end if
 end if
 
-
+plot_omega			= new(2,graphic)
 plot 				= new(dimsizes(Vars_use),graphic)
 plotdiff 			= new(dimsizes(Vars_use),graphic)
 
@@ -479,20 +485,26 @@ res@trXMaxF 					= nx_max
 
 res@tiXAxisString 				= "vertical velocity (hPa/day)"
 
-res@xyLineThicknessF 			= 4.0
+res@xyLineThicknessF 			= 2.5
 res@xyDashPattern 				= 0
 
-fontheight						= 0.03
+fontheight						= 0.020
 res@gsnStringFontHeightF		= fontheight
 res@tmXBLabelFontHeightF		= fontheight
 res@tmYLLabelFontHeightF		= fontheight
 res@tiXAxisFontHeightF			= fontheight
 res@tiYAxisFontHeightF			= fontheight
 
+res@tmXBMinorOn					= False
+res@tmXTMinorOn					= False
+res@tmYLMinorOn					= False
+res@tmYRMinorOn					= False
+
 ; --------- OMEGA PDF only
 res1								= res
 res1@xyLineColors 					= colors
-
+res1@xyLineThicknesses				= thicks
+res1@gsnLeftString					= "(a)"
 tmp					= reshape(omega_PDF_bin((/0,itag/),:,:),(/2*dimsizes(case_nor),nbinx/))
 plot0 				= gsn_csm_xy(wks,omega_PDF_bin@bin_center,tmp,res1)
 delete(tmp)
@@ -506,12 +518,20 @@ res2								= res
 res2@tiYAxisString					= ""
 res2@xyLineColors					= colors;colors(vector)
 res2@gsnYRefLine					= 0.
+res2@gsnLeftString					= "(b)"
 
 tmp					= reshape(omega_PDF_bin_diff((/itag/),:,:),(/dimsizes(case_nor),nbinx/))
 plot1 				= gsn_csm_xy(wks,omega_PDF_bin_diff@bin_center,tmp,res2)
 delete(tmp)
 
 ; ------- OMEGA-var plots start here ....
+fontheight						= 0.030
+res@gsnStringFontHeightF		= fontheight
+res@tmXBLabelFontHeightF		= fontheight
+res@tmYLLabelFontHeightF		= fontheight
+res@tiXAxisFontHeightF			= fontheight
+res@tiYAxisFontHeightF			= fontheight
+
 res3								= res
 ;res3@xyLineColors 					= colors
 
@@ -519,7 +539,7 @@ res4								= res
 res4@xyLineColors					= colors ; colors((/3,4/))
 res4@gsnYRefLine					= 0.
 
-
+count	=	0
 do ivar=0,dimsizes(Vars_use)-1
 
 res3@trYMinF 						= valmin(ivar)
@@ -527,9 +547,11 @@ res3@trYMaxF 						= valmax(ivar)
 res3@tiYAxisString 					= strings(ivar)+" "+units(ivar)
 res4@tiYAxisString 					= strings(ivar)+" "+units(ivar)
 
+
 tmp								= reshape(varsdata(ivar,(/0,itag/),:,:),(/2*dimsizes(case_nor),nbinx/))
 tmp_std							= reshape(varsdata_std(ivar,(/0,itag/),:,:),(/2*dimsizes(case_nor),nbinx/))
 	
+res3@gsnLeftString				= plots_strings(count)
 ; initialize one plot as the baseline for other plots. Others plots will overlay on this one.
 res3@xyLineColors 				= colors(0)
 plot_int						= gsn_csm_xy(wks,varsdata&binx_center,tmp(0,:),res3)
@@ -571,6 +593,7 @@ delete(plot_int)
 ; for varsdata_diff, there is no "tag" dimension anymore. this is the revised version.
 tmp									= reshape(varsdata_diff(ivar,:,:),(/dimsizes(case_nor),nbinx/))
 
+res4@gsnLeftString			= plots_strings(count)
 plotdiff(ivar) 						= gsn_csm_xy (wks,varsdata_diff&binx_center,tmp, res4)
 delete(tmp)
 
@@ -587,13 +610,14 @@ res5								= res
 ;										"blue","blue","blue",\
 ;										"cyan","cyan","cyan"/)
 ngroup = 2
-res5@xyLineColors					= ndtooned(conform_dims((/3,ngroup/),(/"red","blue","cyan"/),0))
+res5@xyLineColors					= ndtooned(conform_dims((/3,ngroup/),(/"red","blue","grey"/),0))
 delete(res5@xyDashPattern)
-res5@xyDashPatterns					= ndtooned(conform_dims((/3,ngroup/),(/14,0/),1))
-res5@xyLineThicknesses				= ndtooned(conform_dims((/3,ngroup/),(/1,2/),1))
+res5@xyDashPatterns					= ndtooned(conform_dims((/3,ngroup/),(/16,0/),1))
+res5@xyLineThicknesses				= ndtooned(conform_dims((/3,ngroup/),(/1.5,2.5/),1))
 ;res5@gsnYRefLine					= 0.
 res5@tiYAxisString 					= strings(ivar)+" "+units(ivar)
 
+res5@gsnLeftString					= plots_strings(count)
 ;tmp									= reshape(CwPw_all(ivar,:,(/0,itag/),:,:),(/3*2*dimsizes(case_nor),nbinx/))
 tmp									= reshape(CwPw_all(ivar,:,(/itag/),:,:),(/3*1*dimsizes(case_nor),nbinx/))
 
@@ -602,7 +626,7 @@ plot_CwPw_all(ivar)					= gsn_csm_xy (wks,CwPw_all&binx_center,tmp, res5)
 ;frame(wks)
 
 delete(tmp)
-
+count = count + 1
 end do ; do ivar=
 
 ;gsn_panel(wks,plot,(/3,3/),False)
@@ -671,27 +695,57 @@ end do ; do ivar=
 
 ; for CwPw_all
 lgres3								= lgres
+lgres3@lgPerimOn					= False
+lgres3@vpWidthF 					= 0.25
+lgres3@vpHeightF 					= 0.15
 lgres3@lgMonoLineThickness			= False
 lgres3@lgMonoDashIndex				= False
-lgres3@lgLineColors					= res5@xyLineColors
-lgres3@lgDashIndexes				= res5@xyDashPatterns
-;lgres3@lgLineThicknessF			= res5@xyLineThicknessF
-lgres3@lgLineThicknesses			= res5@xyLineThicknesses
+lgres3@lgLabelFontHeightF			= 0.15
+
+res5_colors							= res5@xyLineColors
+res5_dashes							= res5@xyDashPatterns
+res5_thickes						= res5@xyLineThicknesses
+
+lgres3_1						 	= lgres3
+lgres3_1@lgLineColors				= res5_colors(::2)
+lgres3_1@lgDashIndexes				= res5_dashes(::2)
+lgres3_1@lgLineThicknesses			= res5_thickes(::2)
+
+lgres3_2						 	= lgres3
+lgres3_2@lgLineColors				= res5_colors(1::2)
+lgres3_2@lgDashIndexes				= res5_dashes(1::2)
+lgres3_2@lgLineThicknesses			= res5_thickes(1::2)
 
 labels_3 			= (/"RH-Cw_DPw","PDF-Cw_DPw","RH-Pw_DCw","PDF-Pw_DCw","RH-DCw_DPw","PDF-DCw_DPw"/)
+;labels_3 			= (/"RH-dyn","PDF-dyn","RH-therm","PDF-therm","RH-covar","PDF-covar"/)
 
-legend3				= gsn_create_legend(wks,dimsizes(labels_3),labels_3,lgres3)
-annoid3				= gsn_add_annotation(plot_CwPw_all(0),legend3,amres)
+labels_3_1 			= labels_3(::2)
+labels_3_2 			= labels_3(1::2)
 
+legend3_1			= gsn_create_legend(wks,dimsizes(labels_3_1),labels_3_1,lgres3_1)
+legend3_2			= gsn_create_legend(wks,dimsizes(labels_3_2),labels_3_2,lgres3_2)
+
+amres3_1 						= True
+amres3_1@amJust 				= "TopLeft"
+amres3_1@amParallelPosF 		= -0.5
+amres3_1@amOrthogonalPosF 		= -0.5
+
+amres3_2 						= True
+amres3_2@amJust 				= "BottomLeft"
+amres3_2@amParallelPosF 		= -0.5
+amres3_2@amOrthogonalPosF 		= 0.5
+
+annoid3_1				= gsn_add_annotation(plot_CwPw_all(0),legend3_1,amres3_1)
+annoid3_2				= gsn_add_annotation(plot_CwPw_all(0),legend3_2,amres3_2)
 
 ;------------------------Panel plots----------------------------------------------
 resP 				= True
 ;resP@gsnPanelRowSpec 		= True
+resP@gsnPanelYWhiteSpacePercent	= 3.
 resP@gsnPanelXWhiteSpacePercent	= 3.
-resP@gsnPanelXWhiteSpacePercent	= 5.
 
 ; for omega-PDF only
-gsn_panel(wks,(/plot0,plot1/),(/1,2/),False)
+gsn_panel(wks,(/plot0,plot1/),(/1,2/),resP)
 
 ; for omega-var plots
 idx					= ispan(0,dimsizes(use_idx)-1,1)
@@ -700,7 +754,7 @@ panel_plots		 	= (/plot(idx),plotdiff(idx),plot_CwPw_all(idx)/)
 
 do i=0,dimsizes(titles)-1
 	resP@gsnPanelMainString	= titles(i)
-	gsn_panel(wks,panel_plots(i,:),(/2,3/),resP)
+	gsn_panel(wks,panel_plots(i,:),(/3,2/),resP)
 end do
 
 end do ; do itag=
