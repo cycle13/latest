@@ -128,32 +128,73 @@ netCRF_levs			= (/-80,-75,-70,-65,-60,-55,-50,-45,-40,-30,-20,-10,0,10,20/)
 netCRF_dlevs_1		= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
 netCRF_dlevs_2		= netCRF_dlevs_1
 netCRF_dlevs_sp		= (/-20,-10,10,20/)
-print(netCRF_levs+"		"+netCRF_dlevs_1)
+
+RELHUM_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)*100.
+RELHUM_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)*100.
+RELHUM_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)*100.
+RELHUM_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)*100.
+
+FREQSH_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+FREQSH_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+FREQSH_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+FREQSH_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+CMFMC_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+CMFMC_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+CMFMC_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+CMFMC_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+umf_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+umf_shal_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+umf_shal_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+umf_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+clddep2_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+clddep2_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+clddep2_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+clddep2_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+wstarPBL_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+wstarPBL_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+wstarPBL_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+wstarPBL_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+lengi_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+lengi_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+lengi_dlevs_2		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+lengi_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+shi_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+shi_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+shi_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+shi_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
+aa_gp_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+aa_gp_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+aa_gp_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+aa_gp_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
 
-;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13        14         15
-varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb"/)
-varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs,sgm_shal_levs, sgm_turb_levs/)
-varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1, sgm_shal_dlevs_1, sgm_turb_dlevs_1/)
-varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2/)
-varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp/)
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~", "-", "-"/)
-plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)"/)
+;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13        14         15           16        17         18      19			20		   21         22      23     24
+varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb", "RELHUM", "FREQSH", "CMFMC","umf_shal", "clddep2", "wstarPBL", "lengi", "shi", "aa_gp"/)
+varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs,sgm_shal_levs, sgm_turb_levs, RELHUM_levs, FREQSH_levs, CMFMC_levs, umf_shal_levs, clddep2_levs, wstarPBL_levs, lengi_levs, shi_levs, aa_gp_levs/)
+varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1, sgm_shal_dlevs_1, sgm_turb_dlevs_1, RELHUM_dlevs_1, FREQSH_dlevs_1, CMFMC_dlevs_1, umf_shal_dlevs_1, clddep2_dlevs_1, wstarPBL_dlevs_1, lengi_dlevs_1, shi_dlevs_1, aa_gp_dlevs_1/)
+varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2/)
+varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m2/s", "kg/m2/s","m", "m/s", "m", "-", "-"/)
+plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","(k)","(l)","(m)","(n)"/)
 
 ;use_idx		= (/3,4,13,5,6,10/)
 ;use_idx			= (/9,7,8/)
 ;use_idx			= (/13,3,5,10,11,12/)
 ;use_idx			= (/13,3,4,5,6,10/)
-;use_idx			= (/0,13,3,4,5,10/)	; for ALPI
-;use_idx			= (/0,11,12/)	; for ALPI -- only for sgm_tota and N1
 ;use_idx			= (/0,13,3,4,5,10,11,12/)	; for ALPI
-use_idx			= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1
-
-;use_idx			= (/13,3,5,10/)
-;use_idx			= (/11,12/)
-;use_idx				= (/5,10/)
+;use_idx			= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1, and sgm_turb, sgm_shal
+;use_idx				= (/0,5,10,16/)
+;use_idx				= (/0,16,17,18/)
+use_idx				= (/0,16,17,18,19,20,21,22,23,24/)
 
 vars			= varsA(use_idx)
 vars_levs		= varsA_levs(use_idx,:)
@@ -243,7 +284,9 @@ do icase=0,dimsizes(case_nor)-1
 				vars_all(ivar,itag,icase,:,:)	= (/ECTEI_tmp/)
 				delete(ECTEI_tmp)
 			end if
-			if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb") then
+			if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb".or.\
+			   vars(ivar).eq."wstarPBL" .or. vars(ivar).eq."clddep2" .or. vars(ivar).eq."umf_shal" .or. vars(ivar).eq."lengi" .or. \
+			   vars(ivar).eq."shi" .or. vars(ivar).eq."aa_gp") then
 				vars_all(ivar,itag,icase,:,:)	= vars_all@_FillValue
 			end if
 			if(vars(ivar).eq."netCRF")then
@@ -968,7 +1011,10 @@ colors 						= (/"grey",   "black",	"blue"/)
 ; The X values for each plot is different, ensuring that the bars don't overlap.
 count			= 0
 do ivar=0,dimsizes(vars)-1
-	if(vars(ivar).ne."sgm_tota" .and. vars(ivar).ne."N1" .and. vars(ivar).ne."sgm_turb" .and. vars(ivar).ne."sgm_turb")then
+;	if(vars(ivar).ne."sgm_tota" .and. vars(ivar).ne."N1" .and. vars(ivar).ne."sgm_turb" .and. vars(ivar).ne."sgm_turb")then
+			if(vars(ivar).ne."sgm_tota" .and. vars(ivar).ne."N1" .and. vars(ivar).ne."sgm_shal" .and. vars(ivar).and."sgm_turb".and.\
+			   vars(ivar).ne."wstarPBL" .and. vars(ivar).ne."clddep2" .and. vars(ivar).ne."umf_shal" .and. vars(ivar).ne."lengi" .and. \
+			   vars(ivar).ne."shi" .and. vars(ivar).ne."aa_gp") then
 	sres@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
 	sres2@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
 	sres3@tiYAxisString		= vars(ivar)+"("+vars_units(ivar)+")"
@@ -1046,7 +1092,10 @@ do ivar=0,dimsizes(vars)-1
 	dum1(ivar,1)			= gsn_add_polyline(wks,plots_wgt(ivar,1),fspan(1+0*barwidth/2,nregimes_used+0*barwidth/2,nregimes_used),regimes_tagdiff_areawgt(select_idx:,ivar,1),lnres)
 	dum2(ivar,1)			= gsn_add_polyline(wks,plots_wgt_1(ivar,1),fspan(1+0*barwidth/2,nregimes_used+0*barwidth/2,nregimes_used),regimes_tagdiff_areawgt_1(select_idx:,ivar,1),lnres)
 
-	if(vars(ivar).ne."sgm_tota" .and.  vars(ivar).ne."N1" .and. vars(ivar).ne."sgm_shal" .and. vars(ivar).ne."sgm_turb")then
+;	if(vars(ivar).ne."sgm_tota" .and.  vars(ivar).ne."N1" .and. vars(ivar).ne."sgm_shal" .and. vars(ivar).ne."sgm_turb")then
+	if(vars(ivar).ne."sgm_tota" .and. vars(ivar).ne."N1" .and. vars(ivar).ne."sgm_shal" .and. vars(ivar).and."sgm_turb".and.\
+	   vars(ivar).ne."wstarPBL" .and. vars(ivar).ne."clddep2" .and. vars(ivar).ne."umf_shal" .and. vars(ivar).ne."shi" .and.\
+	   vars(ivar).ne. "lengi" .and. vars(ivar).ne."aa_gp") then
 	lnres@gsLineColor       = colors(0)
 	dum0(ivar,0)			= gsn_add_polyline(wks,plots(ivar,0),fspan(1-2*barwidth/2.,nregimes_used-2*barwidth/2,nregimes_used),regimes_tagdiff(select_idx:,ivar,0),lnres)
 	dum1(ivar,0)			= gsn_add_polyline(wks,plots_wgt(ivar,0),fspan(1-2*barwidth/2.,nregimes_used-2*barwidth/2,nregimes_used),regimes_tagdiff_areawgt(select_idx:,ivar,0),lnres)
@@ -1511,6 +1560,13 @@ lines_diff					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 lines_ref0					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 centers_diff				= new((/dimsizes(vars),dimsizes(case_nor)+1,nbins/),graphic)
 
+plot_diff_sgm					= new(dimsizes(vars),graphic)
+lines_diff_sgm					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+lines_ref0_sgm					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
+centers_diff_sgm				= new((/dimsizes(vars),dimsizes(case_nor)+1,nbins/),graphic)
+
+
+
 count_1		= 0
 count_2		= 0
 
@@ -1520,6 +1576,7 @@ start_idx	= 1
 else
 start_idx	= 0
 end if
+
 do ivar=start_idx,dimsizes(vars)-1 ; don't draw PRECT
 
 res@gsnLeftString			= plots_strings(count_1)
@@ -1535,7 +1592,7 @@ tmp_diff_final(1,:)			= tmp_diff1(1,:)
 tmp_diff_final(2,:)			= tmp_diff2(:)
 
 ; --- make the sgm related variables share the same Y axis range
-if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb")then
+if(start_idx.eq.1 .and. (vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb"))then
 sgm_all_max					= max(vars_all_bin_mean((/1,3,4/),:,:,:)+vars_all_bin_std((/1,3,4/),:,:,:))
 sgm_all_min					= min(vars_all_bin_mean((/1,3,4/),:,:,:)-vars_all_bin_std((/1,3,4/),:,:,:))
 res@trYMaxF					= sgm_all_max
@@ -1558,21 +1615,34 @@ res_diff@gsnLeftString			= plots_strings(count_2)
 res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 
 ; --- make the sgm related variables share the same Y axis range
-if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb")then
-sgm_all_max							= max(vars_all_bin_mean((/1,3,4/),1,:,:)-vars_all_bin_mean((/1,3,4/),0,:,:))
-sgm_all_min							= min(vars_all_bin_mean((/1,3,4/),1,:,:)-vars_all_bin_mean((/1,3,4/),0,:,:))
-res_diff@trYMaxF					= sgm_all_max
-res_diff@trYMinF					= sgm_all_min
+if(start_idx.eq.1)then
+	if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb")then
+	sgm_all_max							= max(vars_all_bin_mean((/1,3,4/),1,:,:)-vars_all_bin_mean((/1,3,4/),0,:,:))
+	sgm_all_min							= min(vars_all_bin_mean((/1,3,4/),1,:,:)-vars_all_bin_mean((/1,3,4/),0,:,:))
+	res_diff@trYMaxF					= sgm_all_max
+	res_diff@trYMinF					= sgm_all_min
+	else
+	res_diff@trYMaxF					= max(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
+	res_diff@trYMinF					= min(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
+	end if
+end if
+
+; resource for sgm variables, because I will overlay them on one plot
+res_diff_sgm					= res_diff
+if(start_idx.eq.1 .and. (ivar-1).eq.0)then
+res_diff_sgm@gsnLeftString		= ""
+res_diff_sgm@tiYAxisString		= "SGM"
 else
-res_diff@trYMaxF					= max(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
-res_diff@trYMinF					= min(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
+res_diff_sgm@gsnLeftString		= ""
 end if
 
 ;plot_diff(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff)
 if(start_idx.eq.1)then
 plot_diff(ivar-1)				= gsn_csm_y(wks, tmp_diff_final, res_diff)
+plot_diff_sgm(ivar-1)			= gsn_csm_y(wks, tmp_diff_final, res_diff_sgm)
 else
-plot_diff(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff)
+plot_diff(ivar)					= gsn_csm_y(wks, tmp_diff_final, res_diff)
+;plot_diff_sgm(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff_sgm)
 end if
 count_2	= count_2 + 1
 
@@ -1582,16 +1652,25 @@ polyres						= True
 polyres@gsMarkerIndex		= 1
 polyres@gsMarkerSizeF		= 0.02
 
+polyres_sgm					= polyres
+
 colors						= (/"red","red","blue","blue","black","black"/)
 dashes						= (/0,12,0,12,0,12/)
 thickes						= (/2,2,2,2,4,4/)
+									;PRECT sgm_tota, N1, sgm_shal, sgm_turb
+colors_sgm						= (/"red","red","red","blue","cyan","black","black"/)
+dashes_sgm						= (/0,12,0,12,0,12/)
+thickes_sgm						= (/2,2,2,2,4,4/)
 
 ;polyres@gsLineColor			= (/"red","blue","lightpink","cyan"/)
 
 ; loop through the points
 do idx1=0,dimsizes(tag)*dimsizes(case_nor)-1
 if((vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. \
-    vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb") .and. \
+    vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb" .or. \
+	vars(ivar).eq."wstarPBL" .or. vars(ivar).eq."umf_shal" .or. \
+	vars(ivar).eq."clddep2" .or. vars(ivar).eq."lengi" .or. \
+	vars(ivar).eq."shi" .or. vars(ivar).eq."aa_gp") .and. \
 	(idx1.eq.0 .or. idx1.eq.2))then ; -- avoid missing value for sgm_tota and N1 to be plotted
 	continue
 else
@@ -1647,53 +1726,80 @@ end if ; vars(ivar).eq."sgm_tota"...
 end do ; do idx1=
 
 do idx1=0,dimsizes(case_nor)
-if((vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb") .and. (idx1.eq.0 .or. idx1.eq.2))then
+if((vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. \
+    vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb" .or. \
+    vars(ivar).eq."umf_shal" .or. vars(ivar).eq."wstarPBL" .or. vars(ivar).eq."clddep2".or.\
+	vars(ivar).eq."lengi" .or. vars(ivar).eq."shi" .or. vars(ivar).eq."aa_gp") .and. (idx1.eq.0 .or. idx1.eq.2))then
 	continue
 else
 	polyres@gsLineColor					= colors(idx1*2)
 	polyres@gsLineDashPattern 			= dashes(idx1*2)
 	polyres@gsLineThicknessF			= thickes(idx1*2)
+
+	if(start_idx.eq.1)then
+	polyres_sgm@gsLineColor					= colors_sgm(ivar)
+	polyres_sgm@gsLineDashPattern 			= dashes_sgm(idx1*2)
+	polyres_sgm@gsLineThicknessF			= thickes_sgm(idx1*2)
+	end if
+
 ;	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp_diff_final(idx1,:),polyres)
 if(start_idx.eq.1)then
 	lines_diff(ivar-1,idx1)				= gsn_add_polyline(wks,plot_diff(ivar-1),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres)
+	lines_diff_sgm(ivar-1,idx1)			= gsn_add_polyline(wks,plot_diff_sgm(ivar-1),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres_sgm)
 else
 	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres)
+;	lines_diff_sgm(ivar,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres_sgm)
 end if
 
 	do idx2=0,nbins-1
 		if(start_idx.eq.1)then
 				centers_diff(ivar-1,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar-1),idx2+0.5,tmp_diff_final(idx1,idx2),polyres)
+				centers_diff_sgm(ivar-1,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff_sgm(ivar-1),idx2+0.5,tmp_diff_final(idx1,idx2),polyres_sgm)
 		else
 				centers_diff(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres)
+;				centers_diff_sgm(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff_sgm(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres_sgm)
 		end if
 	end do ; do idx2=
 
 	polyres@gsLineColor					= "grey"
 	polyres@gsLineDashPattern			= 14
+	
+	polyres_sgm@gsLineColor					= "grey"
+	polyres_sgm@gsLineDashPattern			= 14
+
 	if(start_idx.eq.1)then
 	lines_ref0(ivar-1,idx1)				= gsn_add_polyline(wks,plot_diff(ivar-1),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres)
+	lines_ref0_sgm(ivar-1,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar-1),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres_sgm)
 	else
 	lines_ref0(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres)
+;	lines_ref0_sgm(ivar,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres_sgm)
 	end if
 end if ; vars(ivar).eq."sgm_tota"...
 end do ; do idx1=
 
 end do ; do ivar=
 
+if(start_idx.eq.1)then
+overlay(plot_diff_sgm(0),plot_diff_sgm(2))
+overlay(plot_diff_sgm(0),plot_diff_sgm(3))
+end if
+
 ; ------------------------Add legends
 ;legends                         = vars
 legends							= (/"RH_cntl","PDF_cntl","RH_p4K","PDF_p4K"/)
 legends_diff1					= (/"RH_p4K-cntl", "PDF_p4K-cntl","PDF-RH_p4K-cntl"/)
+legends_sgm						= (/"SGM_tota", "SGM_shal", "SGM_turb"/)
 
 lgres							= True
 
 lgres@lgLabelFontHeightF        = 0.10
 lgres@vpWidthF                  = 0.25
 lgres@vpHeightF                 = 0.15
-;lgres@lgPerimOn                 = False
+lgres@lgPerimOn                 = False
 
 lgres1							= lgres
 lgres2							= lgres
+lgres_sgm						= lgres
 
 lgres1@lgLineColors				= colors
 lgres1@lgLineThicknessF			= res@xyLineThicknessF
@@ -1703,21 +1809,56 @@ lgres2@lgLineColors				= colors(::2)
 lgres2@lgLineThicknessF			= res@xyLineThicknessF
 lgres2@lgDashIndexes			= dashes(::2)
 
+lgres_sgm@lgLineColors				= colors_sgm((/1,3,4/))
+lgres_sgm@lgLineThicknessF			= res@xyLineThicknessF
+lgres_sgm@lgDashIndexes				= dashes_sgm(::2)
+
 lbid1                           = gsn_create_legend(wks,dimsizes(legends),legends,lgres1)
 lbid2                           = gsn_create_legend(wks,dimsizes(legends_diff1),legends_diff1,lgres2)
-
+if(start_idx.eq.1)then
+lbid3                           = gsn_create_legend(wks,dimsizes(legends_sgm),legends_sgm,lgres_sgm)
+end if
 
 amres                           = True
 amres@amJust					= "BottomLeft"
 amres@amParallelPosF            = -0.5
 amres@amOrthogonalPosF          = 0.5
 
+amres_sgm						= amres
+amres_sgm@amJust				= "BottomRight"
+amres_sgm@amParallelPosF		= 0.5
+amres_sgm@amOrthogonalPosF		= 0.5
+
+if(vars(0).eq."PRECT")then
+	amres@amJust					= "TopRight"
+	amres@amParallelPosF			= 0.5
+	amres@amOrthogonalPosF			= -0.5
+end if
+
 annoid1                         = gsn_add_annotation(plot(0),lbid1,amres)
-annoid2                         = gsn_add_annotation(plot_diff(1),lbid2,amres)
+annoid2                         = gsn_add_annotation(plot_diff(0),lbid2,amres)
+if(start_idx.eq.1)then
+annoid3                         = gsn_add_annotation(plot_diff_sgm(0),lbid3,amres_sgm)
+end if
 
 pres							= True
 pres@gsnPanelYWhiteSpacePercent = 5.0
 pres@gsnPanelXWhiteSpacePercent = 5.0
+
+if(start_idx.eq.1)then
+pres_sgm						= pres
+pres_sgm@amJust					= "TopRight"
+
+tmp_plots						= (/plot_diff_sgm(0)/)
+
+if(dimsizes(tmp_plots).gt.1)then
+pres_sgm@gsnPanelFigureStrings	= (/"a)","b)"/)
+end if
+
+;gsn_panel(wks,(/plot_diff_sgm(0),plot_diff_sgm(1)/),(/1,2/),pres_sgm)
+gsn_panel(wks,(/plot_diff_sgm(0)/),(/1,1/),pres_sgm)
+exit
+end if
 
 ;gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
 ;gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
