@@ -15,12 +15,17 @@ regime_contribution 	= False
 regime_mask_plot		= False ; this one depends on the regime_contribution
 lat_lon_plot			= False
 Sherwood_2014			= False
-ALPI_bin_cal			= True
-ALPIsub_revised			= True
+
+ALPI_bin_cal			= False
+ALPIsub_revised			= False	; from LTS to EIS
 ALPIsub_mask_plot		= False
-ALPIsub_bin_plot		= True
-scatter_p2p				= False ; -- some arrays are too small. only for two variables now.
-scatter_sub_ocn			= False
+ALPIsub_bin_plot		= False
+
+scatter_p2p				= True ; -- some arrays are too small. only for two variables now.
+scatter_sub_ocn			= True	; --- mask ocean or not
+scatter_sub_one_var		= False	; --- one variable in X and Y axis -- only two variables in use_idx
+scatter_sub_sgm_climo	= True ; --- climo: sgm related variables in Y and sgm in X axis
+scatter_sub_sgm_diff	= False ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -242,16 +247,25 @@ varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dle
 varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m2/s", "kg/m2/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"/)
 plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","(k)","(l)","(m)","(n)","(o)","(p)","(q)","(r)","(s)","(t)","(u)","(v)","(w)","(x)","(y)","(z)"/)
 
-;use_idx		= (/3,4,13,5,6,10/)
+
+; --- scatter
+use_idx			= (/14,17,18,19,20,21,24,25,26,32,33,34/)		; for scatter plot
+;use_idx				= (/3,5/)	; --- one variable in X and Y axis
+
+;use_idx			= (/3,4,13,5,6,10/)
 ;use_idx			= (/9,7,8/)
 ;use_idx			= (/13,3,5,10,11,12/)
 ;use_idx			= (/13,3,4,5,6,10/)
-;use_idx			= (/0,13,3,4,5,10,11,12/)	; for ALPI
-;use_idx			= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1, and sgm_turb, sgm_shal
 ;use_idx				= (/0,5,10,16/)
 ;use_idx				= (/0,16,17,18/)
 ;use_idx				= (/0,16,17,18,19,20,21,22,23,24/)
-use_idx				= (/0,17,18,25,26,27,28,29,30,31,32,33,34/)
+
+; --- ALPI
+;use_idx				= (/0,13,3,4,5,10,11,12/)	; for ALPI
+;use_idx				= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1, and sgm_turb, sgm_shal
+;use_idx				= (/0,14,17,18,19,20,21,24,25,26,32,33,34/)	 	; sgm_shal related
+;use_idx				= (/0,15,22,23,24,25,26,27,28,29,30,31/)			; sgm_turb related
+
 
 ; --- for variables only in Gauss-PDF
 use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34/)
@@ -643,13 +657,39 @@ rcarry						= new((/dimsizes(vars),2/),float)
 
 
 do ivar=0,dimsizes(vars)-1
-do icase=0,dimsizes(case_nor)-1
+	if(vars(0).eq."sgm_shal" .or. vars(0).eq."sgm_turb")then
+	start_idx=1
+	else
+	start_idx=0
+	end if
 
+do icase=start_idx,dimsizes(case_nor)-1	; only for Gauss-PDF
+
+if(scatter_sub_one_var)then
+; --- for cntl and p4K-cntl plot for the same variable
 x							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
-;y							= ndtooned(vars_all_casediff_trop_ocn(ivar,0,::3,::3))
+y							= ndtooned(vars_all_casediff_trop_ocn(ivar,0,::3,::3))
+;y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
+end if
+
+; --- for Gauss-PDF, different variables and try to capture their correlation
+; --- x: sgm_shal or sgm_turb; y: any other related variables for sgm_shal and sgm_turb
+
+if(scatter_sub_sgm_climo)then
+; -- for climatology
+x							= ndtooned(vars_all_trop_ocn(0,0,icase,::3,::3))
+y							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
+end if
+
+if(scatter_sub_sgm_diff)then
+; -- for difference between p4K and cntl
+x							= ndtooned(vars_all_tagdiff_trop_ocn(0,icase,::3,::3))
 y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
+end if
+
 printVarSummary(x)
 printVarSummary(y)
+
 ; -- make the match between x and y by eliminating any data in each one array
 ytmp						= where(x.ne.vars_all@_FillValue,y,vars_all@_FillValue)
 xtmp						= where(ytmp.ne.vars_all@_FillValue,x,vars_all@_FillValue)
@@ -674,7 +714,7 @@ pltarry(ivar,icase,0,:effnum)				= yy(:effnum)
 pltarry(ivar,icase,1,:effnum)				= rc@Yest
 
 pltx(ivar,icase,:effnum)				= xx(:effnum)
-rcarry(ivar,icase)							= rc
+rcarry(ivar,icase)							= rc@r
 
 
 end do ; do icase=
@@ -685,10 +725,18 @@ wks								= gsn_open_wks(plot_type,"./figure/scatter")
 plot							= new((/dimsizes(vars)/),graphic)
 txid							= new((/dimsizes(vars)/),graphic)
 annoid							= new((/dimsizes(vars)/),graphic)
+if(start_idx.eq.0)then
 colors							= (/"grey","lightskyblue"/)
+else
+colors							= (/"blue","lightskyblue"/)
+end if
+
 
 count	= 0
-do ivar=0,dimsizes(vars)-1
+
+;do ivar=0,dimsizes(vars)-1
+do ivar=start_idx,dimsizes(vars)-1
+
 res								= True
 res@gsnDraw						= False
 res@gsnFrame					= False
@@ -702,13 +750,27 @@ res@xyLineColor					= colors(0)
 res@xyLineThicknessF			= 3.0
 
 res@gsnStringFontHeightF		= 0.03
+if(scatter_sub_one_var)then
 res@tiXAxisString				= "CNTL_"+vars(ivar)
 res@tiYAxisString				= "P4K-CNTL_"+vars(ivar)
+end if
+if(scatter_sub_sgm_climo)then
+res@tiXAxisString				= "climo_"+vars(0)
+res@tiYAxisString				= "climo_"+vars(ivar)
+end if
+if(scatter_sub_sgm_diff)then
+res@tiXAxisString				= "P4K-CNTL_"+vars(0)
+res@tiYAxisString				= "P4K-CNTL_"+vars(ivar)
+end if
+
 res@gsnLeftString				= plots_strings(count)
 
-plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,0,:),pltarry(ivar,0,:,:),res)
+;plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,0,:),pltarry(ivar,0,:,:),res)
+plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,start_idx,:),pltarry(ivar,start_idx,:,:),res)
+
 count	= count + 1
 
+if(start_idx.eq.0)then
 do icase=1,dimsizes(case_nor)-1
 	res@xyMarkerColor		= colors(icase)
 	res@xyLineColor			= colors(icase)
@@ -716,15 +778,19 @@ do icase=1,dimsizes(case_nor)-1
 
 	ovplot					= gsn_csm_xy(wks,pltx(ivar,icase,:),pltarry(ivar,icase,:,:),res)
 	overlay(plot(ivar),ovplot)
-
 end do ; do icase=
+end if
 
 txres							= True
 txres@txPerimOn					= True
 txres@txFontHeightF				= 0.03
-txres@txBackgroundFillColor		= colors(ivar)
+;txres@txBackgroundFillColor		= colors(ivar)
 
+if(start_idx.eq.0)then
 txid(ivar)				= gsn_create_text(wks,"r="+sprintf("%6.3f",rcarry(ivar,0))+"; "+sprintf("%6.3f",rcarry(ivar,1)),txres)
+else
+txid(ivar)				= gsn_create_text(wks,"r="+sprintf("%6.3f",rcarry(ivar,1)),txres)
+end if
 
 amres							= True
 amres@amJust					= "TopLeft"
@@ -736,7 +802,16 @@ annoid(ivar)				= gsn_add_annotation(plot(ivar),txid(ivar), amres)
 
 end do ; do ivar=
 
-gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/2,2/),False)
+resP								= True
+resP@gsnPanelXWhiteSpacePercent		= 5.
+resP@gsnPanelYWhiteSpacePercent		= 5.
+
+if(start_idx.eq.0)then
+gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/2,2/),resP)
+else
+gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/4,4/),resP)
+end if
+
 delete(count)
 exit
 
