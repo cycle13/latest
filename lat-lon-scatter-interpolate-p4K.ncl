@@ -16,16 +16,16 @@ regime_mask_plot		= False ; this one depends on the regime_contribution
 lat_lon_plot			= False
 Sherwood_2014			= False
 
-ALPI_bin_cal			= False
-ALPIsub_revised			= False	; from LTS to EIS
-ALPIsub_mask_plot		= False
-ALPIsub_bin_plot		= False
+ALPI_bin_cal			= False;True 
+ALPIsub_revised			= False;True ; from LTS to EIS
+ALPIsub_mask_plot		= False;False
+ALPIsub_bin_plot		= False;True 
 
-scatter_p2p				= True ; -- some arrays are too small. only for two variables now.
-scatter_sub_ocn			= True	; --- mask ocean or not
-scatter_sub_one_var		= False	; --- one variable in X and Y axis -- only two variables in use_idx
-scatter_sub_sgm_climo	= True ; --- climo: sgm related variables in Y and sgm in X axis
-scatter_sub_sgm_diff	= False ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
+scatter_p2p				= True ; True ; -- some arrays are too small. only for two variables now.
+scatter_sub_ocn			= False ; True	; --- mask ocean or not
+scatter_sub_one_var		= False ; False	; --- one variable in X and Y axis -- only two variables in use_idx
+scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
+scatter_sub_sgm_diff	= True ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -55,8 +55,8 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 ;case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
 ;case_p4K		 		= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
 
-case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
-case_p4K		 		= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
+case_nor 				= (/"FAMIPC5_f19f19_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
+case_p4K		 		= (/"FAMIPC5_f19f19_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
 
 
 case_name				= (/"RH","PDF"/)
@@ -233,23 +233,30 @@ qwu_thlu_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08
 qwu_thlu_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
 qwu_thlu_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
+qtu_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+qtu_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+qtu_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+qtu_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+
 
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
 
-;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13        14         15           16        17         18      19			20		   21         22      23     24       25         26       27      28        29      30     31       32         33          34
-varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb", "RELHUM", "FREQSH", "CMFMC","umf_shal", "clddep2", "wstarPBL", "lengi", "shi", "aa_gp",	"bb_gp", "beta_gp", "dqwdz", "dthldz", "qw2", "thl2", "qwthl", "qwu_qw", "thlu_thl", "qwu_thlu"/)
-varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs,sgm_shal_levs, sgm_turb_levs, RELHUM_levs, FREQSH_levs, CMFMC_levs, umf_shal_levs, clddep2_levs, wstarPBL_levs, lengi_levs, shi_levs, aa_gp_levs, bb_gp_levs, beta_gp_levs, dqwdz_levs, dthldz_levs, qw2_levs, thl2_levs, qwthl_levs, qwu_qw_levs, thlu_thl_levs, qwu_thlu_levs/)
-varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1, sgm_shal_dlevs_1, sgm_turb_dlevs_1, RELHUM_dlevs_1, FREQSH_dlevs_1, CMFMC_dlevs_1, umf_shal_dlevs_1, clddep2_dlevs_1, wstarPBL_dlevs_1, lengi_dlevs_1, shi_dlevs_1, aa_gp_dlevs_1, bb_gp_dlevs_1, beta_gp_dlevs_1, dqwdz_dlevs_1, dthldz_dlevs_1, qw2_dlevs_1, thl2_dlevs_1, qwthl_dlevs_1, qwu_qw_dlevs_1, thlu_thl_dlevs_1, qwu_thlu_dlevs_1/)
-varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2, bb_gp_dlevs_2, beta_gp_dlevs_2, dqwdz_dlevs_2, dthldz_dlevs_2, qw2_dlevs_2, thl2_dlevs_2, qwthl_dlevs_2, qwu_qw_dlevs_2, thlu_thl_dlevs_2, qwu_thlu_dlevs_2/)
-varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp, bb_gp_dlevs_sp, beta_gp_dlevs_sp, dqwdz_dlevs_sp, dthldz_dlevs_sp, qw2_dlevs_sp, thl2_dlevs_sp, qwthl_dlevs_sp, qwu_qw_dlevs_sp, thlu_thl_dlevs_sp, qwu_thlu_dlevs_sp/)
+;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13        14         15           16        17         18      19			20		   21         22      23     24       25         26       27      28        29      30     31       32         33          34			35
+varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb", "RELHUM", "FREQSH", "CMFMC","umf_shal", "clddep2", "wstarPBL", "lengi", "shi", "aa_gp",	"bb_gp", "beta_gp", "dqwdz", "dthldz", "qw2", "thl2", "qwthl", "qwu_qw", "thlu_thl", "qwu_thlu", "qtu_shal"/)
+varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs,sgm_shal_levs, sgm_turb_levs, RELHUM_levs, FREQSH_levs, CMFMC_levs, umf_shal_levs, clddep2_levs, wstarPBL_levs, lengi_levs, shi_levs, aa_gp_levs, bb_gp_levs, beta_gp_levs, dqwdz_levs, dthldz_levs, qw2_levs, thl2_levs, qwthl_levs, qwu_qw_levs, thlu_thl_levs, qwu_thlu_levs, qtu_shal_levs/)
+varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1, sgm_shal_dlevs_1, sgm_turb_dlevs_1, RELHUM_dlevs_1, FREQSH_dlevs_1, CMFMC_dlevs_1, umf_shal_dlevs_1, clddep2_dlevs_1, wstarPBL_dlevs_1, lengi_dlevs_1, shi_dlevs_1, aa_gp_dlevs_1, bb_gp_dlevs_1, beta_gp_dlevs_1, dqwdz_dlevs_1, dthldz_dlevs_1, qw2_dlevs_1, thl2_dlevs_1, qwthl_dlevs_1, qwu_qw_dlevs_1, thlu_thl_dlevs_1, qwu_thlu_dlevs_1, qtu_shal_dlevs_1/)
+varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2, bb_gp_dlevs_2, beta_gp_dlevs_2, dqwdz_dlevs_2, dthldz_dlevs_2, qw2_dlevs_2, thl2_dlevs_2, qwthl_dlevs_2, qwu_qw_dlevs_2, thlu_thl_dlevs_2, qwu_thlu_dlevs_2, qtu_shal_dlevs_2/)
+varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp, bb_gp_dlevs_sp, beta_gp_dlevs_sp, dqwdz_dlevs_sp, dthldz_dlevs_sp, qw2_dlevs_sp, thl2_dlevs_sp, qwthl_dlevs_sp, qwu_qw_dlevs_sp, thlu_thl_dlevs_sp, qwu_thlu_dlevs_sp, qtu_shal_dlevs_sp/)
 
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m2/s", "kg/m2/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m2/s", "kg/m2/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"/)
 plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","(k)","(l)","(m)","(n)","(o)","(p)","(q)","(r)","(s)","(t)","(u)","(v)","(w)","(x)","(y)","(z)"/)
 
 
 ; --- scatter
-use_idx			= (/14,17,18,19,20,21,24,25,26,32,33,34/)		; for scatter plot
+use_idx			= (/14,17,19,20,21,24,25,27,28,32,33,34,35/)		; for scatter plot -- sgm_shal
+;use_idx			= (/15,22,23,24,25,27,28,29,30,31/)		; for scatter plot -- sgm_turb
+
 ;use_idx				= (/3,5/)	; --- one variable in X and Y axis
 
 ;use_idx			= (/3,4,13,5,6,10/)
@@ -263,8 +270,8 @@ use_idx			= (/14,17,18,19,20,21,24,25,26,32,33,34/)		; for scatter plot
 ; --- ALPI
 ;use_idx				= (/0,13,3,4,5,10,11,12/)	; for ALPI
 ;use_idx				= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1, and sgm_turb, sgm_shal
-;use_idx				= (/0,14,17,18,19,20,21,24,25,26,32,33,34/)	 	; sgm_shal related
-;use_idx				= (/0,15,22,23,24,25,26,27,28,29,30,31/)			; sgm_turb related
+;use_idx				= (/0,14,17,18,19,20,21,24,25,32,33,34/)	 	; sgm_shal related
+;use_idx				= (/0,15,22,23,24,25,27,28,29,30,31/)			; sgm_turb related
 
 
 ; --- for variables only in Gauss-PDF
@@ -629,6 +636,7 @@ do icase=0,dimsizes(case_nor)-1
 do itag=0,dimsizes(tag)-1
 
 omega500					= vars_mid(2,itag,icase,{500},:,:)
+omega500					= omega500*864.
 lat2d						= conform_dims(dimsizes(omega500),lat,0)
 lon2d						= conform_dims(dimsizes(omega500),lon,1)
 
@@ -721,7 +729,17 @@ end do ; do icase=
 end do ; do ivar=
 
 
-wks								= gsn_open_wks(plot_type,"./figure/scatter")
+if(scatter_sub_sgm_climo)then
+wks								= gsn_open_wks(plot_type,"./figure/scatter_sgm_climo_"+vars(0))
+else
+	if(scatter_sub_sgm_diff)then
+		wks								= gsn_open_wks(plot_type,"./figure/scatter_sgm_diff_"+vars(0))
+	else
+		wks								= gsn_open_wks(plot_type,"./figure/scatter")
+	end if
+end if
+
+
 plot							= new((/dimsizes(vars)/),graphic)
 txid							= new((/dimsizes(vars)/),graphic)
 annoid							= new((/dimsizes(vars)/),graphic)
@@ -764,6 +782,21 @@ res@tiYAxisString				= "P4K-CNTL_"+vars(ivar)
 end if
 
 res@gsnLeftString				= plots_strings(count)
+res@gsnYRefLine					= 0
+res@gsnXRefLine					= 0
+
+res@tiYAxisFontHeightF			= 0.03
+res@tiXAxisFontHeightF			= 0.03
+res@tmXBLabelFontHeightF		= 0.03
+res@tmYLLabelFontHeightF		= 0.03
+
+res@gsnStringFontHeightF	= 0.03
+
+res@tmYLFormat				= "0*+^e"
+res@tmYLMinorOn				= False
+res@tmXBMinorOn				= False
+;res@tmXBPrecision			= 6
+
 
 ;plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,0,:),pltarry(ivar,0,:,:),res)
 plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,start_idx,:),pltarry(ivar,start_idx,:,:),res)
@@ -805,11 +838,17 @@ end do ; do ivar=
 resP								= True
 resP@gsnPanelXWhiteSpacePercent		= 5.
 resP@gsnPanelYWhiteSpacePercent		= 5.
+resP@gsnPanelLeft					= 0.05
+resP@gsnPanelRight					= 0.95
 
 if(start_idx.eq.0)then
 gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/2,2/),resP)
 else
-gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/4,4/),resP)
+	if(mod(dimsizes(vars),4).ne.0)then
+		gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/4+1,4/),resP)
+	else
+		gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/4,4/),resP)
+	end if
 end if
 
 delete(count)
@@ -1701,7 +1740,16 @@ res@tmXBValues				= fspan(0,nbins,nbins+1)
 res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
 res@trXMaxF					= (nbins)
 
+res@tiYAxisFontHeightF			= 0.03
+res@tiXAxisFontHeightF			= 0.03
+res@tmXBLabelFontHeightF		= 0.03
+res@tmYLLabelFontHeightF		= 0.03
+
 res@gsnStringFontHeightF	= 0.03
+
+res@tmYLFormat				= "0*+^e"
+res@tmYLMinorOn				= False
+res@tmXBPrecision			= 6
 
 res_diff					= res
 
@@ -2004,6 +2052,8 @@ end if
 pres							= True
 pres@gsnPanelYWhiteSpacePercent = 5.0
 pres@gsnPanelXWhiteSpacePercent = 5.0
+pres@gsnPanelLeft				= 0.05
+pres@gsnPanelRight				= 0.95
 
 if(start_idx.eq.1)then
 pres_sgm						= pres
@@ -2022,12 +2072,23 @@ end if
 
 ;gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
 ;gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
+if(dimsizes(vars).le.6)then
 if(mod(dimsizes(vars),2).ne.0)then
 	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2+1,2/),pres)
 	gsn_panel(wks,plot,(/dimsizes(vars)/2+1,2/),pres)
 else
 	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
 	gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
+end if
+else
+if(mod(dimsizes(vars),4).ne.0)then
+	gsn_panel(wks,plot_diff,(/dimsizes(vars)/4+1,4/),pres)
+	gsn_panel(wks,plot,(/dimsizes(vars)/4+1,4/),pres)
+else
+	gsn_panel(wks,plot_diff,(/dimsizes(vars)/4,4/),pres)
+	gsn_panel(wks,plot,(/dimsizes(vars)/4,4/),pres)
+end if
+
 end if
 
 
