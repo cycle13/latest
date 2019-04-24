@@ -13,7 +13,7 @@ begin
 pattern_correlation		= False
 regime_contribution 	= False
 regime_mask_plot		= False ; this one depends on the regime_contribution
-lat_lon_plot			= False
+lat_lon_plot			= True
 Sherwood_2014			= False
 
 ALPI_bin_cal			= False;True 
@@ -27,7 +27,7 @@ scatter_sub_one_var		= False ; False	; --- one variable in X and Y axis -- only 
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
 scatter_sub_sgm_diff	= False ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
 
-zonal_mean				= True
+zonal_mean				= False
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -406,7 +406,7 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ;use_idx				= (/0,16,17,18/)
 ;use_idx				= (/0,16,17,18,19,20,21,22,23,24/)
 
-use_idx				= (/0,13,3,4/)
+use_idx				= (/3,4/) ; ---- input
 
 ; --- for variables only in Gauss-PDF
 use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
@@ -773,9 +773,15 @@ end do ; do itag=
 ; change dimension name
 vars_all!3		= "lat"
 vars_all!4		= "lon"
+vars_all&lat@units	= "degrees_north"
+vars_all&lon@units	= "degrees_east"
+
 
 vars_mid!4		= "lat"
 vars_mid!5		= "lon"
+vars_mid&lat@units	= "degrees_north"
+vars_mid&lon@units	= "degrees_east"
+
 
 printVarSummary(vars_all)
 printVarSummary(vars_mid)
@@ -1328,7 +1334,7 @@ end if ; scatter_p2p
 
 
 if(pattern_correlation)then
-; ==================== pattern correlation between (dlt_PDF-dlt_RH) and (PDF-RH) =================
+; ==================== pattern correlation between (DIF_PDF-DIF_RH) and (PDF-RH) =================
 latS				= -90.
 latE				= 90.
 lonS				= 0.
@@ -2578,8 +2584,10 @@ do ivar=0,dimsizes(vars)-1
 ;wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-HammerProj")
 wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-p4K-"+vars(dimsizes(vars)-1))
 
-plot 					= new(9,graphic)
-plot1 					= new(9,graphic)
+nplots					= 6
+
+plot 					= new(nplots,graphic)
+plot1 					= new(nplots,graphic)
 
 ;gsn_define_colormap(wks,"BlueDarkRed18")
 
@@ -2652,20 +2660,31 @@ res2@cnLevels                 	= vars_dlevs_1(ivar,:)
 res3							= res2
 res3@cnLevels					= vars_dlevs_2(ivar,:)
 
-var4K					= new((/9,nlat,nlon/),float)
+
+var4K					= new((/nplots,nlat,nlon/),float)
 var4K(0,:,:)				= vars_all(ivar,0,0,:,:)
-var4K					= (/vars_all(ivar,0,0,:,:),vars_all(ivar,0,1,:,:),vars_all_casediff(ivar,0,:,:),\ ; (var,tag,case,lat,lon)
-					    vars_all(ivar,1,0,:,:),vars_all(ivar,1,1,:,:),vars_all_casediff(ivar,1,:,:),\ 
-					    vars_all_tagdiff(ivar,0,:,:),vars_all_tagdiff(ivar,1,:,:), vars_all_diff2(ivar,:,:)/) 
+
+if(nplots.eq.9)then ; this is for all related plots
+	var4K					= (/vars_all(ivar,0,0,:,:),vars_all(ivar,0,1,:,:),vars_all_casediff(ivar,0,:,:),\ ; (var,tag,case,lat,lon)
+						    vars_all(ivar,1,0,:,:),vars_all(ivar,1,1,:,:),vars_all_casediff(ivar,1,:,:),\ 
+						    vars_all_tagdiff(ivar,0,:,:),vars_all_tagdiff(ivar,1,:,:), vars_all_diff2(ivar,:,:)/) 
+	
+	strings4K				= (/"RH","PDF","PDF-RH",\
+						    "RH_4K","PDF_4K","PDF_4K-RH_4K",\
+						    "RH_4K-RH","PDF_4K-PDF","DIF_PDF-DIF_RH"/)
+
+else ; for some plots
+	var4K					= (/vars_all(ivar,0,0,:,:),vars_all(ivar,0,1,:,:),vars_all_casediff(ivar,0,:,:),\
+								vars_all_tagdiff(ivar,0,:,:),vars_all_tagdiff(ivar,1,:,:), vars_all_diff2(ivar,:,:)/)
+	
+	strings4K				= (/"RH","PDF","PDF-RH",\
+						        "RH_4K-RH","PDF_4K-PDF","DIF_PDF-DIF_RH"/)
+end if
+
 printVarSummary(var4K)
 
-strings4K				= (/"RH","PDF","PDF-RH",\
-					    "RH_4K","PDF_4K","PDF_4K-RH_4K",\
-					    "RH_4K-RH","PDF_4K-PDF","dlt_PDF-dlt_RH"/)
-
-
-plot					= new(9,graphic)
-plotov					= new(9,graphic)
+plot					= new(nplots,graphic)
+plotov					= new(nplots,graphic)
 
 p = 0.5
 q = -0.25
@@ -2673,25 +2692,19 @@ q = -0.25
 
 count	= 0
 
-do it=0,8
-if(it.eq.0.or.it.eq.1.or.it.eq.3.or.it.eq.4)then
+do it=0,nplots-1
+;if(it.eq.0.or.it.eq.1.or.it.eq.3.or.it.eq.4)then
+if(it.eq.0.or.it.eq.1)then
 	res@gsnLeftString			= plots_strings(count)+" "+strings4K(it)
 ;	plot(it)				= gsn_csm_contour_map(wks,var4K(it,:,:),res)
 	plot(it)				= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res)
-
-;	plot_ov					= gsn_csm_contour(wks,var4K(it,:,:),resl)
-;	overlay(plot(it),plot_ov)
 else
-	if(it.eq.6 .or. it.eq.7)then
+;	if(it.eq.6 .or. it.eq.7)then
+	if(it.eq.3 .or. it.eq.4)then
 		res3@gsnLeftString			= plots_strings(count)+" "+strings4K(it)
 		plot(it)					= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res3)
 	else
 		res2@gsnLeftString			= plots_strings(count)+" "+strings4K(it)
-;		if(it.eq.8)then
-;			res2@gsnCenterString	= sprintf("%5.2f",ra(ivar))
-;		else
-;			res2@gsnCenterString	= ""
-;		end if
 		plot(it)				= gsn_csm_contour_map(wks,smth9_Wrap(var4K(it,:,:),p,q,False),res2)
 	end if
 end if
@@ -2705,11 +2718,13 @@ resP@gsnPanelMainString = vars(ivar)
 resP@gsnPanelXWhiteSpacePercent		= 2.5
 resP@gsnPanelYWhiteSpacePercent		= 5.
 
-;if(vars(ivar).eq."SWCF".or.vars(ivar).eq."CLDLOW")then
-gsn_panel(wks,plot,(/3,3/),resP)
+if(nplots.eq.9)then
+	gsn_panel(wks,plot,(/3,3/),resP)
+else
+	gsn_panel(wks,plot,(/2,3/),resP)
+end if
+
 delete(count)
-;gsn_panel(wks,plot1,(/3,3/),resP)
-;end if
 
 end do ; do ivar=
 
