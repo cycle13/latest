@@ -25,11 +25,11 @@ scatter_p2p				= False ; True ; -- some arrays are too small. only for two varia
 scatter_sub_ocn			= False ; True	; --- mask ocean or not
 scatter_sub_one_var		= False ; False	; --- one variable in X and Y axis -- only two variables in use_idx
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
-scatter_sub_sgm_diff	= True ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
+scatter_sub_sgm_diff	= False ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "x11"
+plot_type			= "pdf"
 
 latS_trop			= -30.
 latE_trop			= 30.
@@ -355,6 +355,10 @@ term3_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
+; --- mention:
+; vert_qwflx_xxx and vert_qwflx_xxx is not the same in shal and turb.
+; vert_qwflx_shal includes the effect of aa_gp, while vert_qwflx_turb not.
+; so pls dont use vert_qwflx_turb later if possible.
 
 ;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13        14         15           16        17         18      19			20		   21         22      23     24       25         26       27      28        29      30     31       32         33          34			35               36				    37				   38			   39			   40			    41					42	            43       44        45           46           47        48          49         50              51               52            53            54           55               56           57           58
 varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb", "RELHUM", "FREQSH", "CMFMC","umf_shal", "clddep2", "wstarPBL", "lengi", "shi", "aa_gp",	"bb_gp", "beta_gp", "dqwdz", "dthldz", "qw2", "thl2", "qwthl", "qwu_qw", "thlu_thl", "qwu_thlu", "qtu_shal", "vert_qwflx_shal", "vert_thlflx_shal","vert_qwthlflx_shal","tau_shal","vert_qwflx_turb","vert_thlflx_turb","vert_qwthlflx_turb","lengi2","dqwdz_2","dthldz_2","dqwdz_dthldz","aa2_gp", "bb2_gp", "aa2_dqwdz2","bb2_dthldz2","ab_dqwdz_dthldz","shi_lengi2", "term1_turb", "term2_turb", "term3_turb", "term1_shal", "term2_shal", "term3_shal"/)
@@ -379,9 +383,11 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ;use_idx				= (/0,13,3,4,5,10,11,12/)	; for ALPI
 ;use_idx				= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1, and sgm_turb, sgm_shal
 ;use_idx				= (/0,14,17,19,20,21,24,25,27,28,32,33,34,47,48,36,37,38,39/)	 	; sgm_shal related
-;use_idx				= (/0,14,56,57,58/)	 	; sgm_shal related
+;use_idx				= (/0,14,56,57,58,39,36,37,38/)	 	; sgm_shal related
+use_idx				= (/0,14,56,57,58/)	 	; sgm_shal related
+
 ;use_idx				= (/0,15,22,23,24,25,27,28,47,48,40,41,42,43,44,45,46/)			; sgm_turb related 29,30,31 == 40,41,42
-use_idx				= (/0,15,53,54,55/)
+;use_idx				= (/0,15,53,54,55,52,49,50,51/)
 
 
 ;use_idx			= (/3,4,13,5,6,10/)
@@ -478,6 +484,7 @@ do icase=0,dimsizes(case_nor)-1
 					clddep2_tmp				= ftmp1->clddep2(0,:,:)
 					wstarPBL_tmp			= ftmp1->wstarPBL(0,:,:)
 					tmp1					= -0.5*umf_shal_tmp*qwu_qw_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
+					tmp1					= tmp1*1e6
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -489,6 +496,7 @@ do icase=0,dimsizes(case_nor)-1
 					clddep2_tmp				= ftmp1->clddep2(0,:,:)
 					wstarPBL_tmp			= ftmp1->wstarPBL(0,:,:)
 					tmp1					= -0.5*umf_shal_tmp*thlu_thl_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
+					tmp1					= tmp1*1e6
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -500,6 +508,7 @@ do icase=0,dimsizes(case_nor)-1
 					clddep2_tmp				= ftmp1->clddep2(0,:,:)
 					wstarPBL_tmp			= ftmp1->wstarPBL(0,:,:)
 					tmp1					= -0.5*umf_shal_tmp*qwu_thlu_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
+					tmp1					= tmp1*1e6
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -514,6 +523,7 @@ do icase=0,dimsizes(case_nor)-1
 					qw2_tmp				= ftmp1->qw2(0,{887},:,:)
 ;					tmp1					= aa_gp_tmp^2*dqwdz_tmp^2*shi_tmp*lengi_tmp^2
 					tmp1					= 0.25*aa_gp_tmp^2*qw2_tmp
+					tmp1					= tmp1*1e6
 					copy_VarCoords(aa_gp_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -527,6 +537,7 @@ do icase=0,dimsizes(case_nor)-1
 					thl2_tmp			= ftmp1->thl2(0,{887},:,:)
 ;					tmp1					= bb_gp_tmp^2*dthldz_tmp^2*shi_tmp*lengi_tmp^2
 					tmp1					= 0.25*bb_gp_tmp^2*thl2_tmp
+					tmp1					= tmp1*1e6
 					copy_VarCoords(bb_gp_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -542,6 +553,7 @@ do icase=0,dimsizes(case_nor)-1
 					qwthl_tmp			= ftmp1->qwthl(0,{887},:,:)
 ;					tmp1					= -2.*aa_gp_tmp*bb_gp_tmp*dqwdz_tmp*dthldz_tmp*shi_tmp*lengi_tmp^2
 					tmp1				= 0.25*(-1.)*2*aa_gp_tmp*bb_gp_tmp*qwthl_tmp
+					tmp1					= tmp1*1e6
 					copy_VarCoords(aa_gp_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -568,9 +580,9 @@ do icase=0,dimsizes(case_nor)-1
 				if(vars(ivar).eq."ab_dqwdz_dthldz")then
 					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
 					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
-					dqwdz_tmp			= ftmp1->dqwldz(0,{887},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
 					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
-					tmp1					= aa_gp_tmp*bb_gp_tmp*dqwdz_tmp*dthldz_tmp
+					tmp1					= -2.*aa_gp_tmp*bb_gp_tmp*dqwdz_tmp*dthldz_tmp
 					copy_VarCoords(aa_gp_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -579,11 +591,11 @@ do icase=0,dimsizes(case_nor)-1
 				if(vars(ivar).eq."shi_lengi2")then
 					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
 					shi_tmp				= ftmp1->shi(0,{887},:,:)
-					tmp1					= shi*lengi_tmp^2
+					tmp1					= shi_tmp*lengi_tmp^2
 					copy_VarCoords(lengi_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
-					delete([/lengi_tmp,shi/])
+					delete([/lengi_tmp,shi_tmp/])
 				end if
 				if(vars(ivar).eq."lengi2")then
 					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
@@ -674,7 +686,7 @@ do icase=0,dimsizes(case_nor)-1
 				if(vars(ivar).eq."vert_qwthlflx_shal")then
 					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
 					qwu_thlu_tmp			= ftmp1->qwu_thlu(0,{887},:,:)
-					tmp1					= umf_shal_tmp*qwu_thlu_tmp
+					tmp1					= -1.*umf_shal_tmp*qwu_thlu_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					delete(tmp1)
@@ -2084,10 +2096,11 @@ res@tmXBValues				= fspan(0,nbins,nbins+1)
 res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
 res@trXMaxF					= (nbins)
 
-res@tiYAxisFontHeightF			= 0.03
-res@tiXAxisFontHeightF			= 0.03
-res@tmXBLabelFontHeightF		= 0.03
-res@tmYLLabelFontHeightF		= 0.03
+fontheight						= 0.035
+res@tiYAxisFontHeightF			=fontheight 
+res@tiXAxisFontHeightF			=fontheight 
+res@tmXBLabelFontHeightF		=fontheight 
+res@tmYLLabelFontHeightF		=fontheight 
 
 res@gsnStringFontHeightF	= 0.03
 
@@ -2414,26 +2427,29 @@ gsn_panel(wks,(/plot_diff_sgm(0)/),(/1,1/),pres_sgm)
 exit
 end if
 
-;gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
-;gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
-if(dimsizes(vars).le.6)then
-if(mod(dimsizes(vars),2).ne.0)then
-	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2+1,2/),pres)
-	gsn_panel(wks,plot,(/dimsizes(vars)/2+1,2/),pres)
-else
-	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
-	gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
-end if
-else
-if(mod(dimsizes(vars),4).ne.0)then
-	gsn_panel(wks,plot_diff,(/dimsizes(vars)/4+1,4/),pres)
-	gsn_panel(wks,plot,(/dimsizes(vars)/4+1,4/),pres)
-else
-	gsn_panel(wks,plot_diff,(/dimsizes(vars)/4,4/),pres)
-	gsn_panel(wks,plot,(/dimsizes(vars)/4,4/),pres)
-end if
+pres@gsnPanelRowSpec = True
 
-end if
+gsn_panel(wks,plot_diff(1:),(/1,3/),pres)
+gsn_panel(wks,plot(1:),(/1,3/),pres)
+
+;if(dimsizes(vars).le.8)then
+;if(mod(dimsizes(vars),2).ne.0)then
+;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2+1,2/),pres)
+;	gsn_panel(wks,plot,(/dimsizes(vars)/2+1,2/),pres)
+;else
+;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
+;	gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
+;end if
+;else
+;if(mod(dimsizes(vars),3).ne.0)then
+;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/3+1,3/),pres)
+;	gsn_panel(wks,plot,(/dimsizes(vars)/3+1,3/),pres)
+;else
+;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/3,3/),pres)
+;	gsn_panel(wks,plot,(/dimsizes(vars)/3,3/),pres)
+;end if
+;
+;end if
 
 
 delete([/count_1, count_2/])
