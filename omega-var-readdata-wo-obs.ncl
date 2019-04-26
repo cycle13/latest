@@ -24,6 +24,13 @@ begin
 landmask	= False
 ocnmask		= False
 
+; prescribe the start and end years --- 2019-04-26 22:57:39
+yearS		= 1980
+yearE		= 1988
+; resolution
+res			= "2deg"
+
+
 fdir 		= "/home/lyl/WORK4/cesm1_2_1/archive/"
 fappend 	= "/atm/hist/"
 
@@ -36,10 +43,15 @@ fappend 	= "/atm/hist/"
 ;case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10"/)
 
 ; cases with normal output and MG15 to compare with default simulation.
-case_nor	= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
-case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+if(res.eq."1deg")then
+	case_nor	= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
+	case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+	case_4xCO2	= (/"FAMIPC5_f09f09_MG15_amip-4xCO2","FAMIPC5_f09f09_mac2_amip-4xCO2"/)
+else
+	case_nor	= (/"FAMIPC5_f19f19_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
+	case_p4K	= (/"FAMIPC5_f19f19_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
+end if
 
-case_4xCO2	= (/"FAMIPC5_f09f09_MG15_amip-4xCO2","FAMIPC5_f09f09_mac2_amip-4xCO2"/)
 
 ;case_all	= (/case_nor, case_p4K, case_4xCO2/)
 case_all	= (/case_nor, case_p4K/)
@@ -48,15 +60,22 @@ printVarSummary(case_all) ; 3x2
 Vars 		= (/"sgm_tota","sgm_tota_sat","sgm_tota_uns","N1","deltaq_sat","OMEGA","SWCF","LWCF","CLDLOW","CLDMED","CLDHGH","CLDTOT","TGCLDLWP","netCRF"/)
 ;Vars 		= (/"OMEGA","SWCF","LWCF","CLDLOW","CLDMED","CLDHGH","CLDTOT","TGCLDLWP","netCRF"/)
 
-;Vars		= (/"sgm_tota","sgm_tota_sat"/)
-
 ;tag 		= (/"nor","p4K","4xCO2"/)
 tag			= (/"nor","p4K"/)
 
 
-nlat					= 192
-nlon					= 288
-ntime					= 60	; 1980-1984 -- 12*5=60 months
+if(res.eq."1deg")then
+	nlat					= 192
+	nlon					= 288
+else
+	nlat					= 96
+	nlon					= 144
+end if 
+
+ntime					= (yearE-yearS+1)*12
+print(ntime)
+
+;ntime					= 60	; 1980-1984 -- 12*5=60 months
 
 vars_all				= new((/dimsizes(Vars),dimsizes(tag),dimsizes(case_nor),ntime,nlat,nlon/),float)
 vars_all!0				= "var"
@@ -79,6 +98,9 @@ do ivar=0,dimsizes(Vars)-1
 
 print(Vars(ivar))
 
+; --- 2019-04-26 23:01:01 qinyi
+; --- please add the startyear and endyear as the args to make data-reading more flexible.
+;
 if(Vars(ivar).eq."OMEGA")then
 	OMEGA_tmp 		= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask)
 	OMEGA_tmp_500 		= OMEGA_tmp(:,{500},:,:)
@@ -183,18 +205,24 @@ printVarSummary(vars_all_diff)
 ;;;;; output files
 setfileoption("nc","format","netcdf4") 
 
+outdir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
+outname=outdir+"omega-var-outdata-wo-obs-"+res
+print(outname)
+
 if(landmask)then
-	system("/bin/rm -f ./tmp-data/omega-var-outdata-wo-obs-ocn.nc")
-	outfile = addfile("./tmp-data/omega-var-outdata-wo-obs-ocn.nc","c")
+	system("/bin/rm -f "+outname+"-ocn.nc")
+	outfile = addfile(outname+"-ocn.nc","c")
 else
 	if(ocnmask)then
-		system("/bin/rm -f ./tmp-data/omega-var-outdata-wo-obs-lnd.nc")
-		outfile = addfile("./tmp-data/omega-var-outdata-wo-obs-lnd.nc","c")
+		system("/bin/rm -f "+outname+"-lnd.nc")
+		outfile = addfile(outname+"-lnd.nc","c")
 	else
-		system("/bin/rm -f ./tmp-data/omega-var-outdata-wo-obs.nc")
-		outfile = addfile("./tmp-data/omega-var-outdata-wo-obs.nc","c")
+		system("/bin/rm -f "+outname+".nc")
+		outfile = addfile(outname+".nc","c")
 	end if
 end if
+
+print(outfile)
 	
 Vars_out						= Vars
 Vars_out_diff					= Vars
