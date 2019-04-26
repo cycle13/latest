@@ -660,3 +660,113 @@
     end if
     return(cfad)
   end
+
+  undef("histogram2D")
+  function histogram2D(wks,data,res)
+  local dimNames,yDim,xDim,yBnds,xBnds
+  begin
+    dimNames = getvardims(data)
+    yDim = dimNames(0)
+    xDim = dimNames(1)
+    delete(dimNames)
+    if (isatt(res,"tmYLLabels")) then
+      if (any(typeof(res@tmYLLabels).eq.(/"float","double"/))) then
+        yBnds = res@tmYLLabels
+        delete(res@tmYLLabels)
+        res@tmYLLabels = sprintf("%.1f",yBnds)
+      else
+        yBnds = stringtofloat(res@tmYLLabels)
+      end if
+      res@tmYLMode   = "Explicit"
+      res@tmYLValues = ispan(0,dimsizes(res@tmYLLabels)-1,1)
+      res@sfYArray   = res@tmYLValues
+    end if
+    if (isatt(res,"tmXBLabels")) then
+      if (any(typeof(res@tmXBLabels).eq.(/"float","double"/))) then
+        xBnds = res@tmXBLabels
+        delete(res@tmXBLabels)
+        res@tmXBLabels = sprintf("%.1f",xBnds)
+      else
+        xBnds = stringtofloat(res@tmXBLabels)
+      end if
+      res@tmXBMode   = "Explicit"
+      res@tmXBValues = ispan(0,dimsizes(res@tmXBLabels)-1,1)
+      res@sfXArray   = res@tmXBValues
+    end if
+    plot = gsn_csm_contour(wks,data,res)
+
+;   compute sums of ISCCP standard cloud types?
+    if (any((/isStrSubset(yDim,"prs"),isStrSubset(yDim,"cth")/))) then
+      sums = new((/3,3/),float)
+      tauBnds = (/(/0.3,3.6/),(/3.6,23.0/),(/23.0,379/)/)
+      if (isStrSubset(yDim,"prs")) then
+        cthBnds = (/(/680,1000/),(/440,680/),(/0,440/)/)
+      else
+        cthBnds = (/(/0.0,3.0/),(/3.0, 7.0/),(/ 7.0,23.0/)/)
+      end if
+      txtRes = True
+      txtRes@txFontHeightF = 0.03
+      do nx = 0,dimsizes(sums(0,:))-1
+        do ny = 0,dimsizes(sums(:,0))-1
+          tauMin = tauBnds(nx,0)
+          tauMax = tauBnds(nx,1)
+          cthMin = cthBnds(ny,0)
+          cthMax = cthBnds(ny,1)
+
+;         calculate sum of ISCCP cloud types
+          sums(ny,nx) = sum(sum(data({cthMin:cthMax},{tauMin:tauMax})))
+          txtStr = sprintf("%.1f",sums(ny,nx))
+
+;         find y-coordinate to place text
+          yind = ind( \
+            data&$yDim$.ge.cthMin.and. \
+            data&$yDim$.le.cthMax \
+          )
+          ypt = avg(yind)+0.5
+          delete([/cthMin,cthMax,yind/])
+
+;         find x-coordinate to place text
+          xind = ind( \
+            data&$xDim$.ge.tauMin.and. \
+            data&$xDim$.le.tauMax \
+          )
+          xpt = avg(xind)+0.5
+          delete([/tauMin,tauMax,xind/])
+
+;         place value of sum on plot at xy coordinates found
+          txt = gsn_add_text(wks,plot,txtStr,xpt,ypt,txtRes)
+          delete([/txtStr,xpt,ypt/])
+        end do
+      end do
+      delete([/sums,txtRes/])
+
+;     draw vertical lines
+      xpt = ind_nearest_coord(tauBnds(:,0),xBnds,0)
+      do nx = 0,dimsizes(xpt)-1
+        xpts = (/xpt(nx),xpt(nx)/)
+        ypts = (/0,dimsizes(data(:,0))/)
+        str = unique_string("polyline")
+        plot@$str$ = gsn_add_polyline(wks,plot,xpts,ypts,False)
+        delete([/xpts,ypts/])
+      end do
+      delete(xpt)
+
+;     draw horizontal lines
+      ypt = ind_nearest_coord(cthBnds(:,0),yBnds,0)
+      do ny = 0,dimsizes(ypt)-1
+        ypts = (/ypt(ny),ypt(ny)/)
+        xpts = (/0,dimsizes(data(0,:))/)
+        str = unique_string("polyline")
+        plot@$str$ = gsn_add_polyline(wks,plot,xpts,ypts,False)
+        delete([/xpts,ypts/])
+      end do
+      delete(ypt)
+
+;     clean up
+      delete([/tauBnds,cthBnds/])
+    end if
+    delete([/xDim,yDim,xBnds,yBnds/])
+    return(plot)
+  end
+
+
