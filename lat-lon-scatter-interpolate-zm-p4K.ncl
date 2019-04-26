@@ -3,6 +3,8 @@ load "./functions_regrid.ncl"
 load "./functions_getvar.ncl"
 load "./functions_calculate.ncl"
 
+load "./functions_matrix.ncl"
+
 begin
 
 ;***************file 1********************
@@ -13,7 +15,7 @@ begin
 pattern_correlation		= False
 regime_contribution 	= False
 regime_mask_plot		= False ; this one depends on the regime_contribution
-lat_lon_plot			= True
+lat_lon_plot			= False
 Sherwood_2014			= False
 
 ALPI_bin_cal			= False;True 
@@ -27,7 +29,11 @@ scatter_sub_one_var		= False ; False	; --- one variable in X and Y axis -- only 
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
 scatter_sub_sgm_diff	= False ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
 
-zonal_mean				= False
+zonal_mean				= False 
+
+cosp_hist				= True
+plot_2D_hist			= True
+plot_1D_hist			= True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -363,6 +369,11 @@ term3_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
+
+;float FISCCP1_COSP(time, cosp_prs, cosp_tau, lat, lon)
+Vars_cosp	= (/"FISCCP1_COSP"/)
+
+
 ; --- mention:
 ; vert_qwflx_xxx and vert_qwflx_xxx is not the same in shal and turb.
 ; vert_qwflx_shal includes the effect of aa_gp, while vert_qwflx_turb not.
@@ -406,7 +417,8 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ;use_idx				= (/0,16,17,18/)
 ;use_idx				= (/0,16,17,18,19,20,21,22,23,24/)
 
-use_idx				= (/3,4/) ; ---- input
+;use_idx				= (/3,4/) ; ---- input for lat_lon_plot
+use_idx				= (/0,13,3,4/) ; ---- input for zonal_mean
 
 ; --- for variables only in Gauss-PDF
 use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
@@ -446,6 +458,17 @@ vars_all&tag		= fspan(0,dimsizes(tag)-1,dimsizes(tag))
 vars_all!2		 	= "case"
 vars_all&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
+;float FISCCP1_COSP(time, cosp_prs, cosp_tau, lat, lon)
+ncosp_prs			= 7
+ncosp_tau			= 7
+vars_cosp			= new((/dimsizes(Vars_cosp),dimsizes(tag),dimsizes(case_nor),ncosp_prs,ncosp_tau,nlat,nlon/),float)
+vars_cosp!0			= "var"
+vars_cosp&var		= ispan(0,dimsizes(Vars_cosp)-1,1)
+vars_cosp!1		 	= "tag"
+vars_cosp&tag		= fspan(0,dimsizes(tag)-1,dimsizes(tag))
+vars_cosp!2		 	= "case"
+vars_cosp&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
+
 
 do itag=0,dimsizes(tag)-1
 do icase=0,dimsizes(case_nor)-1
@@ -456,12 +479,23 @@ do icase=0,dimsizes(case_nor)-1
 	OCNFRAC								= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
 	delete(tmp)
 
+	; read Vars_mid
 	do ivar=0,dimsizes(Vars_mid)-1
 		tmp								= ftmp1->$Vars_mid(ivar)$(0,:,:,:)
 		vars_mid(ivar,itag,icase,:,:,:)		= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
 		delete(tmp)
 	end do ; do ivar=
 
+	; read Vars_cosp
+	do ivar=0,dimsizes(Vars_cosp)-1
+		tmp								= ftmp1->$Vars_cosp(ivar)$(0,:,:,:,:)
+		vars_cosp(ivar,itag,icase,:,:,:,:)	= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+		delete(tmp)
+	end do ; do ivar=
+	printVarSummary(vars_cosp)
+	printMinMax(vars_cosp,True)
+
+	; read Vars_all
 	do ivar=0,dimsizes(vars)-1
 		if(isfilevar(ftmp1,vars(ivar))) then
 			tmp									= ftmp1->$vars(ivar)$
@@ -483,11 +517,11 @@ do icase=0,dimsizes(case_nor)-1
 				vars_all(ivar,itag,icase,:,:)	= abs(vars_all(ivar,itag,icase,:,:))*1e6
 			end if
 			delete(tmp)
-		else
-			if(.not.ismissing(ind(vars_pdf.eq.vars(ivar))) .and. icase.eq.0)then
+		else ; .not.isfilevar
+			if(.not.ismissing(ind(vars_pdf.eq.vars(ivar))) .and. icase.eq.0)then ; make not existing vars in park-rh as missing value.
 				print(vars(ivar))
 				vars_all(ivar,itag,icase,:,:)	= vars_all@_FillValue
-			else
+			else ; variables only for Gauss-PDF
 				if(vars(ivar).eq."term1_shal")then
 					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
 					qwu_qw_tmp				= ftmp1->qwu_qw(0,{887},:,:)
@@ -743,13 +777,6 @@ do icase=0,dimsizes(case_nor)-1
 				vars_all(ivar,itag,icase,:,:)	= (/ECTEI_tmp/)
 				delete(ECTEI_tmp)
 			end if
-;			if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb".or.\
-;			   vars(ivar).eq."wstarPBL" .or. vars(ivar).eq."clddep2" .or. vars(ivar).eq."umf_shal" .or. vars(ivar).eq."lengi" .or. \
-;			   vars(ivar).eq."shi" .or. vars(ivar).eq."aa_gp") then
-;			if(.not.ismissing(ind(vars_pdf.eq.vars(ivar))))then
-;				print(vars(ivar))
-;				vars_all(ivar,itag,icase,:,:)	= vars_all@_FillValue
-;			end if
 			if(vars(ivar).eq."netCRF")then
 				SWCF						= ftmp1->SWCF(0,:,:)
 				LWCF						= ftmp1->LWCF(0,:,:)
@@ -782,14 +809,317 @@ vars_mid!5		= "lon"
 vars_mid&lat@units	= "degrees_north"
 vars_mid&lon@units	= "degrees_east"
 
+vars_cosp!5		= "lat"
+vars_cosp!6	 	= "lon"
+vars_cosp&lat@units	= "degrees_north"
+vars_cosp&lon@units	= "degrees_east"
+
+
+
 
 printVarSummary(vars_all)
 printVarSummary(vars_mid)
+;--------------------------------------------------------COSP_HIST-------------------------------------
 
+if(cosp_hist)then
+
+  cnLevelsFull = (/0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, \
+                   5.0, 5.5, 6.0, 6.5, 7.0, 7.5 /)
+   cnLevelsDiff = (/ \
+    -3.5,-3.0,-2.5,-2.0,-1.5,-1.0,-0.5, 0.0, \
+     0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5       \
+  /)
+  regionInfo = (/ \
+;   (/"long_name"          , "lats", "latn", "lonw", "lone"/), \
+    (/"Global"             ,"-90.0", "90.0",  "0.0","360.0"/), \
+    (/"NH Sub-Tropics"     , "15.0", "30.0",  "0.0","360.0"/), \
+    (/"SH Sub-Tropics"     ,"-30.0","-15.0",  "0.0","360.0"/), \
+    (/"Tropics"            ,"-15.0", "15.0",  "0.0","360.0"/), \
+    (/"Tropics-Sub"        ,"-30.0", "30.0",  "0.0","360.0"/), \
+    (/"NH Mid-Lats"        , "30.0", "70.0",  "0.0","360.0"/), \
+    (/"SH Mid-Lats"        ,"-70.0","-30.0",  "0.0","360.0"/), \
+    (/"North Pole"         ," 70.0", "90.0",  "0.0","360.0"/), \
+    (/"South Pole"         ,"-90.0","-70.0",  "0.0","360.0"/), \
+    (/"Warm Pool"          ,"-15.0", "15.0","110.0","150.0"/), \
+    (/"Central Africa"     ,"-15.0",  "5.0", "15.0", "35.0"/), \
+    (/"NH Pacific Stratus" , "15.0", "35.0","210.0","240.0"/), \
+    (/"SH Pacific Stratus" ,"-30.0", "-5.0","250.0","280.0"/), \
+    (/"North Pacific"      , "40.0", "55.0","165.0","205.0"/), \
+    (/"North Atlantic"     , "40.0", "55.0","310.0","345.0"/), \
+    (/"USA"                , "31.0", "46.0","248.0","278.0"/), \
+    (/"VOCALS"             ,"-40.0",  "0.0","250.0","295.0"/), \
+    (/"Southern Ocean"     ,"-90.0","-50.0",  "0.0","360.0"/), \
+    (/"Tropical C Pacific" ,"-15.0", "15.0","150.0","240.0"/), \
+    (/"Tropical E Pacific" ,"-15.0", "15.0","240.0","280.0"/), \
+    (/"ARM SGP"            , "37.0", "37.0","263.0","263.0"/)  \
+  /)
+
+  regionNames				= regionInfo(:,0)
+  latMinVals				= stringtofloat(regionInfo(:,1))
+  latMaxVals				= stringtofloat(regionInfo(:,2))
+  lonMinVals				= stringtofloat(regionInfo(:,3))
+  lonMaxVals				= stringtofloat(regionInfo(:,4))
+
+  nRegions					= dimsizes(regionNames)
+
+;   common resources for XY plots
+    resXY                        = True
+    resXY@gsnDraw                = False               ; Do not draw plot
+    resXY@gsnFrame               = False               ; Do not advance frame
+	fh							 = 0.025
+    resXY@tiXAxisFontHeightF     = fh
+    resXY@tiYAxisFontHeightF     = fh
+    resXY@tiMainFontHeightF      = fh
+	resXY@gsnStringFontHeightF	 = fh
+    resXY@pmLegendDisplayMode = "Always"
+    resXY@pmLegendWidthF         = 0.12               ; Change width and
+    resXY@pmLegendHeightF        = 0.10               ; height of legend.
+    resXY@lgPerimOn              = True
+    resXY@lgLabelFontHeightF     = .020
+    resXY@txFontHeightF 		= 0.015
+    resXY@xyDashPatterns         = (/0.,0.,1.0,1.0/)          ; solid, solid, dashed, dashed
+    resXY@xyLineThicknesses      = (/2.,2.,2.0,2.0/)
+	resXY@xyLineColors			= (/"red","blue","red","blue"/)
+	resXY@xyLineColor 			= "black"
+
+	resXY@tmXTOn				= False
+	resXY@tmYROn				= False
+	resXY@tmXBMinorOn			= False
+	resXY@tmYLMinorOn			= False
+
+;   common resources for 2D histograms
+    resHist 					= True
+    resHist@gsnDraw 			= False
+    resHist@gsnFrame 			= False
+    ;resHist@gsnSpreadColors       = True
+    resHist@cnLinesOn             = False
+    resHist@cnLineLabelsOn        = False
+    resHist@cnInfoLabelOn         = False
+    resHist@cnFillOn              = True
+    resHist@cnFillMode            = "RasterFill"
+    resHist@cnLevelSelectionMode  = "ExplicitLevels"
+    resHist@lbLabelBarOn          = True
+    resHist@lbLabelAutoStride     = True
+    resHist@tmLabelAutoStride     = True
+
+	lat                 = vars_cosp&lat
+	clat                = tofloat(cos(0.01745329*lat))
+	clat!0              = "lat"
+	clat&lat            = vars_all&lat
+
+do ivar=0,dimsizes(Vars_cosp)-1
+
+	dimNames	= getvardims(vars_cosp(ivar,:,:,:,:,:,:))
+	yDim		= dimNames(2)
+	xDim		= dimNames(3)
+	print(xDim)
+	print(yDim)
+	delete(dimNames)
+
+	do nr=0,nRegions-1
+		latMin	= latMinVals(nr)
+		latMax	= latMaxVals(nr)
+		lonMin	= lonMinVals(nr)
+		lonMax	= lonMaxVals(nr)
+
+		; calculate regional means
+		vars_cosp_2D	= wgt_areaave_Wrap( \
+			vars_cosp(ivar,:,:,:,{0.3:},{latMin:latMax},{lonMin:lonMax}), \
+			clat({latMin:latMax}),1.0,0 \
+			)
+		printVarSummary(vars_cosp_2D)
+		printMinMax(vars_cosp_2D,True)
+		
+		; calculate the tagdiff
+		vars_cosp_2D_tagdiff	= (/vars_cosp_2D(1,:,:,:)-vars_cosp_2D(0,:,:,:)/)
+		copy_VarCoords(vars_cosp_2D(0,:,:,:),vars_cosp_2D_tagdiff)
+		printVarSummary(vars_cosp_2D_tagdiff)
+		printMinMax(vars_cosp_2D_tagdiff,True)
+
+		; calculate the casediff
+		vars_cosp_2D_casediff	= (/vars_cosp_2D(:,1,:,:)-vars_cosp_2D(:,0,:,:)/)
+		copy_VarCoords(vars_cosp_2D(:,0,:,:),vars_cosp_2D_casediff)
+		printVarSummary(vars_cosp_2D_casediff)
+		printMinMax(vars_cosp_2D_casediff,True)
+
+		; calculate the diff between (PDF_p4K-cntl) and (RH_p4K-cntl)
+		vars_cosp_2D_diff2		= (/vars_cosp_2D_tagdiff(1,:,:)-vars_cosp_2D_casediff(0,:,:)/)
+		copy_VarCoords(vars_cosp_2D_tagdiff(0,:,:),vars_cosp_2D_diff2)
+		printVarSummary(vars_cosp_2D_diff2)
+		printMinMax(vars_cosp_2D_diff2,True)
+
+		yBnds = (/1100., 800., 680., 560., 440., 310., 180., 0./)
+		xBnds = (/0.3,1.3,3.6,9.4,23.0,60.0,379/)
+
+		if(plot_2D_hist)then
+		;======= make plots
+		wks			= gsn_open_wks(plot_type,"./figure/COSP_2D_histgram_"+str_sub_str(regionNames(nr)," ",""))
+
+		RGB			= "/home/lyl/WORK1/cesm1_2_1/amwg_diag/rgb"
+		cmap		= RGBtoCmap(RGB+"/cloudsim.rgb")
+
+		cmap1 					= read_colormap_file("WhiteBlueGreenYellowRed")
+		cmap2 					= read_colormap_file("BlueRed")
+		;gsn_define_colormap(wks,cmap)
+;		gsn_define_colormap(wks,"BlueWhiteOrangeRed")
+
+		res2D					= resHist
+		res2D@tmYLLabels		= yBnds
+		res2D@tmXBLabels		= xBnds
+
+		fh								= 0.030
+		res2D@gsnStringFontHeightF		= fh
+		res2D@tmXBLabelFontHeightF		= fh
+		res2D@tmYLLabelFontHeightF		= fh
+		res2D@tmYROn					= False
+		res2D@tmXTOn					= False
+
+		res2D@gsnLeftString				= ""
+		res2D@gsnRightString			= ""
+		res2D@tiXAxisOffsetYF			= 0.085
+
+		res2D@tiYAxisString				= "Pressure"
+		res2D@tiXAxisString				= "Optical Depth"
+
+		res2D@pmLabelBarOrthogonalPosF	= 0.15
+
+		center_stringsA			= (/"RH_cntl","PDF_cntl","PDF_cntl-RH_cntl", \
+									"RH_p4K","PDF_p4K","PDF_p4K-RH_p4K",\
+									"RH_p4K-cntl","PDF_p4K-cntl","DIF_PDF-DIF_RH"/)
+		vars_plotsA				= (/vars_cosp_2D(0,0,:,:), vars_cosp_2D(0,1,:,:),vars_cosp_2D_casediff(0,:,:),\
+									vars_cosp_2D(1,0,:,:), vars_cosp_2D(1,1,:,:),vars_cosp_2D_casediff(1,:,:),\
+									vars_cosp_2D_tagdiff(0,:,:),vars_cosp_2D_tagdiff(1,:,:),vars_cosp_2D_diff2(:,:)/)
+		copy_VarCoords(vars_cosp_2D(0,0,:,:),vars_plotsA(0,:,:))
+		printVarSummary(vars_plotsA)
+
+		plot_idx				= (/0,1,2,6,7,8/)
+
+		center_strings			= center_stringsA(plot_idx)
+		vars_plots				= vars_plotsA(plot_idx,:,:)
+		printVarSummary(vars_plots)
+
+		plot					= new(dimsizes(plot_idx),graphic)
+
+		do ip=0,dimsizes(plot_idx)-1
+
+			res2D@gsnLeftString		= plots_strings(ip)
+
+			if(plot_idx(ip).eq.0 .or. plot_idx(ip).eq.1 .or. plot_idx(ip).eq.3 .or. plot_idx(ip).eq.4)then
+				res2D@cnFillPalette       	= cmap1(:240,:)
+				res2D@cnLevels				= cnLevelsFull
+				res2D@lbLabelStrings		= sprintf("%.1f",res2D@cnLevels)
+				res2D@gsnCenterString		= center_strings(ip)
+				plot(ip)					= histogram2D(wks,vars_plots(ip,:,:),res2D)
+				delete(res2D@cnLevels)
+				delete(res2D@lbLabelStrings)
+				delete(res2D@cnFillPalette)
+			else
+				res2D@cnFillPalette       	= cmap2
+				res2D@cnLevels				= cnLevelsDiff
+				res2D@lbLabelStrings	= sprintf("%.1f",res2D@cnLevels)
+				res2D@gsnCenterString	= center_strings(ip)
+				plot(ip)					= histogram2D(wks,vars_plots(ip,:,:),res2D)
+				delete(res2D@cnLevels)
+				delete(res2D@lbLabelStrings)
+			end if 
+		end do ; do ip=
+
+		resPanel								= True
+		resPanel@gsnPanelXWhiteSpacePercent		= 5.
+		resPanel@gsnPanelYWhiteSpacePercent		= 5.
+		resPanel@gsnPanelLeft					= 0.05
+		resPanel@gsnPanelRight					= 0.95
+		resPanel@txString						= regionNames(nr)+" ANN"
+
+		gsn_panel(wks,plot,(/2,3/),resPanel)
+
+		delete([/wks,resPanel,res2D/])
+
+		end if ; plot_2D_hist
+
+		if(plot_1D_hist)then
+		; 1D histograms
+		wks								= gsn_open_wks(plot_type,"./figure/COSP_1D_histgram_"+str_sub_str(regionNames(nr)," ",""))
+
+		; calculate distributions along each axis
+		printVarSummary(vars_cosp_2D)
+		print(xDim+"		"+yDim)
+		vars_cosp_2D_X					= dim_sum_Wrap(vars_cosp_2D(tag|:,case|:,$xDim$|:,$yDim$|:))
+		vars_cosp_2D_Y					= dim_sum_Wrap(vars_cosp_2D(tag|:,case|:,$yDim$|:,$xDim$|:))
+		printVarSummary(vars_cosp_2D_X)
+		printVarSummary(vars_cosp_2D_Y)
+
+		vars_cosp_2D_X_tagdiff			= (/vars_cosp_2D_X(1,:,:)-vars_cosp_2D_X(0,:,:)/)
+		copy_VarCoords(vars_cosp_2D_X(0,:,:),vars_cosp_2D_X_tagdiff)
+
+		vars_cosp_2D_Y_tagdiff			= (/vars_cosp_2D_Y(1,:,:)-vars_cosp_2D_Y(0,:,:)/)
+		copy_VarCoords(vars_cosp_2D_Y(0,:,:),vars_cosp_2D_Y_tagdiff)
+
+		vars_cosp_2D_X_casediff			= (/vars_cosp_2D_X(:,1,:)-vars_cosp_2D_X(:,0,:)/)
+		copy_VarCoords(vars_cosp_2D_X(:,0,:),vars_cosp_2D_X_casediff)
+
+		vars_cosp_2D_Y_casediff			= (/vars_cosp_2D_Y(:,1,:)-vars_cosp_2D_Y(:,0,:)/)
+		copy_VarCoords(vars_cosp_2D_Y(:,0,:),vars_cosp_2D_Y_casediff)
+
+		plotData_string					= (/"RH_cntl","PDF_cntl",\
+											"RH_p4K","PDF_p4K"/)
+		plotDataX						= (/vars_cosp_2D_X(0,0,:),vars_cosp_2D_X(0,1,:),\
+											vars_cosp_2D_X(1,0,:),vars_cosp_2D_X(1,1,:)/)
+		plotDataY						= (/vars_cosp_2D_Y(0,0,:),vars_cosp_2D_Y(0,1,:),\
+											vars_cosp_2D_Y(1,0,:),vars_cosp_2D_Y(1,1,:)/)
+
+		; plot X histogram
+		resX								= resXY
+		resX@xyExplicitLegendLabels			= plotData_string
+		resX@tmXBMode						= "Explicit"
+		resX@tmXBLabels						= sprintf("%.1f",xBnds)
+		resX@tmXBValues						= ispan(0,dimsizes(resX@tmXBLabels)-1,1)-0.5
+		resX@tiYAxisString					= "Cloud Amount (fraction)"
+		resX@tiXAxisString					= vars_cosp_2D_X&$xDim$@long_name
+		
+		resX@gsnLeftString					= "(a)"
+
+		plotX								= gsn_csm_xy(wks,ispan(0,dimsizes(vars_cosp_2D_X(0,0,:))-1,1),plotDataX,resX)
+
+		resY								= resXY
+		resY@xyExplicitLegendLabels			= resX@xyExplicitLegendLabels
+		resY@tmYLMode						= "Explicit"
+		resY@tmYLLabels						= sprintf("%.1f",yBnds)
+		resY@tmYLValues						= ispan(0,dimsizes(resY@tmYLLabels)-1,1)-0.5
+		resY@tiXAxisString 					= "Cloud Amount (fraction)"
+		resY@tiYAxisString                  = vars_cosp_2D_Y&$yDim$@long_name
+		resY@gsnLeftString					= "(b)"
+
+		plotY								= gsn_csm_xy(wks,plotDataY,ispan(0,dimsizes(vars_cosp_2D_Y(0,0,:))-1,1),resY)
+
+		resPanel								= True
+		resPanel@gsnPanelXWhiteSpacePercent		= 5.
+		resPanel@gsnPanelYWhiteSpacePercent		= 5.
+		resPanel@gsnPanelLeft					= 0.05
+		resPanel@gsnPanelRight					= 0.95
+		resPanel@txString						= regionNames(nr)+" ANN"
+
+		gsn_panel(wks,(/plotX,plotY/),(/1,2/),resPanel)
+		delete([/wks,resPanel,plotDataX, plotDataY, resX, resY/])
+		end if ; plot_1D_hist
+
+	end do ; do nr=
+	exit
+
+end do ; do ivar=
+
+end if ; cosp_hist
+
+;--------------------------------------------------------ZONAL_MEAN-------------------------------------
 if(zonal_mean)then
+
 	vars_zm			= dim_avg_Wrap(vars_all)
 	printVarSummary(vars_zm)
 	printMinMax(vars_zm,True)
+
+	vars_zm_diff	= (/vars_zm(:,1,:,:)-vars_zm(:,0,:,:)/)
+	copy_VarCoords(vars_zm(:,0,:,:),vars_zm_diff)
+	printVarSummary(vars_zm_diff)
 
 	lat				= vars_zm&lat
 	re   			= 6.37122e06
@@ -819,11 +1149,6 @@ if(zonal_mean)then
 	res@gsnFrame			= False
 	res@gsnDraw				= False
 
-	res@xyMarkLineModes		= (/"Lines","Lines","Lines","Lines"/)
-	res@xyLineColors		= (/"red","blue","red","blue"/)
-	res@xyLineThicknesses	= (/1,1,1,1/)
-	res@xyDashPatterns		= (/0,0,16,16/)
-
 	res@tmXBMode			= "Explicit"
 	spc_vals				= (/-90,-50,-30,0,30,50,90/)
 	res@tmXBValues			= clats({spc_vals})
@@ -833,50 +1158,86 @@ if(zonal_mean)then
 
 	fontheight				= 0.025
 
+	res@gsnStringFontHeightF		= fontheight
 	res@tiYAxisFontHeightF			= fontheight
 	res@tiXAxisFontHeightF			= fontheight
 	res@tmXBLabelFontHeightF		= fontheight
 	res@tmYLLabelFontHeightF		= fontheight
 
-	res@tmXTOn				= False
-	res@tmYLMinorOn			= False
-	res@tmYROn				= False
+	res@tmXTOn						= False
+	res@tmYLMinorOn					= False
+	res@tmYROn						= False
 
+	resd							= res
+
+	res@xyMarkLineModes		= (/"Lines","Lines","Lines","Lines"/)
+	res@xyLineColors		= (/"red","blue","red","blue"/)
+	res@xyLineThicknesses	= (/1,1,1,1/)
+	res@xyDashPatterns		= (/0,0,16,16/)
+
+	resd@xyMarkLineModes	= (/"Lines","Lines"/)
+	resd@xyLineColors		= (/"red","blue"/)
+	resd@xyLineThicknesses	= (/3,3/)
+	resd@xyDashPatterns		= (/0,0/)
+
+	resd@gsnYRefLine		= 0.
+	resd@gsnYRefLineColor	= "grey"
+	resd@gsnYRefLineThicknessF = 3
+	resd@gsnYRefLineDashPattern = 14
 
 	plot					= new(dimsizes(vars),graphic)
+	plotd					= new(dimsizes(vars),graphic)
+
 
 	do ivar=0,dimsizes(vars)-1
+		res@gsnLeftString		= plots_strings(ivar)
 		res@tiYAxisString		= vars(ivar)+" ("+vars_units(ivar)+")"
 		tmp						= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor),nlat/),float) ; (rh_cntl, pdf_cntl, rh_p4k, pdf_p4k)
-		tmp(:,0:1,:)			= vars_zm(:,0,:,:)
-		tmp(:,2:3,:)			= vars_zm(:,1,:,:)
+		tmp(:,0:1,:)			= (/vars_zm(:,0,:,:)/)
+		tmp(:,2:3,:)			= (/vars_zm(:,1,:,:)/)
 ;		plot					= gsn_csm_xy(wks,vars_zm&lat,tmp(ivar,:,:),res)
 		plot(ivar)				= gsn_csm_xy(wks,clats,tmp(ivar,:,:),res)
+
+		resd@gsnLeftString		= plots_strings(ivar)
+		resd@tiYAxisString		= "~F33~D~F~"+vars(ivar)+" ("+vars_units(ivar)+")"
+		plotd(ivar)				= gsn_csm_xy(wks,clats,vars_zm_diff(ivar,:,:),resd)
 	end do
 
 	; ------------------------Add legends
 	legends							= (/"RH_cntl","PDF_cntl","RH_p4K","PDF_p4K"/)
-	
+	legends_d						= (/"RH_p4K-cntl","PDF_p4K-cntl"/)
+
 	lgres							= True
+	lgres@lgLabelFontHeightF        = 0.08
+	lgres@vpWidthF                  = 0.25
+	lgres@vpHeightF                 = 0.15
+	;lgres@lgPerimOn                 = False
+
+	lgresd							= lgres
+	
 	lgres@lgMonoItemType             = False
 	lgres@lgItemTypes				= res@xyMarkLineModes
 	lgres@lgLineColors				= res@xyLineColors
 	lgres@lgLineThicknesses			= res@xyLineThicknesses
 	lgres@lgDashIndexes				= res@xyDashPatterns
+
+	lgresd@lgMonoItemType           = False
+	lgresd@lgItemTypes				= resd@xyMarkLineModes
+	lgresd@lgLineColors				= resd@xyLineColors
+	lgresd@lgLineThicknesses		= resd@xyLineThicknesses
+	lgresd@lgDashIndexes			= resd@xyDashPatterns
 	
-	lgres@lgLabelFontHeightF        = 0.08
-	lgres@vpWidthF                  = 0.25
-	lgres@vpHeightF                 = 0.15
-	;lgres@lgPerimOn                 = False
-	
+
 	lbid1                           = gsn_create_legend(wks,dimsizes(legends),legends,lgres)
-	
+	lbid2                           = gsn_create_legend(wks,dimsizes(legends_d),legends_d,lgresd)
+
 	amres                           = True
 	amres@amJust					= "TopLeft"
 	amres@amParallelPosF            = -0.5
 	amres@amOrthogonalPosF          = -0.5
 	
 	annoid1                         = gsn_add_annotation(plot(0),lbid1,amres)
+	annoid2                         = gsn_add_annotation(plotd(0),lbid2,amres)
 
 resP								= True
 resP@gsnPanelXWhiteSpacePercent		= 5.
@@ -885,9 +1246,12 @@ resP@gsnPanelLeft					= 0.05
 resP@gsnPanelRight					= 0.95
 
 gsn_panel(wks,plot,(/2,2/),resP)
+gsn_panel(wks,plotd,(/2,2/),resP)
 
 exit
 end if ; zonal_mean
+
+;--------------------------------------------------------SHERWOOD_2014-------------------------------------
 
 if(Sherwood_2014)then
 
@@ -1096,7 +1460,7 @@ clat                = tofloat(cos(0.01745329*lat))
 clat!0              = "lat"
 clat&lat            = vars_all&lat
 
-; ################# scatter_p2p ########################
+;--------------------------------------------------------SCATTER_P2P-------------------------------------
 if(scatter_p2p)then
 
 ; ------ set the plotting variables
@@ -1331,7 +1695,7 @@ exit
 
 end if ; scatter_p2p
 
-
+;--------------------------------------------------------PATTERN_CORRELATION-------------------------------------
 
 if(pattern_correlation)then
 ; ==================== pattern correlation between (DIF_PDF-DIF_RH) and (PDF-RH) =================
@@ -1350,8 +1714,7 @@ print(ra)
 
 end if ; pattern_correlation
 
-
-
+;--------------------------------------------------------REGRIME_CONTRIBUTION-------------------------------------
 if (regime_contribution)then
 ; ================= broken down by regions and regimes =====================================
 ; outside of the tropics --- broken down into: 90-60S, 60-30S, 30-60N, 60-90N
@@ -1472,6 +1835,8 @@ end do ; do icase=
 end do ; do ivar=
 
 printVarSummary(data2regimes)
+
+;--------------------------------------------------------REGRIME_MASK_PLOT-------------------------------------
 
 if(regime_mask_plot)then
 
@@ -1846,6 +2211,8 @@ delete(count)
 exit
 
 end if ; regime_contribution
+
+;--------------------------------------------------------ALPIS-------------------------------------
 
 ;=================================================
 ; ALPI IS DEFINE BY LTS AND PRECIPITATION.
@@ -2576,6 +2943,8 @@ exit
 end if ; ALPI_bin_plot
 
 end if ; ALPI_bin_cal
+
+;--------------------------------------------------------LAT_LON_PLOT-------------------------------------
 
 ;************************create plot***************
 if(lat_lon_plot)then
