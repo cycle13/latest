@@ -6,8 +6,8 @@
   load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
   load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
   load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
-  load "./functions_contrib.ncl"
-  load "./functions_matrix.ncl"
+  load "$DIAG_CODE/functions_contrib.ncl"
+  load "$DIAG_CODE/functions_matrix.ncl"
 
   undef("histogram2D")
   function histogram2D(wks,data,res)
@@ -153,21 +153,22 @@
   /)
   begin
 ;   environment variables
-    compare    = "USER"
-    plotType   = "x11"
-    color_type = "COLOR"
-    season     = "ANN"
-    wkdir      = "./"
-    casenames  = "False"
-	CASE1	   = "Null"
-	CASE2	   = "Null"
-    ncdf_mode  = "create"
-    infile1    = "/home/share3/lyl/work3/qinyi/mid-data/cfmip/FAMIPC5_f19f19_mac2_amip_outSGM.ANN.climo.nc"
-    outfile1   = "/home/share3/lyl/work3/qinyi/mid-data/cfmip/cosp_histgram_cntl.nc"
-    infile2    = "/home/share3/lyl/work3/qinyi/mid-data/cfmip/FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM.ANN.climo.nc"
-	outfile2   = "/home/share3/lyl/work3/qinyi/mid-data/cfmip/cosp_histgram_p4K.nc"
-
-    RGB        = "/home/lyl/WORK1/cesm1_2_1/amwg_diag/rgb"
+    compare    = getenv("COMPARE")
+    plotType   = getenv("PLOTTYPE")
+    color_type = getenv("COLORTYPE")
+    season     = getenv("SEASON")
+    version    = getenv("DIAG_VERSION")
+    wkdir      = getenv("WKDIR")
+    timestamp  = getenv("TIMESTAMP")
+    casenames  = getenv("CASENAMES")
+    ncdf_mode  = getenv("NCDF_MODE")
+    infile1    = getenv("TEST_INPUT")
+    outfile1   = getenv("TEST_PLOTVARS")
+    infile2    = getenv("CNTL_INPUT")
+    if (compare .ne. "OBS") then
+     outfile2  = getenv("CNTL_PLOTVARS")
+    end if
+    RGB        = getenv("DIAG_HOME")+"/rgb"
     cmap       = RGBtoCmap(RGB+"/cloudsim.rgb")
 
 ;   CASE 1 (always model)
@@ -188,8 +189,6 @@
     else
       case1title = case1
     end if
-	print(case1)
-	exit
 
 ;   CASE 2: model or obs
     if (compare .ne. "OBS") then
