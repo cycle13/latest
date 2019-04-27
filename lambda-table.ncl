@@ -1,4 +1,6 @@
 
+resolution					= "2deg"
+
 fdir						= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 case_append					= ".ANN.climo.nc"
 
@@ -8,8 +10,17 @@ case_append					= ".ANN.climo.nc"
 ;case_nor					= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM_MG10"/)
 ;case_4K						= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10"/)
 
-case_nor					= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_MG10_amip","FAMIPC5_f09f09_mac2_amip","FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM_MG10","FAMIPC5_f09f09_mac2_amip_outSGM_MG10"/)
-case_4K						= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_MG10_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10","FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10"/)
+;case_nor					= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_MG10_amip","FAMIPC5_f09f09_mac2_amip","FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM_MG10","FAMIPC5_f09f09_mac2_amip_outSGM_MG10"/)
+;case_4K						= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_MG10_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10","FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10"/)
+
+if(resolution.eq."2deg")then
+	case_nor		= (/"FAMIPC5_f19f19_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
+	case_4K			= (/"FAMIPC5_f19f19_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
+else
+	case_nor		= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM_MG10"/)
+	case_4K			= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10"/)
+end if
+
 
 case_all					= (/case_nor,case_4K/)
 
@@ -18,8 +29,13 @@ tag							= (/"nor","p4K"/)
 Vars						= (/"FLNT","FSNT","FLNTC","FSNTC","LWCF","SWCF","netCRF","TS"/)
 Vars_dlt					= "dlt_"+Vars
 
-nlat						= 192
-nlon						= 288
+if(resolution.eq."2deg")then
+	nlat						= 96
+	nlon						= 144
+else
+	nlat						= 192
+	nlon						= 288
+end if
 
 vars_all					= new((/dimsizes(Vars),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float)
 vars_all!0					= "var"
@@ -76,9 +92,13 @@ vars_all_aave_diff						= vars_all_aave(:,1,:)-vars_all_aave(:,0,:)
 copy_VarCoords_1(vars_all_aave(var|:,case|:,tag|:),vars_all_aave_diff)
 printVarSummary(vars_all_aave_diff)
 
-print("Vars_dlt		    RH_MG15		RH_MG10		  PDF		PDF_MG15		PDF_MG10	PDF_MG10_debugoff")
-print(Vars_dlt+"		"+sprintf("%9.4f",vars_all_aave_diff(:,0))+"	"+sprintf("%9.4f",vars_all_aave_diff(:,1))+"	"+sprintf("%9.4f",vars_all_aave_diff(:,2))+"		"+sprintf("%9.4f",vars_all_aave_diff(:,3))+"		"+sprintf("%9.4f",vars_all_aave_diff(:,4))+"		"+sprintf("%9.4f",vars_all_aave_diff(:,5)))
+print("Vars_dlt		    RH_MG15			PDF_MG15")
+print(Vars_dlt+"		"+sprintf("%9.4f",vars_all_aave_diff(:,0))+"	"+sprintf("%9.4f",vars_all_aave_diff(:,1)))
+;
 
+;print("Vars_dlt		    RH_MG15		RH_MG10		  PDF		PDF_MG15		PDF_MG10	PDF_MG10_debugoff")
+;print(Vars_dlt+"		"+sprintf("%9.4f",vars_all_aave_diff(:,0))+"	"+sprintf("%9.4f",vars_all_aave_diff(:,1))+"	"+sprintf("%9.4f",vars_all_aave_diff(:,2))+"		"+sprintf("%9.4f",vars_all_aave_diff(:,3))+"		"+sprintf("%9.4f",vars_all_aave_diff(:,4))+"		"+sprintf("%9.4f",vars_all_aave_diff(:,5)))
+;
 ; =========== calculate climate sensitivity (Cess, 1990) ==========
 Vars_out					= (/"G","Gc","lambda","lambda_c","lambda/lambda_c","1+netCRF/G"/)
 Vars_out_fix				= Vars_out
@@ -105,9 +125,12 @@ lambda		 				= dlt_Ts/G
 lambda_c					= dlt_Ts/Gc
 
 data						= (/G, Gc, lambda, lambda_c, lambda/lambda_c, (1+vars_all_aave_diff(6,:)/G) /)
+printVarSummary(data)
 
-print(Vars_out_fix+"	"+sprintf("%9.4f",data(:,0))+"	"+sprintf("%9.4f",data(:,1))+"	"+sprintf("%9.4f",data(:,2))+"		"+sprintf("%9.4f",data(:,3))+"		"+sprintf("%9.4f",data(:,4))+"		"+sprintf("%9.4f",data(:,5)))
+print(Vars_out_fix+"	"+sprintf("%9.4f",data(:,0))+"	"+sprintf("%9.4f",data(:,1)))
 exit
+
+;print(Vars_out_fix+"	"+sprintf("%9.4f",data(:,0))+"	"+sprintf("%9.4f",data(:,1))+"	"+sprintf("%9.4f",data(:,2))+"		"+sprintf("%9.4f",data(:,3))+"		"+sprintf("%9.4f",data(:,4))+"		"+sprintf("%9.4f",data(:,5)))
 
 
 
