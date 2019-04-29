@@ -26,9 +26,9 @@ ocnmask		= False
 
 ; prescribe the start and end years --- 2019-04-26 22:57:39
 yearS		= 1980
-yearE		= 1988
+yearE		= 1984
 ; resolution
-res			= "2deg"
+resolution	= "1deg"
 
 
 fdir 		= "/home/lyl/WORK4/cesm1_2_1/archive/"
@@ -43,7 +43,7 @@ fappend 	= "/atm/hist/"
 ;case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10"/)
 
 ; cases with normal output and MG15 to compare with default simulation.
-if(res.eq."1deg")then
+if(resolution.eq."1deg")then
 	case_nor	= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
 	case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
 	case_4xCO2	= (/"FAMIPC5_f09f09_MG15_amip-4xCO2","FAMIPC5_f09f09_mac2_amip-4xCO2"/)
@@ -64,7 +64,7 @@ Vars 		= (/"sgm_tota","sgm_tota_sat","sgm_tota_uns","N1","deltaq_sat","OMEGA","S
 tag			= (/"nor","p4K"/)
 
 
-if(res.eq."1deg")then
+if(resolution.eq."1deg")then
 	nlat					= 192
 	nlon					= 288
 else
@@ -102,7 +102,7 @@ print(Vars(ivar))
 ; --- please add the startyear and endyear as the args to make data-reading more flexible.
 ;
 if(Vars(ivar).eq."OMEGA")then
-	OMEGA_tmp 		= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask)
+	OMEGA_tmp 		= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask,yearS,yearE)
 	OMEGA_tmp_500 		= OMEGA_tmp(:,{500},:,:)
 
 	;=======change unit from Pa/s to hPa/day
@@ -112,7 +112,7 @@ if(Vars(ivar).eq."OMEGA")then
 	delete([/OMEGA_tmp,OMEGA_tmp_500/])
 else if(Vars(ivar).eq."sgm_tota")then
 	if(icase.eq.1)then
-		sgm_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask)
+		sgm_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask,yearS,yearE)
 		sgm_tmp_900		= sgm_tmp(:,{900},:,:)
 		; change unit
 		sgm_tmp_900		= sqrt(abs(sgm_tmp_900))*1e3
@@ -123,9 +123,9 @@ else if(Vars(ivar).eq."sgm_tota")then
 	end if
 else if(Vars(ivar).eq."sgm_tota_sat")then
 	if(icase.eq.1)then
-		sgm_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),"sgm_tota",landmask,ocnmask)
+		sgm_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),"sgm_tota",landmask,ocnmask,yearS,yearE)
 		sgm_tmp_900		= sgm_tmp(:,{900},:,:)
-		deltaq_sat_tmp	= read_data_monthly(fdir,fappend,case_all(itag,icase),"deltaq_sat",landmask,ocnmask)
+		deltaq_sat_tmp	= read_data_monthly(fdir,fappend,case_all(itag,icase),"deltaq_sat",landmask,ocnmask,yearS,yearE)
 		deltaq_sat_tmp_900 = deltaq_sat_tmp(:,{900},:,:)*1e3
 		sgm_tmp_900		= where(deltaq_sat_tmp_900.lt.1e-2,sgm_tmp@_FillValue,sgm_tmp_900)
 		; change unit
@@ -137,9 +137,9 @@ else if(Vars(ivar).eq."sgm_tota_sat")then
 	end if
 else if(Vars(ivar).eq."sgm_tota_uns")then
 	if(icase.eq.1)then
-		sgm_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),"sgm_tota",landmask,ocnmask)
+		sgm_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),"sgm_tota",landmask,ocnmask,yearS,yearE)
 		sgm_tmp_900		= sgm_tmp(:,{900},:,:)
-		deltaq_sat_tmp	= read_data_monthly(fdir,fappend,case_all(itag,icase),"deltaq_sat",landmask,ocnmask)
+		deltaq_sat_tmp	= read_data_monthly(fdir,fappend,case_all(itag,icase),"deltaq_sat",landmask,ocnmask,yearS,yearE)
 		deltaq_sat_tmp_900 = deltaq_sat_tmp(:,{900},:,:)*1e3
 		sgm_tmp_900		= where(deltaq_sat_tmp_900.gt.1e-2,sgm_tmp@_FillValue,sgm_tmp_900)
 		; change unit
@@ -151,7 +151,7 @@ else if(Vars(ivar).eq."sgm_tota_uns")then
 	end if
 else if(Vars(ivar).eq."N1")then
 	if(icase.eq.1)then
-		N1_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask)
+		N1_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask,yearS,yearE)
 		N1_tmp_900		= N1_tmp(:,{900},:,:)
 		vars_all(ivar,itag,icase,:,:,:)	= N1_tmp_900
 		delete([/N1_tmp,N1_tmp_900/])
@@ -160,7 +160,7 @@ else if(Vars(ivar).eq."N1")then
 	end if
 else if(Vars(ivar).eq."deltaq_sat")then
 	if(icase.eq.1)then
-		deltaq_sat_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask)
+		deltaq_sat_tmp			= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask,yearS,yearE)
 		deltaq_sat_tmp_900		= deltaq_sat_tmp(:,{900},:,:)
 		; change unit
 		deltaq_sat_tmp_900		= deltaq_sat_tmp_900*1e3
@@ -170,13 +170,13 @@ else if(Vars(ivar).eq."deltaq_sat")then
 		vars_all(ivar,itag,icase,:,:,:)	= vars_all@_FillValue
 	end if
 else if(Vars(ivar).eq."netCRF")then
-	SWCF_tmp					= read_data_monthly(fdir,fappend,case_all(itag,icase),"SWCF",landmask,ocnmask)
-	LWCF_tmp					= read_data_monthly(fdir,fappend,case_all(itag,icase),"LWCF",landmask,ocnmask)
+	SWCF_tmp					= read_data_monthly(fdir,fappend,case_all(itag,icase),"SWCF",landmask,ocnmask,yearS,yearE)
+	LWCF_tmp					= read_data_monthly(fdir,fappend,case_all(itag,icase),"LWCF",landmask,ocnmask,yearS,yearE)
 	netCRF_tmp					= SWCF_tmp + LWCF_tmp
 	vars_all(ivar,itag,icase,:,:,:) = (/netCRF_tmp/)
 	delete([/SWCF_tmp,LWCF_tmp,netCRF_tmp/])
 else
-	vars_all(ivar,itag,icase,:,:,:)		= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask)
+	vars_all(ivar,itag,icase,:,:,:)		= read_data_monthly(fdir,fappend,case_all(itag,icase),Vars(ivar),landmask,ocnmask,yearS,yearE)
 	if(Vars(ivar).eq."CLDLOW" .or. Vars(ivar).eq."CLDMED" .or. Vars(ivar).eq."CLDHGH" .or. Vars(ivar).eq."CLDTOT")then
 		vars_all(ivar,itag,icase,:,:,:)		= vars_all(ivar,itag,icase,:,:,:)*100.
 	end if
@@ -206,7 +206,7 @@ printVarSummary(vars_all_diff)
 setfileoption("nc","format","netcdf4") 
 
 outdir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
-outname=outdir+"omega-var-outdata-wo-obs-"+res
+outname=outdir+"omega-var-outdata-wo-obs-"+resolution
 print(outname)
 
 if(landmask)then
