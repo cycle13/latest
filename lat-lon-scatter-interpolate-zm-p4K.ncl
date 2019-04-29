@@ -12,25 +12,36 @@ begin
 ;fdir 				= "/home/lyl/WORK4/cesm1_2_1/archive/"
 ;fdir_append			= "/atm/hist/"
 
+horizon_interp			= True ; used for different input data resolution
+resolution				= "2deg"
+
 pattern_correlation		= False
 regime_contribution 	= False
 regime_mask_plot		= False ; this one depends on the regime_contribution
-lat_lon_plot			= True
+lat_lon_plot			= False
 Sherwood_2014			= False
 
-ALPI_bin_cal			= False;True 
-ALPIsub_revised			= False;True ; from LTS to EIS
-ALPIsub_mask_plot		= False;False
-ALPIsub_bin_plot		= False;True 
+ALPI_bin_cal			= True 
+ALPIsub_revised			= True ; from LTS to EIS
+ALPIsub_mask_plot		= False
+ALPIsub_bin_plot		= True 
+ALPI_mask_ocn			= True
+sgm_diff_plot			= False	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
+sgm_shal_4terms			= False ; term1, term2 and term3 for variance of shallow convection in one figure
+								; sgm_shal_4terms should work with sgm_diff_plot = True.
+if(sgm_shal_4terms)then
+	sgm_diff_plot		= True
+end if
 
-scatter_p2p				= False ; True ; -- some arrays are too small. only for two variables now.
-scatter_sub_ocn			= False ; True	; --- mask ocean or not
-scatter_sub_one_var		= False ; False	; --- one variable in X and Y axis -- only two variables in use_idx
+scatter_p2p				= False; True ; -- some arrays are too small. only for two variables now.
+scatter_sub_ocn			= False; True	; --- mask ocean or not
+scatter_sub_one_var		= False; False	; --- one variable in X and Y axis -- only two variables in use_idx
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
 scatter_sub_sgm_diff	= False ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
 
 zonal_mean				= False 
 
+do_read_cosp			= False
 cosp_hist				= False;True
 plot_2D_hist			= False;True
 plot_1D_hist			= False;True
@@ -44,13 +55,12 @@ latE_trop			= 30.
 lonS_scatter		= 220.
 lonE_scatter		= 270.
 
-select_idx			= 0	; choose how many regimes would be plotted 
+select_idx			= 0		; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
 regime_mask_val		= (/0,1,2,3,4,5,6/)
 LTS_criteria		= 17.
 
 nbins				= 10
-;ALPI_mask_val		= fspan(0,nbins-1,nbins)
 ALPI_mask_val		= fspan(0,nbins-1,nbins)+0.5 ;-- the addition of 0.5 is to make sure that 
 												 ;-- the value is in the center of cnLevels rather 
 												 ;-- than the edge. After this change, RasterFill
@@ -58,13 +68,13 @@ ALPI_mask_val		= fspan(0,nbins-1,nbins)+0.5 ;-- the addition of 0.5 is to make s
 
 fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 
-;case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_MG15_amip-p4K"/)
-;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
-;case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
-;case_p4K		 		= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
-
-case_nor 				= (/"FAMIPC5_f19f19_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
-case_p4K		 		= (/"FAMIPC5_f19f19_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
+if(resolution.eq."2deg")then
+	case_nor 				= (/"FAMIPC5_f19f19_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
+	case_p4K		 		= (/"FAMIPC5_f19f19_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
+else
+	case_nor 				= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
+	case_p4K		 		= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+end if
 
 
 case_name				= (/"RH","PDF"/)
@@ -160,7 +170,6 @@ TREFHT_levs			= (/210,220,230,240,250,260,270,275,280,285,290,295,300,305,310/)
 TREFHT_dlevs_1		= (/-5,-4,-3,-2,-1,-.5,-.2,0,.2,.5,1,2,3,4,5/)
 TREFHT_dlevs_2		= (/-5,-4,-3,-2,-1,-.5,-.2,0,.2,.5,1,2,3,4,5/)
 TREFHT_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
-
 
 CMFMC_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
 CMFMC_dlevs_1		= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
@@ -370,6 +379,8 @@ term3_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
 
+Vars_pr		= (/"PRECT", "PRECL", "PRECC"/)
+
 ;float FISCCP1_COSP(time, cosp_prs, cosp_tau, lat, lon)
 Vars_cosp	= (/"FISCCP1_COSP"/)
 
@@ -392,36 +403,39 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 
 ; --- scatter
 ;use_idx			= (/14,17,19,20,21,24,25,27,28,32,33,34,35/)		; for scatter plot -- sgm_shal
-;use_idx			= (/14,17,36,37,38,39/)		; for scatter plot -- sgm_shal
-;use_idx			= (/15,22,23,24,25,27,28,29,30,31/)		; for scatter plot -- sgm_turb
-;use_idx			= (/15,40,41,42,43,44,45,46/)
-
-;use_idx				= (/3,5/)	; --- one variable in X and Y axis
+;use_idx			= (/14,17,36,37,38,39/)								; for scatter plot -- sgm_shal
+;use_idx			= (/15,22,23,24,25,27,28,29,30,31/)					; for scatter plot -- sgm_turb
+;use_idx			= (/3,5/)											; --- one variable in X and Y axis
 
 ; --- ALPI
-;use_idx				= (/0,13,3,4,5,10,11,12/)	; for ALPI
-;use_idx				= (/0,11,12,14,15/)	; for ALPI -- only for sgm_tota and N1, and sgm_turb, sgm_shal
-;use_idx				= (/0,14,17,19,20,21,24,25,27,28,32,33,34,47,48,36,37,38,39/)	 	; sgm_shal related
-;use_idx				= (/0,14,56,57,58,39,36,37,38/)	 	; sgm_shal related
-;use_idx				= (/0,14,56,57,58/)	 	; sgm_shal related
+use_idx				= (/13,3,5,10,11,12/)							; for ALPI
 
-;use_idx				= (/0,15,22,23,24,25,27,28,47,48,40,41,42,43,44,45,46/)			; sgm_turb related 29,30,31 == 40,41,42
-;use_idx				= (/0,15,53,54,55,52,49,50,51/)
+;use_idx			= (/0,14,17,19,20,21,24,25,27,28, \
+;						32,33,34,47,48,36,37,38,39/)	 				; sgm_shal related
+;use_idx			= (/0,14,56,57,58,39,36,37,38/)	 					; sgm_shal related
+
+;use_idx			= (/14,56,57,58/)	 								; sgm_shal related: term1 term2 term3
+																		; need sgm_diff_plot and sgm_shal_4terms = True
+
+;use_idx				= (/11,14,15/)									; sgm_tota, sgm_shal, sgm_turb
+																		; need sgm_diff_plot = True
+
+print(varsA(use_idx))
+
+;use_idx			= (/0,15,22,23,24,25,27,28,47,48, \
+;						40,41,42,43,44,45,46/)							; sgm_turb related 29,30,31 == 40,41,42
+;use_idx			= (/0,15,53,54,55,52,49,50,51/)
 
 
-;use_idx			= (/3,4,13,5,6,10/)
-;use_idx			= (/9,7,8/)
-;use_idx			= (/13,3,5,10,11,12/)
-;use_idx			= (/13,3,4,5,6,10/)
-;use_idx				= (/0,5,10,16/)
-;use_idx				= (/0,16,17,18/)
-;use_idx				= (/0,16,17,18,19,20,21,22,23,24/)
-
-;use_idx				= (/3,4/) ; ---- input for lat_lon_plot
-use_idx				= (/0,13,3,4/) ; ---- input for zonal_mean
+;use_idx			= (/3,4/) ; ---- input for lat_lon_plot
+;use_idx			= (/0,13,3,4/) ; ---- input for zonal_mean
 
 ; --- for variables only in Gauss-PDF
 use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
+
+;---- variables with the same Y axis
+use_idx_yaxis_sgm		= (/11,14,15,56,57,58/) ; sgm_tota, sgm_turb, sgm_shal
+use_idx_yaxis_crf		= (/13,3,4/)
 
 vars				= varsA(use_idx)
 vars_levs			= varsA_levs(use_idx,:)
@@ -433,13 +447,35 @@ plots_strings		= plotsA_strings
 
 vars_pdf			= varsA(use_idx_pdf)
 
+vars_yaxis = NewList("lifo")
 
-nlat				= 73		; number of output latitudes
-nlon				= 144		; number of output longitudes
-nlev				= 30
+ListAppend(vars_yaxis,(/"sgm_tota","sgm_shal","sgm_turb",\
+				    	"term1_shal","term2_shal","term3_shal"/))
+ListAppend(vars_yaxis,(/"netCRF","SWCF","LWCF"/))
+print(vars_yaxis)
 
-klon = ispan(0,nlon-1,1)*2.5	; to 2.5 x 2.5
-klat = ispan(0,nlat-1,1)*2.5-90.
+
+nlev					= 30
+if(.not.horizon_interp)then
+	if(resolution.eq."2deg")then
+		nlat				= 96
+		nlon				= 144
+	else
+		nlat				= 192
+		nlon				= 288
+	end if
+else
+	nlat				= 73		; number of output latitudes
+	nlon				= 144		; number of output longitudes
+	klon = ispan(0,nlon-1,1)*2.5	; to 2.5 x 2.5
+	klat = ispan(0,nlat-1,1)*2.5-90.
+	
+	;nlat				= 181		; number of output latitudes
+	;nlon				= 360		; number of output longitudes
+	;klon = ispan(0,nlon-1,1)*1.0	; to 1.0 x 1.0
+	;klat = ispan(0,nlat-1,1)*1.0-90.
+end if
+
 
 vars_mid			= new((/dimsizes(Vars_mid),dimsizes(tag),dimsizes(case_nor),nlev,nlat,nlon/),float)
 vars_mid!0			= "var"
@@ -448,6 +484,14 @@ vars_mid!1		 	= "tag"
 vars_mid&tag		= fspan(0,dimsizes(tag)-1,dimsizes(tag))
 vars_mid!2		 	= "case"
 vars_mid&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
+
+vars_pr			= new((/dimsizes(Vars_pr),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float)
+vars_pr!0			= "var"
+vars_pr&var		= fspan(0,dimsizes(Vars_pr)-1,dimsizes(Vars_pr))
+vars_pr!1		 	= "tag"
+vars_pr&tag		= fspan(0,dimsizes(tag)-1,dimsizes(tag))
+vars_pr!2		 	= "case"
+vars_pr&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
 
 vars_all			= new((/dimsizes(vars),dimsizes(tag),dimsizes(case_nor),nlat,nlon/),float)
@@ -476,24 +520,68 @@ do icase=0,dimsizes(case_nor)-1
 	ftmp1								= addfile(fdir+case(itag,icase)+append,"r")
 	lev									= ftmp1->lev
 	tmp									= ftmp1->OCNFRAC(0,:,:)
-	OCNFRAC								= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+	if(horizon_interp)then
+		OCNFRAC								= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+	else
+		OCNFRAC								= tmp
+	end if
 	delete(tmp)
 
 	; read Vars_mid
 	do ivar=0,dimsizes(Vars_mid)-1
 		tmp								= ftmp1->$Vars_mid(ivar)$(0,:,:,:)
-		vars_mid(ivar,itag,icase,:,:,:)		= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+		if(horizon_interp)then
+			vars_mid(ivar,itag,icase,:,:,:)		= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+		else
+			vars_mid(ivar,itag,icase,:,:,:)		= tmp
+		end if
 		delete(tmp)
 	end do ; do ivar=
 
+	; read Vars_pr
+	do ivar=0,dimsizes(Vars_pr)-1
+		if(isfilevar(ftmp1,Vars_pr(ivar))) then
+			tmp								= ftmp1->$Vars_pr(ivar)$(0,:,:)
+			if(horizon_interp)then
+				vars_pr(ivar,itag,icase,:,:)		= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+			else
+				vars_pr(ivar,itag,icase,:,:)		= tmp
+			end if
+			delete(tmp)
+		else
+			if(Vars_pr(ivar).eq."PRECT")then
+				precl_tmp				= ftmp1->PRECL(0,:,:)
+				precc_tmp				= ftmp1->PRECC(0,:,:)
+				tmp1					= precl_tmp+precc_tmp
+				copy_VarCoords(precl_tmp,tmp1)
+				if(horizon_interp)then
+					vars_pr(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+					vars_pr(ivar,itag,icase,:,:)   = tmp1
+				end if
+				delete(tmp1)
+				vars_pr(ivar,itag,icase,:,:)	= vars_pr(ivar,itag,icase,:,:)*8.64e7
+				delete(precl_tmp)
+				delete(precc_tmp)
+			end if
+		end if ; isfilevar()
+	end do ; do ivar=
+
+
+if(do_read_cosp)then
 	; read Vars_cosp
 	do ivar=0,dimsizes(Vars_cosp)-1
 		tmp								= ftmp1->$Vars_cosp(ivar)$(0,:,:,:,:)
+		if(horizon_interp)then
 		vars_cosp(ivar,itag,icase,:,:,:,:)	= linint2_Wrap(tmp&lon,tmp&lat,tmp,True,klon,klat,0)
+		else
+		vars_cosp(ivar,itag,icase,:,:,:,:)	= tmp
+		end if
 		delete(tmp)
 	end do ; do ivar=
 	printVarSummary(vars_cosp)
 	printMinMax(vars_cosp,True)
+end if
 
 	; read Vars_all
 	do ivar=0,dimsizes(vars)-1
@@ -501,11 +589,19 @@ do icase=0,dimsizes(case_nor)-1
 			tmp									= ftmp1->$vars(ivar)$
 			if(dimsizes(dimsizes(tmp)).eq.4)then ; figure out variables having vertical level coordinate
 				tmp1							= ftmp1->$vars(ivar)$(0,{887},:,:)
+				if(horizon_interp)then
 				vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+				vars_all(ivar,itag,icase,:,:)	= tmp1
+				end if
 				delete(tmp1)
 			else
 				tmp1						 	= ftmp1->$vars(ivar)$(0,:,:)
+				if(horizon_interp)then
 				vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+				vars_all(ivar,itag,icase,:,:)	= tmp1
+				end if
 				delete(tmp1)
 			end if
 
@@ -530,7 +626,11 @@ do icase=0,dimsizes(case_nor)-1
 					tmp1					= -0.5*umf_shal_tmp*qwu_qw_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
 					tmp1					= tmp1*1e6
 					copy_VarCoords(umf_shal_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)	= tmp1
+					end if
 					delete(tmp1)
 					delete([/umf_shal_tmp,qwu_qw_tmp,clddep2_tmp,wstarPBL_tmp/])
 				end if
@@ -542,7 +642,11 @@ do icase=0,dimsizes(case_nor)-1
 					tmp1					= -0.5*umf_shal_tmp*thlu_thl_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
 					tmp1					= tmp1*1e6
 					copy_VarCoords(umf_shal_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)	= tmp1
+					end if 
 					delete(tmp1)
 					delete([/umf_shal_tmp,thlu_thl_tmp,clddep2_tmp,wstarPBL_tmp/])
 				end if
@@ -554,7 +658,11 @@ do icase=0,dimsizes(case_nor)-1
 					tmp1					= -0.5*umf_shal_tmp*qwu_thlu_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
 					tmp1					= tmp1*1e6
 					copy_VarCoords(umf_shal_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)	= tmp1
+					end if
 					delete(tmp1)
 					delete([/umf_shal_tmp,qwu_thlu_tmp,clddep2_tmp,wstarPBL_tmp/])
 				end if
@@ -569,7 +677,11 @@ do icase=0,dimsizes(case_nor)-1
 					tmp1					= 0.25*aa_gp_tmp^2*qw2_tmp
 					tmp1					= tmp1*1e6
 					copy_VarCoords(aa_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/aa_gp_tmp,dqwdz_tmp,lengi_tmp,shi_tmp,qw2_tmp/])
 				end if
@@ -583,7 +695,11 @@ do icase=0,dimsizes(case_nor)-1
 					tmp1					= 0.25*bb_gp_tmp^2*thl2_tmp
 					tmp1					= tmp1*1e6
 					copy_VarCoords(bb_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/bb_gp_tmp,dthldz_tmp,lengi_tmp,shi_tmp,thl2_tmp/])
 				end if
@@ -599,7 +715,11 @@ do icase=0,dimsizes(case_nor)-1
 					tmp1				= 0.25*(-1.)*2*aa_gp_tmp*bb_gp_tmp*qwthl_tmp
 					tmp1					= tmp1*1e6
 					copy_VarCoords(aa_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/aa_gp_tmp,bb_gp_tmp,dqwdz_tmp,dthldz_tmp,lengi_tmp,shi_tmp,qwthl_tmp/])
 				end if
@@ -608,7 +728,11 @@ do icase=0,dimsizes(case_nor)-1
 					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
 					tmp1					= aa_gp_tmp^2*dqwdz_tmp^2
 					copy_VarCoords(aa_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/aa_gp_tmp,dqwdz_tmp/])
 				end if
@@ -617,7 +741,11 @@ do icase=0,dimsizes(case_nor)-1
 					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
 					tmp1					= bb_gp_tmp^2*dthldz_tmp^2
 					copy_VarCoords(bb_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/bb_gp_tmp,dthldz_tmp/])
 				end if
@@ -628,7 +756,11 @@ do icase=0,dimsizes(case_nor)-1
 					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
 					tmp1					= -2.*aa_gp_tmp*bb_gp_tmp*dqwdz_tmp*dthldz_tmp
 					copy_VarCoords(aa_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if 
 					delete(tmp1)
 					delete([/aa_gp_tmp,bb_gp_tmp,dqwdz_tmp,dthldz_tmp/])
 				end if
@@ -637,7 +769,11 @@ do icase=0,dimsizes(case_nor)-1
 					shi_tmp				= ftmp1->shi(0,{887},:,:)
 					tmp1					= shi_tmp*lengi_tmp^2
 					copy_VarCoords(lengi_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/lengi_tmp,shi_tmp/])
 				end if
@@ -645,7 +781,11 @@ do icase=0,dimsizes(case_nor)-1
 					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
 					tmp1					= lengi_tmp^2
 					copy_VarCoords(lengi_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(lengi_tmp)
 				end if
@@ -653,7 +793,11 @@ do icase=0,dimsizes(case_nor)-1
 					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
 					tmp1					= aa_gp_tmp^2
 					copy_VarCoords(aa_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(aa_gp_tmp)
 				end if
@@ -661,7 +805,11 @@ do icase=0,dimsizes(case_nor)-1
 					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
 					tmp1					= bb_gp_tmp^2
 					copy_VarCoords(bb_gp_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(bb_gp_tmp)
 				end if
@@ -669,7 +817,11 @@ do icase=0,dimsizes(case_nor)-1
 					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
 					tmp1					= dqwdz_tmp^2
 					copy_VarCoords(dqwdz_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(dqwdz_tmp)
 				end if
@@ -677,7 +829,11 @@ do icase=0,dimsizes(case_nor)-1
 					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
 					tmp1					= dthldz_tmp^2
 					copy_VarCoords(dthldz_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(dthldz_tmp)
 				end if
@@ -686,25 +842,41 @@ do icase=0,dimsizes(case_nor)-1
 					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
 					tmp1					= dthldz_tmp*dqwdz_tmp
 					copy_VarCoords(dthldz_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/dthldz_tmp,dqwdz_tmp/])
 				end if
 
 				if(vars(ivar).eq."vert_qwflx_turb")then
 					tmp1					= ftmp1->qw2(0,{887},:,:)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 				end if
 				if(vars(ivar).eq."vert_thlflx_turb")then
 					tmp1					= ftmp1->thl2(0,{887},:,:)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 				end if
 				if(vars(ivar).eq."vert_qwthlflx_turb")then
 					tmp1					= ftmp1->qwthl(0,{887},:,:)
 					tmp1					= tmp1*(-1.)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 				end if
 				if(vars(ivar).eq."vert_qwflx_shal")then
@@ -712,7 +884,11 @@ do icase=0,dimsizes(case_nor)-1
 					qwu_qw_tmp				= ftmp1->qwu_qw(0,{887},:,:)
 					tmp1					= -2.*umf_shal_tmp*qwu_qw_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(umf_shal_tmp)
 					delete(qwu_qw_tmp)
@@ -722,7 +898,11 @@ do icase=0,dimsizes(case_nor)-1
 					thlu_thl_tmp			= ftmp1->thlu_thl(0,{887},:,:)
 					tmp1					= -2.*umf_shal_tmp*thlu_thl_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(umf_shal_tmp)
 					delete(thlu_thl_tmp)
@@ -732,7 +912,11 @@ do icase=0,dimsizes(case_nor)-1
 					qwu_thlu_tmp			= ftmp1->qwu_thlu(0,{887},:,:)
 					tmp1					= -1.*umf_shal_tmp*qwu_thlu_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete(umf_shal_tmp)
 					delete(qwu_thlu_tmp)
@@ -742,7 +926,11 @@ do icase=0,dimsizes(case_nor)-1
 					wstarPBL_tmp		= ftmp1->wstarPBL(0,:,:)
 					tmp1					= clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
 					copy_VarCoords(clddep2_tmp,tmp1)
+					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+					else
+					vars_all(ivar,itag,icase,:,:)   = tmp1
+					end if
 					delete(tmp1)
 					delete([/clddep2_tmp,wstarPBL_tmp/])
 				end if
@@ -753,7 +941,11 @@ do icase=0,dimsizes(case_nor)-1
 				precc_tmp				= ftmp1->PRECC(0,:,:)
 				tmp1					= precl_tmp+precc_tmp
 				copy_VarCoords(precl_tmp,tmp1)
+				if(horizon_interp)then
 				vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+				vars_all(ivar,itag,icase,:,:)   = tmp1
+				end if
 				delete(tmp1)
 				vars_all(ivar,itag,icase,:,:)	= vars_all(ivar,itag,icase,:,:)*8.64e7
 				delete(precl_tmp)
@@ -782,7 +974,11 @@ do icase=0,dimsizes(case_nor)-1
 				LWCF						= ftmp1->LWCF(0,:,:)
 				tmp1						= (/SWCF+LWCF/)
 				copy_VarCoords(SWCF,tmp1)
+				if(horizon_interp)then
 				vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+				vars_all(ivar,itag,icase,:,:)   = tmp1
+				end if
 				delete(tmp1)
 				delete([/SWCF,LWCF/])
 			end if
@@ -809,13 +1005,18 @@ vars_mid!5		= "lon"
 vars_mid&lat@units	= "degrees_north"
 vars_mid&lon@units	= "degrees_east"
 
+vars_pr!3		= "lat"
+vars_pr!4		= "lon"
+vars_pr&lat@units	= "degrees_north"
+vars_pr&lon@units	= "degrees_east"
+
+
+if(do_read_cosp)then
 vars_cosp!5		= "lat"
 vars_cosp!6	 	= "lon"
 vars_cosp&lat@units	= "degrees_north"
 vars_cosp&lon@units	= "degrees_east"
-
-
-
+end if
 
 printVarSummary(vars_all)
 printVarSummary(vars_mid)
@@ -1505,66 +1706,66 @@ rcarry						= new((/dimsizes(vars),2/),float)
 
 do ivar=0,dimsizes(vars)-1
 	if(vars(0).eq."sgm_shal" .or. vars(0).eq."sgm_turb")then
-	start_idx=1
+		start_icase=1
 	else
-	start_idx=0
+		start_icase=0
 	end if
 
-do icase=start_idx,dimsizes(case_nor)-1	; only for Gauss-PDF
-
-if(scatter_sub_one_var)then
-; --- for cntl and p4K-cntl plot for the same variable
-x							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
-y							= ndtooned(vars_all_casediff_trop_ocn(ivar,0,::3,::3))
-;y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
-end if
-
-; --- for Gauss-PDF, different variables and try to capture their correlation
-; --- x: sgm_shal or sgm_turb; y: any other related variables for sgm_shal and sgm_turb
-
-if(scatter_sub_sgm_climo)then
-; -- for climatology
-x							= ndtooned(vars_all_trop_ocn(0,0,icase,::3,::3))
-y							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
-end if
-
-if(scatter_sub_sgm_diff)then
-; -- for difference between p4K and cntl
-x							= ndtooned(vars_all_tagdiff_trop_ocn(0,icase,::3,::3))
-y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
-end if
-
-printVarSummary(x)
-printVarSummary(y)
-
-; -- make the match between x and y by eliminating any data in each one array
-ytmp						= where(x.ne.vars_all@_FillValue,y,vars_all@_FillValue)
-xtmp						= where(ytmp.ne.vars_all@_FillValue,x,vars_all@_FillValue)
-printVarSummary(ytmp)
-printVarSummary(xtmp)
-
-; --- sorting is used to eliminate those missing values.
-ii							= dim_pqsort_n(xtmp,1,0)
-xx							= xtmp(ii)
-yy							= ytmp(ii)
-effnum						= (num(.not.ismissing(xx)))-1 ; -- number of no-missing values
-print(effnum)
-
-; linear regression
-rc							= regline_stats(xx(:effnum),yy(:effnum))
-printVarSummary(rc)
-
-nx							= dimsizes(xx(:effnum))
-print(nx)
-
-pltarry(ivar,icase,0,:effnum)				= yy(:effnum)
-pltarry(ivar,icase,1,:effnum)				= rc@Yest
-
-pltx(ivar,icase,:effnum)				= xx(:effnum)
-rcarry(ivar,icase)							= rc@r
-
-
-end do ; do icase=
+	do icase=start_icase,dimsizes(case_nor)-1	; only for Gauss-PDF
+	
+	if(scatter_sub_one_var)then
+	; --- for cntl and p4K-cntl plot for the same variable
+	x							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
+	y							= ndtooned(vars_all_casediff_trop_ocn(ivar,0,::3,::3))
+	;y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
+	end if
+	
+	; --- for Gauss-PDF, different variables and try to capture their correlation
+	; --- x: sgm_shal or sgm_turb; y: any other related variables for sgm_shal and sgm_turb
+	
+	if(scatter_sub_sgm_climo)then
+	; -- for climatology
+	x							= ndtooned(vars_all_trop_ocn(0,0,icase,::3,::3))
+	y							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
+	end if
+	
+	if(scatter_sub_sgm_diff)then
+	; -- for difference between p4K and cntl
+	x							= ndtooned(vars_all_tagdiff_trop_ocn(0,icase,::3,::3))
+	y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
+	end if
+	
+	printVarSummary(x)
+	printVarSummary(y)
+	
+	; -- make the match between x and y by eliminating any data in each one array
+	ytmp						= where(x.ne.vars_all@_FillValue,y,vars_all@_FillValue)
+	xtmp						= where(ytmp.ne.vars_all@_FillValue,x,vars_all@_FillValue)
+	printVarSummary(ytmp)
+	printVarSummary(xtmp)
+	
+	; --- sorting is used to eliminate those missing values.
+	ii							= dim_pqsort_n(xtmp,1,0)
+	xx							= xtmp(ii)
+	yy							= ytmp(ii)
+	effnum						= (num(.not.ismissing(xx)))-1 ; -- number of no-missing values
+	print(effnum)
+	
+	; linear regression
+	rc							= regline_stats(xx(:effnum),yy(:effnum))
+	printVarSummary(rc)
+	
+	nx							= dimsizes(xx(:effnum))
+	print(nx)
+	
+	pltarry(ivar,icase,0,:effnum)				= yy(:effnum)
+	pltarry(ivar,icase,1,:effnum)				= rc@Yest
+	
+	pltx(ivar,icase,:effnum)				= xx(:effnum)
+	rcarry(ivar,icase)							= rc@r
+	
+	
+	end do ; do icase=
 end do ; do ivar=
 
 
@@ -1582,17 +1783,23 @@ end if
 plot							= new((/dimsizes(vars)/),graphic)
 txid							= new((/dimsizes(vars)/),graphic)
 annoid							= new((/dimsizes(vars)/),graphic)
-if(start_idx.eq.0)then
-colors							= (/"grey","lightskyblue"/)
-else
-colors							= (/"blue","lightskyblue"/)
-end if
 
 
 count	= 0
 
-;do ivar=0,dimsizes(vars)-1
-do ivar=start_idx,dimsizes(vars)-1
+if(vars(0).eq."sgm_shal" .or. vars(0).eq."sgm_turb")then
+	start_icase=1
+else
+	start_icase=0
+end if
+
+if(start_icase.eq.0)then
+	colors							= (/"grey","lightskyblue"/)
+else
+	colors							= (/"blue","lightskyblue"/)
+end if
+
+do ivar=0,dimsizes(vars)-1
 
 res								= True
 res@gsnDraw						= False
@@ -1638,19 +1845,19 @@ res@tmXBMinorOn				= False
 
 
 ;plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,0,:),pltarry(ivar,0,:,:),res)
-plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,start_idx,:),pltarry(ivar,start_idx,:,:),res)
+plot(ivar)				= gsn_csm_xy(wks,pltx(ivar,start_icase,:),pltarry(ivar,start_icase,:,:),res)
 
 count	= count + 1
 
-if(start_idx.eq.0)then
-do icase=1,dimsizes(case_nor)-1
-	res@xyMarkerColor		= colors(icase)
-	res@xyLineColor			= colors(icase)
-	res@xyLineThicknessF	= 3.0
-
-	ovplot					= gsn_csm_xy(wks,pltx(ivar,icase,:),pltarry(ivar,icase,:,:),res)
-	overlay(plot(ivar),ovplot)
-end do ; do icase=
+if(start_icase.eq.0)then ; not start from sgm_turb and sgm_shal, overlay another case result
+	do icase=1,dimsizes(case_nor)-1
+		res@xyMarkerColor		= colors(icase)
+		res@xyLineColor			= colors(icase)
+		res@xyLineThicknessF	= 3.0
+	
+		ovplot					= gsn_csm_xy(wks,pltx(ivar,icase,:),pltarry(ivar,icase,:,:),res)
+		overlay(plot(ivar),ovplot)
+	end do ; do icase=
 end if
 
 txres							= True
@@ -1658,7 +1865,7 @@ txres@txPerimOn					= True
 txres@txFontHeightF				= 0.03
 ;txres@txBackgroundFillColor		= colors(ivar)
 
-if(start_idx.eq.0)then
+if(start_icase.eq.0)then
 txid(ivar)				= gsn_create_text(wks,"r="+sprintf("%6.3f",rcarry(ivar,0))+"; "+sprintf("%6.3f",rcarry(ivar,1)),txres)
 else
 txid(ivar)				= gsn_create_text(wks,"r="+sprintf("%6.3f",rcarry(ivar,1)),txres)
@@ -1680,7 +1887,7 @@ resP@gsnPanelYWhiteSpacePercent		= 5.
 resP@gsnPanelLeft					= 0.05
 resP@gsnPanelRight					= 0.95
 
-if(start_idx.eq.0)then
+if(start_icase.eq.0)then
 gsn_panel(wks,ndtooned(plot),(/dimsizes(ndtooned(plot))/2,2/),resP)
 else
 	if(mod(dimsizes(vars),4).ne.0)then
@@ -2242,18 +2449,18 @@ printVarSummary(EIS)
 printMinMax(EIS,True)
 
 ; ---------- 1.2 get precipitation
-do ivar=0,dimsizes(vars)-1
-	if(vars(ivar).eq."PRECT")then
-		print(vars(ivar))
-		prect					= vars_all(ivar,:,:,:,:)
+;--- separate PRECT from vars_all to avoid the plotting difficulty if I dont want to plot PRECT.
+do ivar=0,dimsizes(Vars_pr)-1
+	if(Vars_pr(ivar).eq."PRECT")then
+		print(Vars_pr(ivar))
+		prect					= vars_pr(ivar,:,:,:,:)
 		break
 	end if
 end do ; do ivar=
 printVarSummary(prect)
 printMinMax(prect,True)
 
-mask_ocn=True
-if(mask_ocn)then
+if(ALPI_mask_ocn)then
 	; addition: mask land region
 	LTS_ocn			= LTS
 	EIS_ocn			= EIS
@@ -2272,10 +2479,10 @@ else
 	LTS_ocn			= LTS
 	EIS_ocn			= EIS 
 	prect_ocn		= prect
-end if
+end if ; ALPI_mask_ocn
 
-LTS_tropics	 = LTS_ocn(:,:,{latS_trop:latE_trop},:)
-EIS_tropics	 = EIS_ocn(:,:,{latS_trop:latE_trop},:)
+LTS_tropics	 	= LTS_ocn(:,:,{latS_trop:latE_trop},:)
+EIS_tropics	 	= EIS_ocn(:,:,{latS_trop:latE_trop},:)
 prect_tropics	 = prect_ocn(:,:,{latS_trop:latE_trop},:)
 
 printVarSummary(LTS_tropics)
@@ -2559,6 +2766,7 @@ end if ; ALPI_mask_plot
 ; -------- ALPI_binned_vars
 ; ----------------------------------------------------
 if(ALPIsub_bin_plot)then
+
 if(ALPIsub_revised)then
 wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars_nbins_"+nbins+"_revised_ALPI"+"_"+vars(dimsizes(vars)-1))
 else
@@ -2578,7 +2786,6 @@ res@tiXAxisString			= "ALPI percentile (%)"
 
 res@tmXBMode				= "Explicit"
 res@tmXBValues				= fspan(0,nbins,nbins+1)
-;res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
 res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
 res@trXMaxF					= (nbins)
 
@@ -2590,9 +2797,12 @@ res@tmYLLabelFontHeightF		=fontheight
 
 res@gsnStringFontHeightF	= 0.03
 
-res@tmYLFormat				= "0*+^e"
-res@tmYLMinorOn				= False
-res@tmXBPrecision			= 6
+res@tmXTOn					= False
+res@tmYROn					= False
+
+;res@tmYLFormat				= "0*+^e"
+;res@tmYLMinorOn				= False
+;res@tmXBPrecision			= 6
 
 res_diff					= res
 
@@ -2615,18 +2825,52 @@ lines_ref0_sgm					= new((/dimsizes(vars),dimsizes(case_nor)+1/),graphic)
 centers_diff_sgm				= new((/dimsizes(vars),dimsizes(case_nor)+1,nbins/),graphic)
 
 
-
 count_1		= 0
 count_2		= 0
 
-;do ivar=0,dimsizes(vars)-1
-if(vars(1).eq."sgm_tota")then
-start_idx	= 1
-else
-start_idx	= 0
-end if
+;------------------------------------------------------------------------
+; ---- get the common min and max value for some sgm related variables to be used as Y axis --- starts 
 
-do ivar=start_idx,dimsizes(vars)-1 ; don't draw PRECT
+; yspan: include each term in each ilist (sgm, crf) of list[vars_yaxis]
+; 		 /ilist,iterm,2+2 (max, min, diff-max, diff-min)/
+; all_yspan: include the max/min of all terms in each ilist of list[vars_yaxis]
+; 		 /ilist,2+2 (max, min, diff-max, diff-min)/
+yspan 					= NewList("lifo")
+all_yspan 				= NewList("lifo")
+do ilist=0,ListCount(vars_yaxis)-1
+	ListAppend(yspan,new((/dimsizes(vars_yaxis[ilist]),2+2/), float))
+	ListAppend(all_yspan,new(2+2, float))
+end do
+;print(all_yspan)
+	
+do ilist=0,ListCount(vars_yaxis)-1
+do iy=0,dimsizes(vars_yaxis[ilist])-1
+do ivar=0,dimsizes(vars)-1
+	if(vars(ivar).eq.vars_yaxis[ilist](iy))then
+		yspan[ilist](iy,0) 		= max(vars_all_bin_mean(ivar,:,:,:)+vars_all_bin_std(ivar,:,:,:))
+		yspan[ilist](iy,1) 		= min(vars_all_bin_mean(ivar,:,:,:)-vars_all_bin_std(ivar,:,:,:))
+		yspan[ilist](iy,2) 		= max(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
+		yspan[ilist](iy,3) 		= min(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
+	end if
+end do ; do ivar=
+end do ; do iy=
+all_yspan[ilist](0) 	= max(yspan[ilist](:,0))	
+all_yspan[ilist](1) 	= min(yspan[ilist](:,1))	
+all_yspan[ilist](2) 	= max(yspan[ilist](:,2))	
+all_yspan[ilist](3) 	= min(yspan[ilist](:,3))	
+
+;print("ilist="+ilist+"	"+yspan[ilist](:,2))
+;print("ilist="+ilist+"	"+yspan[ilist](:,3))
+;print(all_yspan[ilist](0)+"		"+all_yspan[ilist](1))
+end do ;ilist
+
+;---zhangjs---
+
+; ---- get the common min and max value for some sgm related variables to be used as Y axis --- ends
+;------------------------------------------------------------------------
+
+do ivar=0,dimsizes(vars)-1
+print(vars(ivar))
 
 res@gsnLeftString			= plots_strings(count_1)
 res@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
@@ -2640,23 +2884,20 @@ tmp_diff_final(0,:)			= tmp_diff1(0,:)
 tmp_diff_final(1,:)			= tmp_diff1(1,:)
 tmp_diff_final(2,:)			= tmp_diff2(:)
 
-; --- make the sgm related variables share the same Y axis range
-if(start_idx.eq.1 .and. (vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb"))then
-sgm_all_max					= max(vars_all_bin_mean((/1,3,4/),:,:,:)+vars_all_bin_std((/1,3,4/),:,:,:))
-sgm_all_min					= min(vars_all_bin_mean((/1,3,4/),:,:,:)-vars_all_bin_std((/1,3,4/),:,:,:))
-res@trYMaxF					= sgm_all_max
-res@trYMinF					= sgm_all_min
+do ilist=0,0 ;ListCount(vars_yaxis)-1
+if((.not.ismissing(ind(vars_yaxis[ilist].eq.vars(ivar)))))then
+	res@trYMaxF					= all_yspan[ilist](0) 
+	res@trYMinF					= all_yspan[ilist](1) 
+	break	; once find it, exit the loop
 else
-res@trYMaxF					= max(tmp+tmp2)
-res@trYMinF					= min(tmp-tmp2)
+	res@trYMaxF					= max(tmp+tmp2)
+	res@trYMinF					= min(tmp-tmp2)
+	break 	; once find it, exit the loop
 end if
+end do 
 
-;plot(ivar) 					= gsn_csm_y(wks, tmp, res)
-if(start_idx.eq.1)then
-plot(ivar-1) 					= gsn_csm_y(wks, tmp, res)
-else
 plot(ivar) 					= gsn_csm_y(wks, tmp, res)
-end if
+
 count_1 = count_1 + 1
 
 ;;;;;;;;;;;;;;;;;
@@ -2664,35 +2905,45 @@ res_diff@gsnLeftString			= plots_strings(count_2)
 res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 
 ; --- make the sgm related variables share the same Y axis range
-if(start_idx.eq.1)then
-	if(vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb")then
-	sgm_all_max							= max(vars_all_bin_mean((/1,3,4/),1,:,:)-vars_all_bin_mean((/1,3,4/),0,:,:))
-	sgm_all_min							= min(vars_all_bin_mean((/1,3,4/),1,:,:)-vars_all_bin_mean((/1,3,4/),0,:,:))
-	res_diff@trYMaxF					= sgm_all_max
-	res_diff@trYMinF					= sgm_all_min
-	else
-	res_diff@trYMaxF					= max(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
-	res_diff@trYMinF					= min(vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:))
-	end if
+do ilist=0, ListCount(vars_yaxis)-1
+;print("ilist="+ilist+"	"+all_yspan[ilist](2)+"		"+all_yspan[ilist](3))
+
+if((.not.ismissing(ind(vars_yaxis[ilist].eq.vars(ivar)))))then
+	res_diff@trYMaxF					= all_yspan[ilist](2)*1.1
+	res_diff@trYMinF					= all_yspan[ilist](3)*1.1
+	break ; once find it, exit the loop
+else
+	res_diff@trYMaxF					= max(tmp_diff_final)*1.1
+	res_diff@trYMinF					= min(tmp_diff_final)*1.1
+	break ; once find it, exit the loop
 end if
+end do
 
 ; resource for sgm variables, because I will overlay them on one plot
-res_diff_sgm					= res_diff
-if(start_idx.eq.1 .and. (ivar-1).eq.0)then
-res_diff_sgm@gsnLeftString		= ""
-res_diff_sgm@tiYAxisString		= "SGM"
+; one switch for sgm difference from sgm_tota, sgm_shal and sgm_turb
+; sgm_diff_plot
+
+res_diff_sgm								= res_diff
+if(sgm_diff_plot)then
+	fontheight								= 0.020
+	res_diff_sgm@tiYAxisFontHeightF			=fontheight 
+	res_diff_sgm@tiXAxisFontHeightF			=fontheight 
+	res_diff_sgm@tmXBLabelFontHeightF		=fontheight 
+	res_diff_sgm@tmYLLabelFontHeightF		=fontheight 
+	res_diff_sgm@gsnLeftString				= ""
+	if(ivar.eq.0)then
+		res_diff_sgm@tiYAxisString		= "SGM"
+	end if
 else
-res_diff_sgm@gsnLeftString		= ""
+	res_diff_sgm@gsnLeftString		= ""
 end if
 
-;plot_diff(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff)
-if(start_idx.eq.1)then
-plot_diff(ivar-1)				= gsn_csm_y(wks, tmp_diff_final, res_diff)
-plot_diff_sgm(ivar-1)			= gsn_csm_y(wks, tmp_diff_final, res_diff_sgm)
-else
 plot_diff(ivar)					= gsn_csm_y(wks, tmp_diff_final, res_diff)
-;plot_diff_sgm(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff_sgm)
+
+if(sgm_diff_plot)then
+	plot_diff_sgm(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff_sgm)
 end if
+
 count_2	= count_2 + 1
 
 
@@ -2705,22 +2956,19 @@ polyres_sgm					= polyres
 
 colors						= (/"red","red","blue","blue","black","black"/)
 dashes						= (/0,12,0,12,0,12/)
-thickes						= (/2,2,2,2,4,4/)
-									;PRECT sgm_tota, N1, sgm_shal, sgm_turb
-colors_sgm						= (/"red","red","red","blue","cyan","black","black"/)
-dashes_sgm						= (/0,12,0,12,0,12/)
-thickes_sgm						= (/2,2,2,2,4,4/)
+thickes						= (/1.5,1.5,1.5,1.5,3,3/) ;(/2,2,2,2,4,4/)
+								  ;sgm_tota, sgm_shal, sgm_turb
+								  ; or
+								  ; sgm_shal, term1, term2, term3
+colors_sgm						= (/"black","red","blue","cyan"/)
+dashes_sgm						= (/0,12,0,12,0,12,0,12/)
+thickes_sgm						= (/2,2,2,2,2,2,2,2/)
 
 ;polyres@gsLineColor			= (/"red","blue","lightpink","cyan"/)
 
 ; loop through the points
 do idx1=0,dimsizes(tag)*dimsizes(case_nor)-1
-;if((vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. \
-;    vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb" .or. \
-;	vars(ivar).eq."wstarPBL" .or. vars(ivar).eq."umf_shal" .or. \
-;	vars(ivar).eq."clddep2" .or. vars(ivar).eq."lengi" .or. \
-;	vars(ivar).eq."shi" .or. vars(ivar).eq."aa_gp") .and. \
-;	(idx1.eq.0 .or. idx1.eq.2))then ; -- avoid missing value for sgm_tota and N1 to be plotted
+; -- avoid missing value for sgm_tota and N1 to be plotted
 	  if((.not.ismissing(ind(vars_pdf.eq.vars(ivar)))) .and. (idx1.eq.0 .or. idx1.eq.2))then
 	continue
 else
@@ -2729,12 +2977,7 @@ polyres@gsLineDashPattern	= dashes(idx1)
 polyres@gsLineThicknessF	= thickes(idx1)
 
 ;lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp(idx1,:),polyres)
-;lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5,tmp(idx1,:),polyres)
-if(start_idx.eq.1)then
-lines(ivar-1,idx1)				= gsn_add_polyline(wks,plot(ivar-1),ispan(0,nbins-1,1)+0.5,tmp(idx1,:),polyres)
-else
 lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5,tmp(idx1,:),polyres)
-end if
 
 gsres							= True
 ;gsres@tfPolyDrawOrder			= "Predraw"
@@ -2759,15 +3002,9 @@ do idx2=0,nbins-1
 ;	upp_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5+idx1*0.1,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)+tmp2(idx1,idx2)/),polyres)
 ;	dwn_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5+idx1*0.1,(/tmp(idx1,idx2)-tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
 
-if(start_idx.eq.1)then
-	error_bar(ivar-1,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar-1),(/idx2,idx2/)+0.5,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
-	upp_bound(ivar-1,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar-1),(/idx2-0.1,idx2+0.1/)+0.5,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)+tmp2(idx1,idx2)/),polyres)
-	dwn_bound(ivar-1,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar-1),(/idx2-0.1,idx2+0.1/)+0.5,(/tmp(idx1,idx2)-tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
-else
 	error_bar(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2,idx2/)+0.5,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
 	upp_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5,(/tmp(idx1,idx2)+tmp2(idx1,idx2),tmp(idx1,idx2)+tmp2(idx1,idx2)/),polyres)
 	dwn_bound(ivar,idx1,idx2)	= gsn_add_polyline(wks,plot(ivar),(/idx2-0.1,idx2+0.1/)+0.5,(/tmp(idx1,idx2)-tmp2(idx1,idx2),tmp(idx1,idx2)-tmp2(idx1,idx2)/),polyres)
-end if
 
 
 end do ; do idx2=
@@ -2776,39 +3013,31 @@ end if ; vars(ivar).eq."sgm_tota"...
 end do ; do idx1=
 
 do idx1=0,dimsizes(case_nor)
-;if((vars(ivar).eq."sgm_tota" .or. vars(ivar).eq."N1" .or. \
-;    vars(ivar).eq."sgm_shal" .or. vars(ivar).eq."sgm_turb" .or. \
-;    vars(ivar).eq."umf_shal" .or. vars(ivar).eq."wstarPBL" .or. vars(ivar).eq."clddep2".or.\
-;	vars(ivar).eq."lengi" .or. vars(ivar).eq."shi" .or. vars(ivar).eq."aa_gp") .and. (idx1.eq.0 .or. idx1.eq.2))then
- if((.not.ismissing(ind(vars_pdf.eq.vars(ivar)))).and.(idx1.eq.0 .or. idx1.eq.2))then
+
+if((.not.ismissing(ind(vars_pdf.eq.vars(ivar)))).and.(idx1.eq.0 .or. idx1.eq.2))then
 	continue
 else
 	polyres@gsLineColor					= colors(idx1*2)
 	polyres@gsLineDashPattern 			= dashes(idx1*2)
 	polyres@gsLineThicknessF			= thickes(idx1*2)
 
-	if(start_idx.eq.1)then
+	if(sgm_diff_plot)then
 	polyres_sgm@gsLineColor					= colors_sgm(ivar)
 	polyres_sgm@gsLineDashPattern 			= dashes_sgm(idx1*2)
 	polyres_sgm@gsLineThicknessF			= thickes_sgm(idx1*2)
 	end if
 
-;	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp_diff_final(idx1,:),polyres)
-if(start_idx.eq.1)then
-	lines_diff(ivar-1,idx1)				= gsn_add_polyline(wks,plot_diff(ivar-1),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres)
-	lines_diff_sgm(ivar-1,idx1)			= gsn_add_polyline(wks,plot_diff_sgm(ivar-1),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres_sgm)
-else
 	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres)
-;	lines_diff_sgm(ivar,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres_sgm)
-end if
+	if(sgm_diff_plot)then
+	lines_diff_sgm(ivar,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres_sgm)
+	end if
 
 	do idx2=0,nbins-1
-		if(start_idx.eq.1)then
-				centers_diff(ivar-1,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar-1),idx2+0.5,tmp_diff_final(idx1,idx2),polyres)
-				centers_diff_sgm(ivar-1,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff_sgm(ivar-1),idx2+0.5,tmp_diff_final(idx1,idx2),polyres_sgm)
-		else
-				centers_diff(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres)
-;				centers_diff_sgm(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff_sgm(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres_sgm)
+		if(idx1.eq.2)then
+		centers_diff(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres)
+		end if
+		if(sgm_diff_plot)then
+			centers_diff_sgm(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff_sgm(ivar),idx2+0.5,tmp_diff_final(idx1,idx2),polyres_sgm)
 		end if
 	end do ; do idx2=
 
@@ -2818,32 +3047,46 @@ end if
 	polyres_sgm@gsLineColor					= "grey"
 	polyres_sgm@gsLineDashPattern			= 14
 
-	if(start_idx.eq.1)then
-	lines_ref0(ivar-1,idx1)				= gsn_add_polyline(wks,plot_diff(ivar-1),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres)
-	lines_ref0_sgm(ivar-1,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar-1),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres_sgm)
-	else
 	lines_ref0(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres)
-;	lines_ref0_sgm(ivar,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres_sgm)
+	if(sgm_diff_plot)then
+		lines_ref0_sgm(ivar,idx1)				= gsn_add_polyline(wks,plot_diff_sgm(ivar),ispan(0,nbins,1),fspan(0,0,nbins+1),polyres_sgm)
 	end if
+
 end if ; vars(ivar).eq."sgm_tota"...
 end do ; do idx1=
 
 end do ; do ivar=
 
-if(start_idx.eq.1)then
-overlay(plot_diff_sgm(0),plot_diff_sgm(2))
-overlay(plot_diff_sgm(0),plot_diff_sgm(3))
+if(sgm_diff_plot)then
+if(.not.sgm_shal_4terms)then
+	overlay(plot_diff_sgm(0),plot_diff_sgm(1))
+	overlay(plot_diff_sgm(0),plot_diff_sgm(2))
+else
+	overlay(plot_diff_sgm(0),plot_diff_sgm(1))
+	overlay(plot_diff_sgm(0),plot_diff_sgm(2))
+	overlay(plot_diff_sgm(0),plot_diff_sgm(3))
+end if
 end if
 
 ; ------------------------Add legends
 ;legends                         = vars
 legends							= (/"RH_cntl","PDF_cntl","RH_p4K","PDF_p4K"/)
 legends_diff1					= (/"RH_p4K-cntl", "PDF_p4K-cntl","PDF-RH_p4K-cntl"/)
-legends_sgm						= (/"SGM_tota", "SGM_shal", "SGM_turb"/)
+if(.not.sgm_shal_4terms)then
+	legends_sgm						= (/"SGM_tota", "SGM_shal", "SGM_turb"/)
+else
+	legends_sgm						= (/"SGM_shal","term1_shal","term2_shal","term3_shal"/)
+end if
+
 
 lgres							= True
 
-lgres@lgLabelFontHeightF        = 0.10
+if(.not.sgm_diff_plot)then
+	lgres@lgLabelFontHeightF        = 0.10
+else
+	lgres@lgLabelFontHeightF        = 0.05
+end if
+
 lgres@vpWidthF                  = 0.25
 lgres@vpHeightF                 = 0.15
 lgres@lgPerimOn                 = False
@@ -2860,19 +3103,19 @@ lgres2@lgLineColors				= colors(::2)
 lgres2@lgLineThicknessF			= res@xyLineThicknessF
 lgres2@lgDashIndexes			= dashes(::2)
 
-lgres_sgm@lgLineColors				= colors_sgm((/1,3,4/))
+lgres_sgm@lgLineColors				= colors_sgm;((/1,3,4/))
 lgres_sgm@lgLineThicknessF			= res@xyLineThicknessF
 lgres_sgm@lgDashIndexes				= dashes_sgm(::2)
 
 lbid1                           = gsn_create_legend(wks,dimsizes(legends),legends,lgres1)
 lbid2                           = gsn_create_legend(wks,dimsizes(legends_diff1),legends_diff1,lgres2)
-if(start_idx.eq.1)then
-lbid3                           = gsn_create_legend(wks,dimsizes(legends_sgm),legends_sgm,lgres_sgm)
+if(sgm_diff_plot)then
+	lbid3                           = gsn_create_legend(wks,dimsizes(legends_sgm),legends_sgm,lgres_sgm)
 end if
 
 amres                           = True
-amres@amJust					= "BottomLeft"
-amres@amParallelPosF            = -0.5
+amres@amJust					= "BottomRight"
+amres@amParallelPosF            = 0.5
 amres@amOrthogonalPosF          = 0.5
 
 amres_sgm						= amres
@@ -2886,9 +3129,9 @@ if(vars(0).eq."PRECT")then
 	amres@amOrthogonalPosF			= -0.5
 end if
 
-annoid1                         = gsn_add_annotation(plot(0),lbid1,amres)
-annoid2                         = gsn_add_annotation(plot_diff(0),lbid2,amres)
-if(start_idx.eq.1)then
+annoid1                         = gsn_add_annotation(plot(1),lbid1,amres)
+annoid2                         = gsn_add_annotation(plot_diff(1),lbid2,amres)
+if(sgm_diff_plot)then
 annoid3                         = gsn_add_annotation(plot_diff_sgm(0),lbid3,amres_sgm)
 end if
 
@@ -2898,49 +3141,48 @@ pres@gsnPanelXWhiteSpacePercent = 5.0
 pres@gsnPanelLeft				= 0.05
 pres@gsnPanelRight				= 0.95
 
-if(start_idx.eq.1)then
-pres_sgm						= pres
-pres_sgm@amJust					= "TopRight"
-
-tmp_plots						= (/plot_diff_sgm(0)/)
-
-if(dimsizes(tmp_plots).gt.1)then
-pres_sgm@gsnPanelFigureStrings	= (/"a)","b)"/)
+if(sgm_diff_plot)then
+	pres_sgm						= pres
+	pres_sgm@amJust					= "TopRight"
+	
+	tmp_plots						= (/plot_diff_sgm(0)/)
+	
+	if(dimsizes(tmp_plots).gt.1)then
+	pres_sgm@gsnPanelFigureStrings	= (/"a)","b)"/)
+	end if
+	
+	;gsn_panel(wks,(/plot_diff_sgm(0),plot_diff_sgm(1)/),(/1,2/),pres_sgm)
+	gsn_panel(wks,(/plot_diff_sgm(0)/),(/1,1/),pres_sgm)
+	exit
 end if
 
-;gsn_panel(wks,(/plot_diff_sgm(0),plot_diff_sgm(1)/),(/1,2/),pres_sgm)
-gsn_panel(wks,(/plot_diff_sgm(0)/),(/1,1/),pres_sgm)
-exit
+;pres@gsnPanelRowSpec = True
+
+;gsn_panel(wks,plot_diff(1:),(/1,3/),pres)
+;gsn_panel(wks,plot(1:),(/1,3/),pres)
+
+if(dimsizes(vars).le.8)then
+	if(mod(dimsizes(vars),2).ne.0)then
+		gsn_panel(wks,plot_diff,(/dimsizes(vars)/2+1,2/),pres)
+		gsn_panel(wks,plot,(/dimsizes(vars)/2+1,2/),pres)
+	else
+		gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
+		gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
+	end if
+else
+	if(mod(dimsizes(vars),3).ne.0)then
+		gsn_panel(wks,plot_diff,(/dimsizes(vars)/3+1,3/),pres)
+		gsn_panel(wks,plot,(/dimsizes(vars)/3+1,3/),pres)
+	else
+		gsn_panel(wks,plot_diff,(/dimsizes(vars)/3,3/),pres)
+		gsn_panel(wks,plot,(/dimsizes(vars)/3,3/),pres)
+	end if
 end if
-
-pres@gsnPanelRowSpec = True
-
-gsn_panel(wks,plot_diff(1:),(/1,3/),pres)
-gsn_panel(wks,plot(1:),(/1,3/),pres)
-
-;if(dimsizes(vars).le.8)then
-;if(mod(dimsizes(vars),2).ne.0)then
-;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2+1,2/),pres)
-;	gsn_panel(wks,plot,(/dimsizes(vars)/2+1,2/),pres)
-;else
-;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/2,2/),pres)
-;	gsn_panel(wks,plot,(/dimsizes(vars)/2,2/),pres)
-;end if
-;else
-;if(mod(dimsizes(vars),3).ne.0)then
-;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/3+1,3/),pres)
-;	gsn_panel(wks,plot,(/dimsizes(vars)/3+1,3/),pres)
-;else
-;	gsn_panel(wks,plot_diff,(/dimsizes(vars)/3,3/),pres)
-;	gsn_panel(wks,plot,(/dimsizes(vars)/3,3/),pres)
-;end if
-;
-;end if
 
 
 delete([/count_1, count_2/])
 exit
-end if ; ALPI_bin_plot
+end if ; ALPIsub_bin_plot
 
 end if ; ALPI_bin_cal
 
