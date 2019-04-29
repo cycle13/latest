@@ -47,8 +47,11 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 ; therefore, even though two or more plots are obtained in one figure, they are the same thing. 
 ;case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
 ;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+; --- 2019-04-29 22:40:55
+; --- it is pity that I did not output the two cloud fractions from new 2deg simulation
 case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
 case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
+
 
 case_name				= (/"RH","PDF"/)
 
@@ -147,6 +150,7 @@ vars_units			= varsA_units(use_idx)
 
 nlat				= 192
 nlon				= 288
+
 nlev				= 30
 
 vars_mid			= new((/dimsizes(Vars_mid),dimsizes(tag),dimsizes(case_nor),nlev,nlat,nlon/),float)
@@ -206,10 +210,13 @@ do icase=0,dimsizes(case_nor)-1
 			if(vars(ivar).eq."PRECT")then
 				precl_tmp				= ftmp1->PRECL(0,:,:)
 				precc_tmp				= ftmp1->PRECC(0,:,:)
-				vars_all(ivar,itag,icase,:,:)	= precl_tmp+precc_tmp
+				prect_tmp				= precl_tmp+precc_tmp
+				copy_VarCoords(precl_tmp,prect_tmp)
+				vars_all(ivar,itag,icase,:,:)	= prect_tmp
 				vars_all(ivar,itag,icase,:,:)	= vars_all(ivar,itag,icase,:,:)*8.64e7
 				delete(precl_tmp)
 				delete(precc_tmp)
+				delete(prect_tmp)
 			end if
 			if(vars(ivar).eq."LTS")then
 				result					= cal_ECTEI(vars_mid(0,itag,icase,:,:,:),vars_mid(1,itag,icase,:,:,:),lev)
@@ -1100,6 +1107,9 @@ res@tmXBValues				= fspan(0,nbins,nbins+1)
 res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
 res@trXMaxF					= (nbins)
 
+res@tmXTOn					= False
+res@tmYROn					= False
+
 res@gsnStringFontHeightF	= 0.03
 
 res_diff					= res
@@ -1148,7 +1158,6 @@ tmp_diff_final				= new((/2+1,nbins/),float)
 tmp_diff_final(0,:)			= tmp_diff1(0,:) ;alst_prh
 tmp_diff_final(1,:)			= tmp_diff1(1,:) ;alst_gpd
 tmp_diff_final(2,:)			= tmp_diff2(:) ; difference of alst_gpd and alst_prh
-;print(tmp_diff_final)
 
 ;res@gsnLeftString			= plots_strings(count_1)
 res@gsnLeftString			= "(a)"
