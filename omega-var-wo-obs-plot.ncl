@@ -29,7 +29,8 @@ begin
 
 do_read_data			= False
 do_pdf_var 				= True
-do_pdf_omega			= True
+do_pdf_omega			= False;True
+do_pdf_component		= False;True
 
 plot_type				= "pdf"
 plots_strings			= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)"/)
@@ -44,6 +45,20 @@ nx_max 					= 140.
 landmask				= False
 ocnmask					= False
 
+; resolution			
+resolution				= "2deg"
+
+; prescribe the start and end years --- 2019-04-26 22:57:39
+if(resolution.eq."1deg")then
+yearS					= 1980
+yearE					= 1984
+else
+yearS					= 1980
+yearE					= 1988
+end if
+
+
+
 ;tag 					= (/"nor","p4K","4xCO2"/)
 tag 					= (/"nor","p4K"/)
 
@@ -56,11 +71,14 @@ tag 					= (/"nor","p4K"/)
 ;case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10"/)
 
 ; cases with normal output and MG15 to compare with default simulation.
-case_nor	= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
-case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
-
-
-;case_4xCO2	= (/"FAMIPC5_f09f09_MG15_amip-4xCO2","FAMIPC5_f09f09_mac2_amip-4xCO2"/)
+if(resolution.eq."1deg")then
+	case_nor	= (/"FAMIPC5_f09f09_MG15_amip","FAMIPC5_f09f09_mac2_amip_outSGM"/)
+	case_p4K	= (/"FAMIPC5_f09f09_MG15_amip-p4K","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
+	case_4xCO2	= (/"FAMIPC5_f09f09_MG15_amip-4xCO2","FAMIPC5_f09f09_mac2_amip-4xCO2"/)
+else
+	case_nor	= (/"FAMIPC5_f19f19_MG15_amip","FAMIPC5_f19f19_mac2_amip_outSGM"/)
+	case_p4K	= (/"FAMIPC5_f19f19_MG15_amip-p4K","FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM"/)
+end if
 
 ;case_all	= (/case_nor, case_p4K, case_4xCO2/) ; 3 x 2
 case_all	= (/case_nor, case_p4K/) ; 2 x 2
@@ -83,10 +101,11 @@ Vars_bin	= (/"SWCF","LWCF","CLDLOW","CLDMED","CLDHGH","CLDTOT","TGCLDLWP","netCR
 stringsA	= Vars_bin ; except for omega itself, and add Net CRF
 valminA		= (/-140,	-20,	0,		  0,	   0,		0 ,		0,        -60., 	0,	       0,     0,	     0.,           0./)
 valmaxA		= (/20,		100,	60,		 90,	   90,		90,		150,      0.,   	0.3,       1,     0.1,         0.3,          0.5/)
-unitsA		= (/"(W/m~S~2~N~)",	"(W/m~S~2~N~)",	"(fraction)",	"(fraction)",	"(fraction)",	"(fraction)","(g/m3)",	"(W/m~S~2~N~)", " ", "(fraction)", "(g/kg)", "", ""/)
+unitsA		= (/"(W/m~S~2~N~)",	"(W/m~S~2~N~)",	"(fraction)",	"(fraction)",	"(fraction)",	"(fraction)","(g/m~S~2~N~)",	"(W/m~S~2~N~)", " ", "(fraction)", "(g/kg)", "", ""/)
 
 ;use_idx		= (/0,1,7,2,6,8/)
-use_idx		= (/7,0,1,2,4,6/)
+;use_idx		= (/7,0,1,2,4,6/)
+use_idx			= (/7,0,2,6/)
 Vars_use	= Vars_bin(use_idx)
 strings		= stringsA(use_idx)
 valmin		= valminA(use_idx)
@@ -97,9 +116,16 @@ colors 		= (/"blue","red","cyan","orange","deepskyblue","firebrick","cyan3","dar
 thicks		= (/4,2,4,2/)
 
 ; ------ setting for global grid information
-nlat		= 192
-nlon		= 288
-ntime		= 60	; 1980-1984 -- 12*5=60 months
+if(resolution.eq."1deg")then
+	nlat					= 192
+	nlon					= 288
+else
+	nlat					= 96
+	nlon					= 144
+end if 
+
+ntime					= (yearE-yearS+1)*12
+print(ntime)
 
 ; ================================ All start here ========================================
 
@@ -119,15 +145,17 @@ vars_all_diff&var		= fspan(0,dimsizes(Vars)-1,dimsizes(Vars))
 vars_all_diff!1			= "case"
 vars_all_diff&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
-
+indir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
+inname=indir+"omega-var-outdata-wo-obs-"+resolution
+print(inname)
 
 if(landmask)then
-	infile = addfile("../cfmip/tmp-data/omega-var-outdata-wo-obs-ocn.nc","r")
+	infile = addfile(inname+"-ocn.nc","r")
 else
 	if(ocnmask)then
-		infile = addfile("../cfmip/tmp-data/omega-var-outdata-wo-obs-lnd.nc","r")
+		infile = addfile(inname+"-lnd.nc","r")
 	else
-		infile = addfile("../cfmip/tmp-data/omega-var-outdata-wo-obs.nc","r")
+		infile = addfile(inname+".nc","r")
 	end if
 end if
 	
@@ -175,7 +203,9 @@ do itag=0,dimsizes(tag)-1
 	delete(result)
 end do ; do itag=
 	print(Vars(ivar))
-	result 					= pdf_omega_var_wo_obs(vars_all_diff(0,:,:,:,:),vars_all_diff(ivar,:,:,:,:),nbinx,nbiny,nx_min,nx_max)
+;	result 					= pdf_omega_var_wo_obs(vars_all_diff(0,:,:,:,:),vars_all_diff(ivar,:,:,:,:),nbinx,nbiny,nx_min,nx_max)
+	result 					= pdf_omega_var_wo_obs(vars_all(0,0,:,:,:,:),vars_all_diff(ivar,:,:,:,:),nbinx,nbiny,nx_min,nx_max)
+
 	omega_vars_1D_bin_diff(ivar-1,:,:) 			= result[0]
 	omega_vars_1D_bin_diff_std(ivar-1,:,:)		= result[1]
 	delete(result)
@@ -183,16 +213,20 @@ end do ; do itag=
 end do ; do ivar=
 printVarSummary(omega_vars_1D_bin_diff)
 
+outdir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
+outname=outdir+"pdf-omega-var-wo-obs-"+resolution
+print(outname)
+
 if(landmask)then
-	system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-var-wo-obs-ocn.nc")
-	outfile1 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-ocn.nc","c")
+	system("/bin/rm -f "+outname+"-ocn.nc")
+	outfile1 = addfile(outname+"-ocn.nc","c")
 else
 	if(ocnmask)then
-		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-var-wo-obs-lnd.nc")
-		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-lnd.nc","c")
+		system("/bin/rm -f "+outname+"-lnd.nc")
+		outfile1 = addfile(outname+"-lnd.nc","c")
 	else
-		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-var-wo-obs.nc")
-		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs.nc","c")
+		system("/bin/rm -f "+outname+".nc")
+		outfile1 = addfile(outname+".nc","c")
 	end if
 end if
 
@@ -215,7 +249,7 @@ do ivar=0,dimsizes(Vars_bin)-1 ; except for omega itself
 	outfile1->$outVars_diff_std(ivar)$		= omega_vars_1D_bin_diff_std(ivar,:,:)
 
 end do ; do ivar=
-;exit
+exit
 end if ; do_pdf_var
 
 ;=================== do_pdf_omega ==================================
@@ -232,16 +266,20 @@ omega_PDF_bin&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
 omega_PDF_bin_diff		= omega_PDF_bin(0,:,:)
 
+outdir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
+outname=outdir+"pdf-omega-only-wo-obs-"+resolution
+print(outname)
+
 if(landmask)then
-	system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-only-wo-obs-ocn.nc")
-	outfile1 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-ocn.nc","c")
+	system("/bin/rm -f "+outname+"-ocn.nc")
+	outfile1 = addfile(outname+"-ocn.nc","c")
 else
 	if(ocnmask)then
-		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-only-wo-obs-lnd.nc")
-		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-lnd.nc","c")
+		system("/bin/rm -f "+outname+"-lnd.nc")
+		outfile1 = addfile(outname+"-lnd.nc","c")
 	else
-		system("/bin/rm -f ../cfmip/tmp-data/pdf-omega-only-wo-obs.nc")
-		outfile1 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs.nc","c")
+		system("/bin/rm -f "+outname+".nc")
+		outfile1 = addfile(outname+".nc","c")
 	end if
 end if
 
@@ -264,16 +302,19 @@ end if ; do_pdf_omega
 
 ; ==============================================================
 ;=============== Part2: read the omega-var-PDF data
+indir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
+inname=indir+"pdf-omega-var-wo-obs-"+resolution
+print(inname)
+
 if(landmask)then
-	infile3 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-ocn.nc","r")
+	infile3 = addfile(inname+"-ocn.nc","r")
 else
 	if(ocnmask)then
-		infile3 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs-lnd.nc","r")
+		infile3 = addfile(inname+"-lnd.nc","r")
 	else
-		infile3 = addfile("../cfmip/tmp-data/pdf-omega-var-wo-obs.nc","r")
+		infile3 = addfile(inname+".nc","r")
 	end if
 end if
-	
 
 varsdata			= new((/dimsizes(Vars_use),dimsizes(tag),dimsizes(case_nor),nbinx/),double) ; except for omega itself
 varsdata!0			= "var"
@@ -318,20 +359,29 @@ omega_PDF_bin&tag		= fspan(0,dimsizes(tag)-1,dimsizes(tag))
 omega_PDF_bin!1			= "case"
 omega_PDF_bin&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 
+;---- read
+indir="/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
+inname=indir+"pdf-omega-only-wo-obs-"+resolution
+print(inname)
+
 if(landmask)then
-	infile4 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-ocn.nc","r")
+	infile4 = addfile(inname+"-ocn.nc","r")
 else
 	if(ocnmask)then
-		infile4 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs-lnd.nc","r")
+		infile4 = addfile(inname+"-lnd.nc","r")
 	else
-		infile4 = addfile("../cfmip/tmp-data/pdf-omega-only-wo-obs.nc","r")
+		infile4 = addfile(inname+".nc","r")
 	end if
 end if
-	
+
+
 do itag=0,dimsizes(tag)-1
 	outVars		= Vars(0)+"_"+tag(itag)
 	omega_PDF_bin(itag,:,:)		= infile4->$outVars$
 end do ; do itag=
+
+; change into 0.xx format
+omega_PDF_bin=omega_PDF_bin/100.
 
 printVarSummary(omega_PDF_bin)
 
@@ -376,50 +426,96 @@ end do
 printVarSummary(Cw)
 printVarSummary(Pw)
 
+; --- 2019-04-28 23:00:20
+; -- Delta_Cw_1: first bin, second difference
+; -- Delta_Cw_2: first difference, second bin
+; -- I am not sure which one is more reasonable now.
+
 ; \Delta_Cw
-Delta_Cw					= Cw
-Delta_Cw(:,0,:,:)			= (/varsdata(:,0,:,:)-varsdata(:,0,:,:)/)
-Delta_Cw(:,1,:,:)			= (/varsdata(:,1,:,:)-varsdata(:,0,:,:)/)
-;Delta_Cw(:,2,:,:)			= (/varsdata(:,2,:,:)-varsdata(:,0,:,:)/)
-printVarSummary(Delta_Cw)
+Delta_Cw_1					= Cw
+Delta_Cw_2					= Cw
+Delta_Cw_1(:,0,:,:)			= (/varsdata(:,0,:,:)-varsdata(:,0,:,:)/)
+Delta_Cw_1(:,1,:,:)			= (/varsdata(:,1,:,:)-varsdata(:,0,:,:)/)
+
+Delta_Cw_2(:,0,:,:)			= 0.
+Delta_Cw_2(:,1,:,:)			= (/varsdata_diff(:,:,:)/)
+
+;printVarSummary(Delta_Cw)
 
 ; \Delta_Pw
-Delta_Pw					= Pw
-Delta_Pw(0,:,:)				= omega_PDF_bin(0,:,:)-omega_PDF_bin(0,:,:)
-Delta_Pw(1,:,:)				= omega_PDF_bin(1,:,:)-omega_PDF_bin(0,:,:)
-;Delta_Pw(2,:,:)				= omega_PDF_bin(2,:,:)-omega_PDF_bin(0,:,:)
-printVarSummary(Delta_Pw)
+Delta_Pw_1					= Pw
+Delta_Pw_2					= Pw
+Delta_Pw_1(0,:,:)			= omega_PDF_bin(0,:,:)-omega_PDF_bin(0,:,:)
+Delta_Pw_1(1,:,:)			= omega_PDF_bin(1,:,:)-omega_PDF_bin(0,:,:)
+
+Delta_Pw_2(0,:,:)			= omega_PDF_bin_diff(0,:,:)
+Delta_Pw_2(1,:,:)			= omega_PDF_bin_diff(1,:,:)
+
+;printVarSummary(Delta_Pw)
 
 ; PwCw, Cw*\Delta_Pw and Pw*\Delta_Cw
 PwCw					= Cw
-Cw_Delta_Pw				= Cw
-Pw_Delta_Cw				= Cw
-Delta_Pw_Delta_Cw		= Cw
+Cw_Delta_Pw_1			= Cw
+Pw_Delta_Cw_1			= Cw
+Delta_Pw_Delta_Cw_1		= Cw
+
+Cw_Delta_Pw_2			= Cw
+Pw_Delta_Cw_2			= Cw
+Delta_Pw_Delta_Cw_2		= Cw
 
 do ivar=0,dimsizes(Vars_use)-1
-PwCw(ivar,:,:,:)					= Pw(:,:,:)*Cw(ivar,:,:,:)/100.
-Cw_Delta_Pw(ivar,:,:,:)				= Cw(ivar,:,:,:)*Delta_Pw(:,:,:)/100.
-Pw_Delta_Cw(ivar,:,:,:)				= Pw(:,:,:)*Delta_Cw(ivar,:,:,:)/100.
-Delta_Pw_Delta_Cw(ivar,:,:,:)		= Delta_Pw(:,:,:)*Delta_Cw(ivar,:,:,:)/100.
+PwCw(ivar,:,:,:)					= Pw(:,:,:)*Cw(ivar,:,:,:);/100.
+Cw_Delta_Pw_1(ivar,:,:,:)				= Cw(ivar,:,:,:)*Delta_Pw_1(:,:,:);/100.
+Pw_Delta_Cw_1(ivar,:,:,:)				= Pw(:,:,:)*Delta_Cw_1(ivar,:,:,:);/100.
+Delta_Pw_Delta_Cw_1(ivar,:,:,:)		= Delta_Pw_1(:,:,:)*Delta_Cw_1(ivar,:,:,:);/100.
+
+Cw_Delta_Pw_2(ivar,:,:,:)				= Cw(ivar,:,:,:)*Delta_Pw_2(:,:,:);/100.
+Pw_Delta_Cw_2(ivar,:,:,:)				= Pw(:,:,:)*Delta_Cw_2(ivar,:,:,:);/100.
+Delta_Pw_Delta_Cw_2(ivar,:,:,:)		= Delta_Pw_2(:,:,:)*Delta_Cw_2(ivar,:,:,:);/100.
+
 end do ; do ivar=
 
-printVarSummary(Delta_Pw_Delta_Cw)
-printMinMax(Delta_Pw_Delta_Cw,False)
+;printVarSummary(Delta_Pw_Delta_Cw)
+;printMinMax(Delta_Pw_Delta_Cw,False)
+
+; ---- 2019-04-28 12:01:40 
+;add tmp test here to verify the correctness of each term in calculting dynamic and thermodynamic component
+
+;my_list = NewList("lifo")
+;
+;ListAppend(my_list,Cw)
+;ListAppend(my_list,Pw)
+;ListAppend(my_list,Delta_Cw)
+;ListAppend(my_list,Delta_Pw)
+;
+;print(my_list)
+;exit
 
 ; note: there is no meaning for CwPw_all when itag equals to zero.
-CwPw_all			 		= new((/dimsizes(Vars_use),3,dimsizes(tag),dimsizes(case_nor),nbinx/),double)
-CwPw_all!1					= "term"
-CwPw_all&term				= (/0,1,2/)
-CwPw_all(:,0,:,:,:)			= Cw_Delta_Pw
-CwPw_all(:,1,:,:,:)			= Pw_Delta_Cw
-CwPw_all(:,2,:,:,:)			= Delta_Pw_Delta_Cw
-printVarSummary(CwPw_all)
+CwPw_all_1			 		= new((/dimsizes(Vars_use),3,dimsizes(tag),dimsizes(case_nor),nbinx/),double)
+CwPw_all_1!1					= "term"
+CwPw_all_1&term				= (/0,1,2/)
+CwPw_all_1(:,0,:,:,:)			= Cw_Delta_Pw_1
+CwPw_all_1(:,1,:,:,:)			= Pw_Delta_Cw_1
+CwPw_all_1(:,2,:,:,:)			= Delta_Pw_Delta_Cw_1
+
+;printVarSummary(CwPw_all)
+
+CwPw_all_2			 			= CwPw_all_1
+CwPw_all_2(:,0,:,:,:)			= Cw_Delta_Pw_2
+CwPw_all_2(:,1,:,:,:)			= Pw_Delta_Cw_2
+CwPw_all_2(:,2,:,:,:)			= Delta_Pw_Delta_Cw_2
+
 
 ; ============ averaged over all sgm
 CwPw_all_name			= (/"dynamic","thermodynamic","co-variation"/)
-CwPw_all_avg			= dim_sum_Wrap(CwPw_all)
-;PwCw_avg				= dim_sum_Wrap(PwCw(:,1,:,:)-PwCw(:,0,:,:))
+CwPw_all_avg_1			= dim_sum_Wrap(CwPw_all_1)
+CwPw_all_avg_2			= dim_sum_Wrap(CwPw_all_2)
+
 PwCw_avg				= dim_sum_Wrap(PwCw(:,1,:,:))-dim_sum_Wrap(PwCw(:,0,:,:))
+
+PwCw_sep_1				= dim_sum(Cw_Delta_Pw_1(:,1,:,:)+Pw_Delta_Cw_1(:,1,:,:)+Delta_Pw_Delta_Cw_1(:,1,:,:))
+PwCw_sep_2				= dim_sum(Cw_Delta_Pw_2(:,1,:,:)+Pw_Delta_Cw_2(:,1,:,:)+Delta_Pw_Delta_Cw_2(:,1,:,:))
 
 Vars_out                    = Vars_use
 Vars_out_fix                = Vars_out
@@ -431,9 +527,11 @@ do ivar = 0,dimsizes(Vars_out)-1
     delete(lens)
 end do ; do ivar=
 
-print("Vars		cases	"+CwPw_all_name(0)+"		"+CwPw_all_name(1)+"		"+CwPw_all_name(2))
-print(Vars_out_fix+"Park-RH 	"+sprintf("%9.5f",CwPw_all_avg(:,0,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg(:,1,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg(:,2,1,0))+"	"+sprintf("%9.5f",PwCw_avg(:,0)))
-print(Vars_out_fix+"Gaus-PDF	"+sprintf("%9.5f",CwPw_all_avg(:,0,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg(:,1,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg(:,2,1,1))+"	"+sprintf("%9.5f",PwCw_avg(:,1)))
+print("Vars		cases	"+CwPw_all_name(0)+"		"+CwPw_all_name(1)+"	"+CwPw_all_name(2)+"	real PwCw response")
+print(Vars_out_fix+"Park-RH 	"+sprintf("%9.5f",CwPw_all_avg_1(:,0,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,1,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,2,1,0))+"	"+sprintf("%9.5f",PwCw_avg(:,0))+"	"+sprintf("%9.5f",PwCw_sep_1(:,0)))
+print(Vars_out_fix+"Park-RH 	"+sprintf("%9.5f",CwPw_all_avg_2(:,0,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_2(:,1,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_2(:,2,1,0))+"	"+sprintf("%9.5f",PwCw_avg(:,0))+"	"+sprintf("%9.5f",PwCw_sep_2(:,0)))
+
+;print(Vars_out_fix+"Gaus-PDF	"+sprintf("%9.5f",CwPw_all_avg(:,0,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg(:,1,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg(:,2,1,1))+"	"+sprintf("%9.5f",PwCw_avg(:,1))+"	"+sprintf("%9.5f",PwCw_sep(:,1)))
 
 print("")
 
@@ -443,12 +541,12 @@ print("")
 do itag=1,1 ; only p4K experiment
 
 if(landmask)then
-	wks  				= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-ocn")
+	wks  				= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-ocn-"+resolution)
 else
 	if(ocnmask)then
-		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-lnd")
+		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-lnd-"+resolution)
 	else
-		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-global")
+		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-global-"+resolution)
 	end if
 end if
 
@@ -462,7 +560,9 @@ plot_wgt_diff		= new(dimsizes(Vars_use),graphic)
 plot_CwPw			= new(dimsizes(Vars_use),graphic)
 plot_PwCw			= new(dimsizes(Vars_use),graphic)
 plot_DPwDCw			= new(dimsizes(Vars_use),graphic)
-plot_CwPw_all		= new(dimsizes(Vars_use),graphic)
+
+plot_CwPw_all_dyn		= new(dimsizes(Vars_use),graphic)
+plot_CwPw_all_thermo	= new(dimsizes(Vars_use),graphic)
 
 stds				= new(dimsizes(Vars_use),graphic)
 
@@ -500,15 +600,18 @@ res@tmXTMinorOn					= False
 res@tmYLMinorOn					= False
 res@tmYRMinorOn					= False
 
+res@tmYROn						= False
+res@tmXTOn						= False
+
 ; --------- OMEGA PDF only
 res1								= res
 res1@xyLineColors 					= colors
 res1@xyLineThicknesses				= thicks
 res1@gsnLeftString					= "(a)"
+res1@tiYAxisString					= "PDF"
 tmp					= reshape(omega_PDF_bin((/0,itag/),:,:),(/2*dimsizes(case_nor),nbinx/))
 plot0 				= gsn_csm_xy(wks,omega_PDF_bin@bin_center,tmp,res1)
 delete(tmp)
-
 
 ; -------OMEGA PDF difference only between sensitivity experiments and control exp. 
 ;  used to select variables we want to plot
@@ -610,24 +713,37 @@ res5								= res
 ;										"blue","blue","blue",\
 ;										"cyan","cyan","cyan"/)
 ngroup = 2
-res5@xyLineColors					= ndtooned(conform_dims((/3,ngroup/),(/"red","blue","grey"/),0))
+;res5@xyLineColors					= ndtooned(conform_dims((/3,ngroup/),(/"red","blue","grey"/),0))
+res5@xyLineColors					= (/"black","black"/)
+
 delete(res5@xyDashPattern)
-res5@xyDashPatterns					= ndtooned(conform_dims((/3,ngroup/),(/16,0/),1))
-res5@xyLineThicknesses				= ndtooned(conform_dims((/3,ngroup/),(/1.5,2.5/),1))
-;res5@gsnYRefLine					= 0.
+
+;res5@xyDashPatterns					= ndtooned(conform_dims((/3,ngroup/),(/16,0/),1))
+res5@xyDashPatterns					= (/14,0/)
+
+;res5@xyLineThicknesses				= ndtooned(conform_dims((/3,ngroup/),(/1.5,2.5/),1))
+res5@xyLineThicknesses				= (/1.5,2.5/)
+
+res5@gsnYRefLine					= 0.
 res5@tiYAxisString 					= strings(ivar)+" "+units(ivar)
 
 res5@gsnLeftString					= plots_strings(count)
 ;tmp									= reshape(CwPw_all(ivar,:,(/0,itag/),:,:),(/3*2*dimsizes(case_nor),nbinx/))
-tmp									= reshape(CwPw_all(ivar,:,(/itag/),:,:),(/3*1*dimsizes(case_nor),nbinx/))
+tmp_dyn									= CwPw_all_1(ivar,0,(/itag/),:,:)
+tmp_thermo								= CwPw_all_1(ivar,1,(/itag/),:,:)
 
-plot_CwPw_all(ivar)					= gsn_csm_xy (wks,CwPw_all&binx_center,tmp, res5)
+plot_CwPw_all_dyn(ivar)					= gsn_csm_xy (wks,CwPw_all_1&binx_center,tmp_dyn, res5)
+plot_CwPw_all_thermo(ivar)				= gsn_csm_xy (wks,CwPw_all_1&binx_center,tmp_thermo, res5)
+
 ;draw(plot_CwPw_all(ivar))
 ;frame(wks)
 
-delete(tmp)
+delete(tmp_dyn)
+delete(tmp_thermo)
+
 count = count + 1
 end do ; do ivar=
+
 
 ;gsn_panel(wks,plot,(/3,3/),False)
 
@@ -707,36 +823,43 @@ res5_dashes							= res5@xyDashPatterns
 res5_thickes						= res5@xyLineThicknesses
 
 lgres3_1						 	= lgres3
-lgres3_1@lgLineColors				= res5_colors(::2)
-lgres3_1@lgDashIndexes				= res5_dashes(::2)
-lgres3_1@lgLineThicknesses			= res5_thickes(::2)
+lgres3_1@lgLineColors				= res5_colors;(::2)
+lgres3_1@lgDashIndexes				= res5_dashes;(::2)
+lgres3_1@lgLineThicknesses			= res5_thickes;(::2)
 
 lgres3_2						 	= lgres3
-lgres3_2@lgLineColors				= res5_colors(1::2)
-lgres3_2@lgDashIndexes				= res5_dashes(1::2)
-lgres3_2@lgLineThicknesses			= res5_thickes(1::2)
+lgres3_2@lgLineColors				= res5_colors;(1::2)
+lgres3_2@lgDashIndexes				= res5_dashes;(1::2)
+lgres3_2@lgLineThicknesses			= res5_thickes;(1::2)
 
 labels_3 			= (/"RH-Cw_DPw","PDF-Cw_DPw","RH-Pw_DCw","PDF-Pw_DCw","RH-DCw_DPw","PDF-DCw_DPw"/)
 ;labels_3 			= (/"RH-dyn","PDF-dyn","RH-therm","PDF-therm","RH-covar","PDF-covar"/)
 
-labels_3_1 			= labels_3(::2)
-labels_3_2 			= labels_3(1::2)
+;labels_3_1 			= labels_3(::2)
+;labels_3_2 			= labels_3(1::2)
+
+labels_3_1 			= labels_3(0:1)
+labels_3_2 			= labels_3(2:3)
+
 
 legend3_1			= gsn_create_legend(wks,dimsizes(labels_3_1),labels_3_1,lgres3_1)
 legend3_2			= gsn_create_legend(wks,dimsizes(labels_3_2),labels_3_2,lgres3_2)
+
 
 amres3_1 						= True
 amres3_1@amJust 				= "TopLeft"
 amres3_1@amParallelPosF 		= -0.5
 amres3_1@amOrthogonalPosF 		= -0.5
 
-amres3_2 						= True
-amres3_2@amJust 				= "BottomLeft"
-amres3_2@amParallelPosF 		= -0.5
-amres3_2@amOrthogonalPosF 		= 0.5
+;amres3_2 						= True
+;amres3_2@amJust 				= "BottomLeft"
+;amres3_2@amParallelPosF 		= -0.5
+;amres3_2@amOrthogonalPosF 		= 0.5
 
-annoid3_1				= gsn_add_annotation(plot_CwPw_all(0),legend3_1,amres3_1)
-annoid3_2				= gsn_add_annotation(plot_CwPw_all(0),legend3_2,amres3_2)
+amres3_2						= amres3_1
+
+annoid3_1				= gsn_add_annotation(plot_CwPw_all_dyn(0),legend3_1,amres3_1)
+annoid3_2				= gsn_add_annotation(plot_CwPw_all_thermo(0),legend3_2,amres3_2)
 
 ;------------------------Panel plots----------------------------------------------
 resP 				= True
@@ -749,13 +872,15 @@ gsn_panel(wks,(/plot0,plot1/),(/1,2/),resP)
 
 ; for omega-var plots
 idx					= ispan(0,dimsizes(use_idx)-1,1)
-titles				= (/"varpdf","varpdf_diff","CwPw_all"/)
-panel_plots		 	= (/plot(idx),plotdiff(idx),plot_CwPw_all(idx)/)
+titles				= (/"varpdf","varpdf_diff","CwPw_all_dyn","CwPw_all_thermo"/)
+panel_plots		 	= (/plot(idx),plotdiff(idx),plot_CwPw_all_dyn(idx),plot_CwPw_all_thermo(idx)/)
+
 
 do i=0,dimsizes(titles)-1
 	resP@gsnPanelMainString	= titles(i)
 	gsn_panel(wks,panel_plots(i,:),(/3,2/),resP)
 end do
+
 
 end do ; do itag=
 
