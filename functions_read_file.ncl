@@ -1,11 +1,38 @@
-function read_data_monthly(fdir:string,fappend:string,case:string,var:string,landmask:logical,ocnmask:logical)
+function read_data_monthly(fdir:string,fappend:string,case:string,var:string,landmask:logical,ocnmask:logical \
+						   , yearS:numeric,yearE:numeric \
+						   )
 
 begin 
+years		= ispan(yearS,yearE,1)
+
+; ------ get monthly data from specific start and end years --------- starts
+do iyr=0,dimsizes(years)-1
+yr_4d		= sprinti("%04d",years(iyr))
+
+if(iyr.eq.0)then
+	tmp			= systemfunc("ls "+fdir+case+fappend+"*"+yr_4d+"*.nc")
+	tmp1		= tmp
+else
+	tmp			= systemfunc("ls "+fdir+case+fappend+"*"+yr_4d+"*.nc")
+	tmp2		= array_append_record(tmp1,tmp,0)
+	delete(tmp1)
+	tmp1		= tmp2
+	delete(tmp2)
+	if(iyr.eq.dimsizes(years)-1)then
+		alls	= tmp1
+	end if
+end if
+end do ; do iyr=
+;print(alls)
+; ------ get monthly data from specific start and end years -------- ends
 
 ;print(fdir+case+fappend)
-all_files = systemfunc ("ls "+fdir+case+fappend+"*.nc | grep '198[01234]-..\.nc'")
+;all_files = systemfunc ("ls "+fdir+case+fappend+"*.nc | grep '198[01234]-..\.nc'")
 ;all_files = systemfunc ("ls "+fdir+case+fappend+"* | grep '000[234]-..\.nc'")
 ;print(all_files)
+;exit
+all_files		= alls
+delete(alls)
 
      fall      = addfiles (all_files, "r")   ; note the "s" of addfile
   ;========================
