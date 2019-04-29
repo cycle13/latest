@@ -15,7 +15,7 @@ begin
 pattern_correlation		= False
 regime_contribution 	= False
 regime_mask_plot		= False ; this one depends on the regime_contribution
-lat_lon_plot			= False
+lat_lon_plot			= True
 Sherwood_2014			= False
 
 ALPI_bin_cal			= False;True 
@@ -31,9 +31,9 @@ scatter_sub_sgm_diff	= False ; True ; --- p4K-cntl: sgm related variables in Y a
 
 zonal_mean				= False 
 
-cosp_hist				= True
-plot_2D_hist			= True
-plot_1D_hist			= True
+cosp_hist				= False;True
+plot_2D_hist			= False;True
+plot_1D_hist			= False;True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -2948,12 +2948,34 @@ end if ; ALPI_bin_cal
 
 ;************************create plot***************
 if(lat_lon_plot)then
+
+nplots					= 6
+
+do ivar=0,dimsizes(vars)-1
+var4K					= new((/nplots,nlat,nlon/),float)
+var4K(0,:,:)				= vars_all(ivar,0,0,:,:)
+
+lat                 = vars_all&lat
+clat                = tofloat(cos(0.01745329*lat))
+clat!0              = "lat"
+clat&lat            = vars_all&lat
+
+var4K_mm			=  wgt_areaave_Wrap(vars_all(ivar,:,:,{-30:30},:), clat({-30:30}), 1.0, 1)
+;printVarSummary(var4K_mm)
+
+var4K_mm_diff		= var4K_mm(1,:)-var4K_mm(0,:)
+
+print(vars(ivar)+"		"+var4K_mm_diff(0)+"		"+var4K_mm_diff(1))
+end do ; do ivar=
+exit
+
+
+
 do ivar=0,dimsizes(vars)-1
 
 ;wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-HammerProj")
 wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-p4K-"+vars(dimsizes(vars)-1))
 
-nplots					= 6
 
 plot 					= new(nplots,graphic)
 plot1 					= new(nplots,graphic)
