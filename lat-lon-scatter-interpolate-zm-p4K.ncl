@@ -48,7 +48,7 @@ plot_1D_hist			= False;True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "pdf"
+plot_type			= "x11"
 
 latS_trop			= -30.
 latE_trop			= 30.
@@ -408,27 +408,35 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ;use_idx			= (/3,5/)											; --- one variable in X and Y axis
 
 ; --- ALPI
-use_idx				= (/13,3,5,10,11,12/)							; for ALPI
+; for ALPI
+pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1","RELHUM","dqwdz","dthldz","FREQSH","CMFMC","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal","aa2_gp"/)
 
-;use_idx			= (/0,14,17,19,20,21,24,25,27,28, \
-;						32,33,34,47,48,36,37,38,39/)	 				; sgm_shal related
-;use_idx			= (/0,14,56,57,58,39,36,37,38/)	 					; sgm_shal related
+;; sgm_shal_related
+;pick_var			= (/"PRECT","sgm_shal","term1_shal","term2_shal","term3_shal","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal"/)
 
-;use_idx			= (/14,56,57,58/)	 								; sgm_shal related: term1 term2 term3
-																		; need sgm_diff_plot and sgm_shal_4terms = True
+;; sgm_shal related: term1 term2 term3
+;; need sgm_diff_plot and sgm_shal_4terms = True
+;pick_var			= (/"sgm_shal","term1_shal","term2_shal","term3_shal"/)
 
-;use_idx				= (/11,14,15/)									; sgm_tota, sgm_shal, sgm_turb
-																		; need sgm_diff_plot = True
+;; sgm_tota, sgm_shal, sgm_turb
+;; need sgm_diff_plot = True
+;pick_var			= (/"sgm_tota","sgm_shal","sgm_turb"/)
 
+;; input for lat_lon_plot
+;pick_var			= (/"SWCF","LWCF"/)
+
+;; input for zonal_mean
+;pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
+
+
+;------ get the index for pick_var in varsA
+use_idx				= new(dimsizes(pick_var),integer)
+do ivar=0,dimsizes(pick_var)-1
+	use_idx(ivar)	= ind(varsA.eq.pick_var(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
+print(use_idx)
 print(varsA(use_idx))
-
-;use_idx			= (/0,15,22,23,24,25,27,28,47,48, \
-;						40,41,42,43,44,45,46/)							; sgm_turb related 29,30,31 == 40,41,42
-;use_idx			= (/0,15,53,54,55,52,49,50,51/)
-
-
-;use_idx			= (/3,4/) ; ---- input for lat_lon_plot
-;use_idx			= (/0,13,3,4/) ; ---- input for zonal_mean
 
 ; --- for variables only in Gauss-PDF
 use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
