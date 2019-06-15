@@ -29,7 +29,7 @@ begin
 
 do_read_data			= False
 do_pdf_var 				= True
-do_pdf_omega			= False;True
+do_pdf_omega			= False
 do_pdf_component		= False;True
 
 plot_type				= "pdf"
@@ -112,8 +112,10 @@ valmin		= valminA(use_idx)
 valmax		= valmaxA(use_idx)
 units		= unitsA(use_idx)
 
-colors 		= (/"blue","red","cyan","orange","deepskyblue","firebrick","cyan3","darkseagreen3"/)
+;colors 		= (/"red","blue","orange","cyan","deepskyblue","firebrick","cyan3","darkseagreen3"/)
+colors 		= (/"red","blue","red","blue","deepskyblue","firebrick","cyan3","darkseagreen3"/)
 thicks		= (/4,2,4,2/)
+dashes		= (/0,0,16,16/)
 
 ; ------ setting for global grid information
 if(resolution.eq."1deg")then
@@ -607,6 +609,7 @@ res@tmXTOn						= False
 res1								= res
 res1@xyLineColors 					= colors
 res1@xyLineThicknesses				= thicks
+res1@xyDashPatterns					= dashes
 res1@gsnLeftString					= "(a)"
 res1@tiYAxisString					= "PDF"
 tmp					= reshape(omega_PDF_bin((/0,itag/),:,:),(/2*dimsizes(case_nor),nbinx/))
@@ -758,12 +761,13 @@ lgres@lgPerimThicknessF 			= 1.0
 ;lgres@lgMonoDashIndex 				= True
 ;lgres@lgDashIndex 					= 0
 lgres@lgMonoLineThickness			= True
-lgres@lgMonoDashIndex				= True
+;lgres@lgMonoDashIndex				= True
 
 
 lgres1								= lgres
 lgres1@lgLineColors 				= colors
-lgres1@lgLineThicknessF 			= res@xyLineThicknessF
+lgres1@lgLineThicknessF 			= res1@xyLineThicknessF
+lgres1@lgDashIndexes				= dashes ; res1@xyDashPatterns
 
 ;labels_1 							= (/"RH","PDF","PDF_2","PDF_MG10","RH_"+tag(itag),"PDF_"+tag(itag),"PDF_2_"+tag(itag),"PDF_MG10_"+tag(itag)/)
 labels_1 							= (/"RH","PDF","RH_"+tag(itag),"PDF_"+tag(itag)/)
@@ -771,6 +775,7 @@ labels_1 							= (/"RH","PDF","RH_"+tag(itag),"PDF_"+tag(itag)/)
 lgres2								= lgres
 lgres2@lgLineColors					= colors ;colors(vector)
 lgres2@lgLineThicknessF 			= res@xyLineThicknessF
+lgres2@lgMonoDashIndex				= True
 
 ;labels_2 							= labels_1((/2,3/)) ;labels_1(vector)
 labels_2 							= labels_1((/2,3/)) ;labels_1(vector)
