@@ -1179,10 +1179,14 @@ polyres						= True
 polyres@gsMarkerIndex		= 1
 polyres@gsMarkerSizeF		= 0.02
 
-colors						= (/"red","red","blue","blue","black","black"/)
-dashes						= (/0,12,0,12,0,12/)
-;colors						= (/"red","blue","red","blue","black","black"/)
-;dashes						= (/12,12,0,0,0,12/)
+;colors						= (/"red","red","blue","blue","black","black"/)
+;dashes						= (/0,12,0,12,0,12/)
+colors						= (/"red","blue","red","blue","black","black"/)
+dashes						= (/0,0,12,12,0,12/)
+
+colors_diff					= (/"red","blue","black"/)
+dashes_diff					= (/0,0,0/)
+thickes_diff				= (/2,2,4/)
 
 thickes						= (/2,2,2,2,4,4/)
 
@@ -1231,9 +1235,9 @@ end do ; do idx1=
 
 ;do idx1=0,dimsizes(case_nor)
 do idx1=0,2 ; number of lines: include the different line, so it is "2" rather than 1. -- three lines
-	polyres@gsLineColor					= colors(idx1*2)
-	polyres@gsLineDashPattern 			= dashes(idx1*2)
-	polyres@gsLineThicknessF			= thickes(idx1*2)
+	polyres@gsLineColor					= colors_diff(idx1) ;colors(idx1*2)
+	polyres@gsLineDashPattern 			= dashes_diff(idx1) ;dashes(idx1*2)
+	polyres@gsLineThicknessF			= thickes_diff(idx1) ;thickes(idx1*2)
 ;	lines_diff(ivar,idx1)				= gsn_add_polyline(wks,plot_diff(ivar),ispan(0,nbins-1,1)+0.5+idx1*0.1,tmp_diff_final(idx1,:),polyres)
 	lines_diff(icase,idx1)				= gsn_add_polyline(wks,plot_diff(icase),ispan(0,nbins-1,1)+0.5,tmp_diff_final(idx1,:),polyres)
 	do idx2=0,nbins-1
@@ -1268,9 +1272,9 @@ lgres1@lgLineThicknessF			= res@xyLineThicknessF
 lgres1@lgDashIndexes			= dashes
 
 lgres2@vpWidthF					= 0.25
-lgres2@lgLineColors				= colors(::2)
+lgres2@lgLineColors				= colors_diff ;colors(::2)
 lgres2@lgLineThicknessF			= res@xyLineThicknessF
-lgres2@lgDashIndexes			= dashes(::2)
+lgres2@lgDashIndexes			= dashes_diff ;dashes(::2)
 
 lbid1                           = gsn_create_legend(wks,dimsizes(legends),legends,lgres1)
 lbid2                           = gsn_create_legend(wks,dimsizes(legends_diff1),legends_diff1,lgres2)
