@@ -48,7 +48,7 @@ plot_1D_hist			= False;True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "x11"
+plot_type			= "pdf"
 
 latS_trop			= -30.
 latE_trop			= 30.
@@ -409,7 +409,8 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 
 ; --- ALPI
 ; for ALPI
-pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1","RELHUM","dqwdz","dthldz","FREQSH","CMFMC","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal","aa2_gp"/)
+;pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1","RELHUM","dqwdz","dthldz","FREQSH","CMFMC","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal","aa2_gp"/)
+pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1"/)
 
 ;; sgm_shal_related
 ;pick_var			= (/"PRECT","sgm_shal","term1_shal","term2_shal","term3_shal","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal"/)
@@ -2962,9 +2963,15 @@ polyres@gsMarkerSizeF		= 0.02
 
 polyres_sgm					= polyres
 
-colors						= (/"red","red","blue","blue","black","black"/)
-dashes						= (/0,12,0,12,0,12/)
+colors						= (/"red","blue","red","blue","black","black"/)
+;dashes						= (/0,12,0,12,0,12/)
+dashes						= (/0,0,12,12,0,12/)
 thickes						= (/1.5,1.5,1.5,1.5,3,3/) ;(/2,2,2,2,4,4/)
+
+colors_diff					= (/"red","blue","black"/)
+dashes_diff					= (/0,0,0/)
+thickes_diff				= (/1.5,1.5,3./)
+
 								  ;sgm_tota, sgm_shal, sgm_turb
 								  ; or
 								  ; sgm_shal, term1, term2, term3
@@ -3025,9 +3032,9 @@ do idx1=0,dimsizes(case_nor)
 if((.not.ismissing(ind(vars_pdf.eq.vars(ivar)))).and.(idx1.eq.0 .or. idx1.eq.2))then
 	continue
 else
-	polyres@gsLineColor					= colors(idx1*2)
-	polyres@gsLineDashPattern 			= dashes(idx1*2)
-	polyres@gsLineThicknessF			= thickes(idx1*2)
+	polyres@gsLineColor					= colors_diff(idx1) ;colors(idx1*2)
+	polyres@gsLineDashPattern 			= dashes_diff(idx1) ;dashes(idx1*2)
+	polyres@gsLineThicknessF			= thickes_diff(idx1) ;thickes(idx1*2)
 
 	if(sgm_diff_plot)then
 	polyres_sgm@gsLineColor					= colors_sgm(ivar)
@@ -3107,9 +3114,11 @@ lgres1@lgLineColors				= colors
 lgres1@lgLineThicknessF			= res@xyLineThicknessF
 lgres1@lgDashIndexes			= dashes
 
-lgres2@lgLineColors				= colors(::2)
+lgres2@lgLineColors				= (/"red","blue","black"/) ;colors(::2)
 lgres2@lgLineThicknessF			= res@xyLineThicknessF
-lgres2@lgDashIndexes			= dashes(::2)
+;lgres2@lgDashIndexes			= dashes(::2)
+lgres2@lgDashIndexes			= (/0,0,0/) ;dashes(::2)
+
 
 lgres_sgm@lgLineColors				= colors_sgm;((/1,3,4/))
 lgres_sgm@lgLineThicknessF			= res@xyLineThicknessF
