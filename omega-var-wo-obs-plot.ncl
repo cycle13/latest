@@ -28,8 +28,8 @@ load "./functions_bony_method.ncl"
 begin
 
 do_read_data			= False
-do_pdf_var 				= True
-do_pdf_omega			= False
+do_pdf_var 				= False
+do_pdf_omega			= True
 do_pdf_component		= False;True
 
 plot_type				= "pdf"
@@ -37,7 +37,7 @@ plots_strings			= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)"/)
 
 
 
-nbinx 					= 25
+nbinx 					= 27
 nbiny 					= 50
 nx_min 					= -140.
 nx_max 					= 140.
@@ -531,6 +531,7 @@ end do ; do ivar=
 
 print("Vars		cases	"+CwPw_all_name(0)+"		"+CwPw_all_name(1)+"	"+CwPw_all_name(2)+"	real PwCw response")
 print(Vars_out_fix+"Park-RH 	"+sprintf("%9.5f",CwPw_all_avg_1(:,0,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,1,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,2,1,0))+"	"+sprintf("%9.5f",PwCw_avg(:,0))+"	"+sprintf("%9.5f",PwCw_sep_1(:,0)))
+print("")
 print(Vars_out_fix+"Park-RH 	"+sprintf("%9.5f",CwPw_all_avg_2(:,0,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_2(:,1,1,0))+"	"+sprintf("%9.5f",CwPw_all_avg_2(:,2,1,0))+"	"+sprintf("%9.5f",PwCw_avg(:,0))+"	"+sprintf("%9.5f",PwCw_sep_2(:,0)))
 
 ;print(Vars_out_fix+"Gaus-PDF	"+sprintf("%9.5f",CwPw_all_avg(:,0,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg(:,1,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg(:,2,1,1))+"	"+sprintf("%9.5f",PwCw_avg(:,1))+"	"+sprintf("%9.5f",PwCw_sep(:,1)))
