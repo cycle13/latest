@@ -397,7 +397,7 @@ varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1
 varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2, bb_gp_dlevs_2, beta_gp_dlevs_2, dqwdz_dlevs_2, dthldz_dlevs_2, qw2_dlevs_2, thl2_dlevs_2, qwthl_dlevs_2, qwu_qw_dlevs_2, thlu_thl_dlevs_2, qwu_thlu_dlevs_2, qtu_shal_dlevs_2,vert_qwflx_shal_dlevs_2, vert_thlflx_shal_dlevs_2, vert_qwthlflx_shal_dlevs_2, tau_shal_dlevs_2, vert_qwflx_turb_dlevs_2, vert_thlflx_turb_dlevs_2, vert_qwthlflx_turb_dlevs_2,lengi2_dlevs_2, dqwdz_2_dlevs_2, dthldz_2_dlevs_2, dqwdz_dthldz_dlevs_2, aa2_gp_dlevs_2, bb2_gp_dlevs_2,aa2_dqwdz2_dlevs_2, bb2_dthldz2_dlevs_2, ab_dqwdz_dthldz_dlevs_2, shi_lengi2_dlevs_2, term1_turb_dlevs_2, term2_turb_dlevs_2, term3_turb_dlevs_2, term1_shal_dlevs_2, term2_shal_dlevs_2, term3_shal_dlevs_2, TREFHT_dlevs_2/)
 varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp, bb_gp_dlevs_sp, beta_gp_dlevs_sp, dqwdz_dlevs_sp, dthldz_dlevs_sp, qw2_dlevs_sp, thl2_dlevs_sp, qwthl_dlevs_sp, qwu_qw_dlevs_sp, thlu_thl_dlevs_sp, qwu_thlu_dlevs_sp, qtu_shal_dlevs_sp, vert_qwflx_shal_dlevs_sp, vert_thlflx_shal_dlevs_sp, vert_qwthlflx_shal_dlevs_sp, tau_shal_dlevs_sp, vert_qwflx_turb_dlevs_sp, vert_thlflx_turb_dlevs_sp, vert_qwthlflx_turb_dlevs_sp, lengi2_dlevs_sp, dqwdz_2_dlevs_sp, dthldz_2_dlevs_sp, dqwdz_dthldz_dlevs_sp, aa2_gp_dlevs_sp, bb2_gp_dlevs_sp, aa2_dqwdz2_dlevs_sp, bb2_dthldz2_dlevs_sp, ab_dqwdz_dthldz_dlevs_sp, shi_lengi2_dlevs_sp, term1_turb_dlevs_sp, term2_turb_dlevs_sp, term3_turb_dlevs_sp, term1_shal_dlevs_sp, term2_shal_dlevs_sp, term3_shal_dlevs_sp, TREFHT_dlevs_sp/)
 
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m2", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m2/s", "kg/m2/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","K"/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m~S~2~N~", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m~S~2~N~/s", "kg/m~S~2~N~/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","K"/)
 plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","(k)","(l)","(m)","(n)","(o)","(p)","(q)","(r)","(s)","(t)","(u)","(v)","(w)","(x)","(y)","(z)"/)
 
 
@@ -2899,8 +2899,8 @@ if((.not.ismissing(ind(vars_yaxis[ilist].eq.vars(ivar)))))then
 	res@trYMinF					= all_yspan[ilist](1) 
 	break	; once find it, exit the loop
 else
-	res@trYMaxF					= max(tmp+tmp2)
-	res@trYMinF					= min(tmp-tmp2)
+	res@trYMaxF					= max((/max(tmp+tmp2)*1.2,max(tmp+tmp2)*0.8/))
+	res@trYMinF					= min((/min(tmp-tmp2)*1.2,min(tmp-tmp2)*0.8/))
 	break 	; once find it, exit the loop
 end if
 end do 
@@ -2922,8 +2922,8 @@ if((.not.ismissing(ind(vars_yaxis[ilist].eq.vars(ivar)))))then
 	res_diff@trYMinF					= all_yspan[ilist](3)*1.1
 	break ; once find it, exit the loop
 else
-	res_diff@trYMaxF					= max(tmp_diff_final)*1.1
-	res_diff@trYMinF					= min(tmp_diff_final)*1.1
+	res_diff@trYMaxF					= max(tmp_diff_final(:1,:))*1.1
+	res_diff@trYMinF					= min(tmp_diff_final(:1,:))*1.1
 	break ; once find it, exit the loop
 end if
 end do
@@ -2947,10 +2947,10 @@ else
 	res_diff_sgm@gsnLeftString		= ""
 end if
 
-plot_diff(ivar)					= gsn_csm_y(wks, tmp_diff_final, res_diff)
+plot_diff(ivar)					= gsn_csm_y(wks, tmp_diff_final(:1,:), res_diff)
 
 if(sgm_diff_plot)then
-	plot_diff_sgm(ivar)				= gsn_csm_y(wks, tmp_diff_final, res_diff_sgm)
+	plot_diff_sgm(ivar)				= gsn_csm_y(wks, tmp_diff_final(:1,:), res_diff_sgm)
 end if
 
 count_2	= count_2 + 1
@@ -3027,7 +3027,8 @@ end do ; do idx2=
 end if ; vars(ivar).eq."sgm_tota"...
 end do ; do idx1=
 
-do idx1=0,dimsizes(case_nor)
+;do idx1=0,dimsizes(case_nor)
+do idx1=0,dimsizes(case_nor)-1
 
 if((.not.ismissing(ind(vars_pdf.eq.vars(ivar)))).and.(idx1.eq.0 .or. idx1.eq.2))then
 	continue
@@ -3085,8 +3086,10 @@ end if
 
 ; ------------------------Add legends
 ;legends                         = vars
-legends							= (/"RH_cntl","PDF_cntl","RH_p4K","PDF_p4K"/)
-legends_diff1					= (/"RH_p4K-cntl", "PDF_p4K-cntl","PDF-RH_p4K-cntl"/)
+legends							= (/"RH_CTL","PDF_CTL","RH_P4K","PDF_P4K"/)
+;legends_diff1					= (/"RH_p4K-cntl", "PDF_p4K-cntl","PDF-RH_p4K-cntl"/)
+legends_diff1					= (/"RH_P4K-CTL", "PDF_P4K-CTL"/)
+
 if(.not.sgm_shal_4terms)then
 	legends_sgm						= (/"SGM_tota", "SGM_shal", "SGM_turb"/)
 else
