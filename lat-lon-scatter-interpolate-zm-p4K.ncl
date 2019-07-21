@@ -23,7 +23,7 @@ Sherwood_2014			= False
 
 ALPI_bin_cal			= True 
 ALPIsub_revised			= True ; from LTS to EIS
-ALPIsub_mask_plot		= False
+ALPIsub_mask_plot		= True
 ALPIsub_bin_plot		= True 
 ALPI_mask_ocn			= True
 sgm_diff_plot			= False	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
@@ -2659,11 +2659,15 @@ if(ALPIsub_mask_plot)then
 ;wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins+"_Raster")
 wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins)
 
-gsn_define_colormap(wks,"NCV_manga")
+;gsn_define_colormap(wks,"NCV_manga")
 ;gsn_define_colormap(wks,"NCV_blue_red")
+;gsn_define_colormap(wks,"radar_1")
+gsn_define_colormap(wks,"perc2_9lev")
+
 
 res							= True
 
+;res@gsnSpreadColors			= True
 res@gsnFrame				= False
 res@gsnDraw					= False
 
@@ -2673,13 +2677,27 @@ res@cnLineLabelsOn			= False
 ;res@cnFillMode       		= "RasterFill"
 res@cnLevelSelectionMode	= "ExplicitLevels"
 res@cnLevels         		= ispan(1,nbins-1,1);ALPI_mask_val(1:)
-res@cnFillColors			= ispan(2,250,250/dimsizes(ALPI_mask_val)) ;(/"lightcyan2","lightgoldenrod2","lightyellow2","lightgrey","lightskyblue2","lightseagreen","lightpink2"/)
+;res@cnFillColors			= ispan(2,250,250/dimsizes(ALPI_mask_val)) ;(/"lightcyan2","lightgoldenrod2","lightyellow2","lightgrey","lightskyblue2","lightseagreen","lightpink2"/)
 
 res@lbLabelBarOn			= False
 res@lbLabelPosition  		= "Center"           ; label position
 res@lbLabelAlignment 		= "BoxCenters"       ; label orientation
 ;res@lbLabelStrings   		= ""+ res@cnLevels   ; trick 
 res@lbLabelStrings   		= ""+ (ALPI_mask_val(:)-0.5) ; --- slightly tricky here: to make the labeled value look clear.
+res@gsnLeftString			= "ALPI regimes"
+
+res@mpCenterLonF			= 180
+res@mpMinLatF				= -30.
+res@mpMaxLatF				= 30.
+
+fontheight					= 0.014
+res@tmXBLabelStride			= 2.
+res@gsnStringFontHeightF	= fontheight
+res@tmXBLabelFontHeightF	= fontheight
+res@tmYLLabelFontHeightF	= fontheight
+
+
+plot_tmp					= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon(0,0,:,:),res)
 
 fontheight					= 0.025
 res@lbLabelFontHeightF		= fontheight
@@ -2687,13 +2705,8 @@ res@lbLabelFontHeightF		= fontheight
 res@pmLabelBarHeightF		=  0.100
 res@pmLabelBarWidthF 		=  0.80
 
-res@mpCenterLonF			= 180
-res@mpMinLatF				= -30.
-res@mpMaxLatF				= 30.
-
 res@tmXBLabelStride			= 2.
 res@gsnStringFontHeightF	= fontheight
-res@gsnLeftString			= "ALPI regimes"
 res@tmXBLabelFontHeightF	= fontheight
 res@tmYLLabelFontHeightF	= fontheight
 
@@ -2721,6 +2734,8 @@ resd@cnMaxLevelValF			= 2.
 resd@cnLevelSpacingF		= 0.5
 
 resd@lbLabelBarOn			= False
+
+
 
 plot						= new((/dimsizes(tag),dimsizes(case_nor)/),graphic)
 plot_diff					= new((/dimsizes(tag)/),graphic)
@@ -2764,9 +2779,11 @@ presd@gsnPanelLabelBar		= True
 presd@pmLabelBarWidthF		= 0.8
 presd@lbLabelFontHeightF	= 0.015
 
+gsn_panel(wks,plot_tmp,(/1,1/),pres)
 gsn_panel(wks,ndtooned(plot),(/2,2/),pres)
 gsn_panel(wks,plot_diff,(/2,1/),presd)
 gsn_panel(wks,plot_diff2,(/2,1/),presd)
+
 delete([/count_1, count_2, count_3 /])
 exit
 end if ; ALPI_mask_plot
