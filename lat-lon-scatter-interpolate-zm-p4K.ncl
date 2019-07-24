@@ -37,7 +37,7 @@ scatter_p2p				= False; True ; -- some arrays are too small. only for two variab
 scatter_sub_ocn			= False; True	; --- mask ocean or not
 scatter_sub_one_var		= False; False	; --- one variable in X and Y axis -- only two variables in use_idx
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
-scatter_sub_sgm_diff	= False ; True ; --- p4K-cntl: sgm related variables in Y and sgm in X axis
+scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y and sgm in X axis
 
 zonal_mean				= False 
 
@@ -85,7 +85,7 @@ tag					= (/"nor", "p4K"/)
 append 				= ".ANN.climo.nc"
 
 ; _1 for the difference between PDF and RH; 
-; _2 for the difference between p4K and cntl.
+; _2 for the difference between p4K and CTL.
 SWCF_levs			= (/-170,-150,-135,-120,-105,-90,-75,-60,-45,-30,-15,0,15,30,45/)
 SWCF_dlevs_1		= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
 SWCF_dlevs_2		= (/-50,-40,-30,-20,-15,-10,-5,0,5,10,15,20,30,40,50/)/2.
@@ -1152,7 +1152,7 @@ do ivar=0,dimsizes(Vars_cosp)-1
 		printVarSummary(vars_cosp_2D_casediff)
 		printMinMax(vars_cosp_2D_casediff,True)
 
-		; calculate the diff between (PDF_p4K-cntl) and (RH_p4K-cntl)
+		; calculate the diff between (PDF_P4K-CTL) and (RH_P4K-CTL)
 		vars_cosp_2D_diff2		= (/vars_cosp_2D_tagdiff(1,:,:)-vars_cosp_2D_casediff(0,:,:)/)
 		copy_VarCoords(vars_cosp_2D_tagdiff(0,:,:),vars_cosp_2D_diff2)
 		printVarSummary(vars_cosp_2D_diff2)
@@ -1193,9 +1193,9 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		res2D@pmLabelBarOrthogonalPosF	= 0.15
 
-		center_stringsA			= (/"RH_cntl","PDF_cntl","PDF_cntl-RH_cntl", \
-									"RH_p4K","PDF_p4K","PDF_p4K-RH_p4K",\
-									"RH_p4K-cntl","PDF_p4K-cntl","DIF_PDF-DIF_RH"/)
+		center_stringsA			= (/"RH_CTL","PDF_CTL","PDF_CTL-RH_CTL", \
+									"RH_P4K","PDF_P4K","PDF_P4K-RH_P4K",\
+									"RH_P4K-CTL","PDF_P4K-CTL","DIF_PDF-DIF_RH"/)
 		vars_plotsA				= (/vars_cosp_2D(0,0,:,:), vars_cosp_2D(0,1,:,:),vars_cosp_2D_casediff(0,:,:),\
 									vars_cosp_2D(1,0,:,:), vars_cosp_2D(1,1,:,:),vars_cosp_2D_casediff(1,:,:),\
 									vars_cosp_2D_tagdiff(0,:,:),vars_cosp_2D_tagdiff(1,:,:),vars_cosp_2D_diff2(:,:)/)
@@ -1271,8 +1271,8 @@ do ivar=0,dimsizes(Vars_cosp)-1
 		vars_cosp_2D_Y_casediff			= (/vars_cosp_2D_Y(:,1,:)-vars_cosp_2D_Y(:,0,:)/)
 		copy_VarCoords(vars_cosp_2D_Y(:,0,:),vars_cosp_2D_Y_casediff)
 
-		plotData_string					= (/"RH_cntl","PDF_cntl",\
-											"RH_p4K","PDF_p4K"/)
+		plotData_string					= (/"RH_CTL","PDF_CTL",\
+											"RH_P4K","PDF_P4K"/)
 		plotDataX						= (/vars_cosp_2D_X(0,0,:),vars_cosp_2D_X(0,1,:),\
 											vars_cosp_2D_X(1,0,:),vars_cosp_2D_X(1,1,:)/)
 		plotDataY						= (/vars_cosp_2D_Y(0,0,:),vars_cosp_2D_Y(0,1,:),\
@@ -1402,7 +1402,7 @@ if(zonal_mean)then
 	do ivar=0,dimsizes(vars)-1
 		res@gsnLeftString		= plots_strings(ivar)
 		res@tiYAxisString		= vars(ivar)+" ("+vars_units(ivar)+")"
-		tmp						= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor),nlat/),float) ; (rh_cntl, pdf_cntl, rh_p4k, pdf_p4k)
+		tmp						= new((/dimsizes(vars),dimsizes(tag)*dimsizes(case_nor),nlat/),float) ; (rh_CTL, pdf_CTL, rh_p4k, pdf_p4k)
 		tmp(:,0:1,:)			= (/vars_zm(:,0,:,:)/)
 		tmp(:,2:3,:)			= (/vars_zm(:,1,:,:)/)
 ;		plot					= gsn_csm_xy(wks,vars_zm&lat,tmp(ivar,:,:),res)
@@ -1414,8 +1414,8 @@ if(zonal_mean)then
 	end do
 
 	; ------------------------Add legends
-	legends							= (/"RH_cntl","PDF_cntl","RH_p4K","PDF_p4K"/)
-	legends_d						= (/"RH_p4K-cntl","PDF_p4K-cntl"/)
+	legends							= (/"RH_CTL","PDF_CTL","RH_P4K","PDF_P4K"/)
+	legends_d						= (/"RH_P4K-CTL","PDF_P4K-CTL"/)
 
 	lgres							= True
 	lgres@lgLabelFontHeightF        = 0.08
@@ -1643,7 +1643,7 @@ frame(wks)
 exit
 end if ; Sherwood_2014
 
-; ===================== difference between p4K and cntl ==========================
+; ===================== difference between P4K and CTL ==========================
 vars_all_tagdiff		= new((/dimsizes(vars),dimsizes(case_nor),nlat,nlon/),float)
 vars_all_tagdiff		= (/vars_all(:,1,:,:,:)-vars_all(:,0,:,:,:)/)
 copy_VarCoords_1(vars_all(var|:,case|:,lat|:,lon|:,tag|:),vars_all_tagdiff)
@@ -1723,7 +1723,7 @@ do ivar=0,dimsizes(vars)-1
 	do icase=start_icase,dimsizes(case_nor)-1	; only for Gauss-PDF
 	
 	if(scatter_sub_one_var)then
-	; --- for cntl and p4K-cntl plot for the same variable
+	; --- for CTL and P4K-CTL plot for the same variable
 	x							= ndtooned(vars_all_trop_ocn(ivar,0,icase,::3,::3))
 	y							= ndtooned(vars_all_casediff_trop_ocn(ivar,0,::3,::3))
 	;y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
@@ -1739,7 +1739,7 @@ do ivar=0,dimsizes(vars)-1
 	end if
 	
 	if(scatter_sub_sgm_diff)then
-	; -- for difference between p4K and cntl
+	; -- for difference between P4K and CTL
 	x							= ndtooned(vars_all_tagdiff_trop_ocn(0,icase,::3,::3))
 	y							= ndtooned(vars_all_tagdiff_trop_ocn(ivar,icase,::3,::3))
 	end if
@@ -2180,7 +2180,7 @@ regimes_diff2				= (/regimes_tagdiff(:,:,1)-regimes_tagdiff(:,:,0)/)
 
 regimes_areawgt			 	= (/data2regimes_1_percent*regimes/)
 
-; use the same area for cntl and p4K simulation: both comes from cntl simulation
+; use the same area for CTL and P4K simulation: both comes from CTL simulation
 regimes_areawgt_1			 = (/regimes/)
 regimes_areawgt_1(:,:,0,:)	= (/data2regimes_1_percent(:,:,0,:)*regimes(:,:,0,:)/)
 regimes_areawgt_1(:,:,1,:)	= (/data2regimes_1_percent(:,:,0,:)*regimes(:,:,1,:)/)
@@ -2760,7 +2760,7 @@ end do ; do icase=
 
 do icase=0,dimsizes(case_nor)-1
 resd@gsnLeftString			= plots_strings(count_3)
-resd@gsnRightString			= "p4K-cntl_"+case_name(icase)
+resd@gsnRightString			= "P4K-CTL_"+case_name(icase)
 plot_diff2(icase)			= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon_diff2(icase,:,:),resd)
 count_3	= count_3 + 1
 end do ; do icase=
@@ -2903,8 +2903,8 @@ res@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 tmp							= reshape(vars_all_bin_mean(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
 tmp2						= reshape(vars_all_bin_std(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
 
-tmp_diff1					= (/vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:)/) ; difference between p4K and cntl
-tmp_diff2					= (/tmp_diff1(1,:)-tmp_diff1(0,:)/) ; difference between PDF_p4K-cntl and RH_p4K-cntl
+tmp_diff1					= (/vars_all_bin_mean(ivar,1,:,:)-vars_all_bin_mean(ivar,0,:,:)/) ; difference between P4K and CTL
+tmp_diff2					= (/tmp_diff1(1,:)-tmp_diff1(0,:)/) ; difference between PDF_P4K-CTL and RH_P4K-CTL
 tmp_diff_final				= new((/dimsizes(case_nor)+1,nbins/),float)
 tmp_diff_final(0,:)			= tmp_diff1(0,:)
 tmp_diff_final(1,:)			= tmp_diff1(1,:)
@@ -3104,7 +3104,7 @@ end if
 ; ------------------------Add legends
 ;legends                         = vars
 legends							= (/"RH_CTL","PDF_CTL","RH_P4K","PDF_P4K"/)
-;legends_diff1					= (/"RH_p4K-cntl", "PDF_p4K-cntl","PDF-RH_p4K-cntl"/)
+;legends_diff1					= (/"RH_P4K-CTL", "PDF_P4K-CTL","PDF-RH_P4K-CTL"/)
 legends_diff1					= (/"RH_P4K-CTL", "PDF_P4K-CTL"/)
 
 if(.not.sgm_shal_4terms)then
