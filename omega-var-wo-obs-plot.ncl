@@ -33,6 +33,8 @@ do_pdf_omega			= True
 do_pdf_component		= False;True
 
 plot_type				= "pdf"
+date					= systemfunc("date")
+print(date)
 plots_strings			= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)"/)
 
 
@@ -392,7 +394,7 @@ printVarSummary(omega_PDF_bin)
 ; difference-first, and binning-second.
 omega_PDF_bin_diff		= omega_PDF_bin
 omega_PDF_bin_diff(0,:,:)	= (/omega_PDF_bin(0,:,:)-omega_PDF_bin(0,:,:)/) ; nor-nor
-omega_PDF_bin_diff(1,:,:)	= (/omega_PDF_bin(1,:,:)-omega_PDF_bin(0,:,:)/) ; p4K-nor
+omega_PDF_bin_diff(1,:,:)	= (/omega_PDF_bin(1,:,:)-omega_PDF_bin(0,:,:)/) ; P4K-nor
 ;omega_PDF_bin_diff(2,:,:)	= (/omega_PDF_bin(2,:,:)-omega_PDF_bin(0,:,:)/) ; 4xCO2-nor
 
 printVarSummary(omega_PDF_bin_diff)
@@ -541,15 +543,15 @@ print("")
 ;====================== Plotting starts here .... ===============================================
 
 ;do itag=1,dimsizes(tag)-1
-do itag=1,1 ; only p4K experiment
+do itag=1,1 ; only P4K experiment
 
 if(landmask)then
-	wks  				= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-ocn-"+resolution)
+	wks  				= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-ocn-"+resolution+"_"+date)
 else
 	if(ocnmask)then
-		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-lnd-"+resolution)
+		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-lnd-"+resolution+"_"+date)
 	else
-		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-global-"+resolution)
+		wks  			= gsn_open_wks (plot_type,"./figure/omega-var-"+tag(itag)+"-CwPw_all-global-"+resolution+"_"+date)
 	end if
 end if
 
@@ -771,7 +773,8 @@ lgres1@lgLineThicknessF 			= res1@xyLineThicknessF
 lgres1@lgDashIndexes				= dashes ; res1@xyDashPatterns
 
 ;labels_1 							= (/"RH","PDF","PDF_2","PDF_MG10","RH_"+tag(itag),"PDF_"+tag(itag),"PDF_2_"+tag(itag),"PDF_MG10_"+tag(itag)/)
-labels_1 							= (/"RH","PDF","RH_"+tag(itag),"PDF_"+tag(itag)/)
+;labels_1 							= (/"RH_CTL","PDF_CTL","RH_"+tag(itag),"PDF_"+tag(itag)/)
+labels_1 							= (/"RH_CTL","PDF_CTL","RH_P4K","PDF_P4K"/)
 
 lgres2								= lgres
 lgres2@lgLineColors					= colors ;colors(vector)
