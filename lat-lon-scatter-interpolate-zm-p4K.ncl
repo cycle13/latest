@@ -18,9 +18,12 @@ resolution				= "2deg"
 pattern_correlation		= False
 regime_contribution 	= False
 regime_mask_plot		= False ; this one depends on the regime_contribution
+
 lat_lon_plot			= False
+
 Sherwood_2014			= False
 
+ALPI_type				= False
 ALPI_bin_cal			= True 
 ALPIsub_revised			= True ; from LTS to EIS
 ALPIsub_mask_plot		= True
@@ -39,7 +42,7 @@ scatter_sub_one_var		= False; False	; --- one variable in X and Y axis -- only t
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
 scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y and sgm in X axis
 
-zonal_mean				= False 
+zonal_mean				= False
 
 do_read_cosp			= False
 cosp_hist				= False;True
@@ -49,6 +52,9 @@ plot_1D_hist			= False;True
 sherwood_index		= (/"SS","DD","LTMI"/)
 
 plot_type			= "pdf"
+; add date to each plot 
+date=systemfunc("date")
+print(date)
 
 latS_trop			= -30.
 latE_trop			= 30.
@@ -410,7 +416,7 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ; --- ALPI
 ; for ALPI
 ;pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1","RELHUM","dqwdz","dthldz","FREQSH","CMFMC","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal","aa2_gp"/)
-pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1"/)
+;pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1"/)
 
 ;; sgm_shal_related
 ;pick_var			= (/"PRECT","sgm_shal","term1_shal","term2_shal","term3_shal","tau_shal","vert_qwflx_shal","vert_thlflx_shal","vert_qwthlflx_shal"/)
@@ -424,7 +430,7 @@ pick_var			= (/"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1"/)
 ;pick_var			= (/"sgm_tota","sgm_shal","sgm_turb"/)
 
 ;; input for lat_lon_plot
-;pick_var			= (/"SWCF","LWCF"/)
+pick_var			= (/"SWCF","LWCF"/)
 
 ;; input for zonal_mean
 ;pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
@@ -1163,7 +1169,7 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		if(plot_2D_hist)then
 		;======= make plots
-		wks			= gsn_open_wks(plot_type,"./figure/COSP_2D_histgram_"+str_sub_str(regionNames(nr)," ",""))
+		wks			= gsn_open_wks(plot_type,"./figure/COSP_2D_histgram_"+str_sub_str(regionNames(nr)," ","")+"_"+date)
 
 		RGB			= "/home/lyl/WORK1/cesm1_2_1/amwg_diag/rgb"
 		cmap		= RGBtoCmap(RGB+"/cloudsim.rgb")
@@ -1249,7 +1255,7 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		if(plot_1D_hist)then
 		; 1D histograms
-		wks								= gsn_open_wks(plot_type,"./figure/COSP_1D_histgram_"+str_sub_str(regionNames(nr)," ",""))
+		wks								= gsn_open_wks(plot_type,"./figure/COSP_1D_histgram_"+str_sub_str(regionNames(nr)," ","")+"_"+date)
 
 		; calculate distributions along each axis
 		printVarSummary(vars_cosp_2D)
@@ -1350,9 +1356,8 @@ if(zonal_mean)then
 
 	print(clat+"	"+clats)
 	
-
 	; plot zonal mean figures
-	wks						= gsn_open_wks(plot_type,"./figure/zonal_mean_"+vars(dimsizes(vars)-1))
+	wks						= gsn_open_wks(plot_type,"./figure/zonal_mean_"+vars(dimsizes(vars)-1)+"_"+date)
 	res						= True
 	res@vpWidthF			= 0.7
 	res@vpHeightF			= 0.4
@@ -1505,7 +1510,7 @@ print(case_nor+"		"+vars_shwd(0,itag,:)+"		"+vars_shwd(1,itag,:)+"	"+vars_shwd(2
 end do ; do itag=
 
 ; plot them in one figure
-wks						= gsn_open_wks(plot_type,"./figure/Sherwood_2014_index")
+wks						= gsn_open_wks(plot_type,"./figure/Sherwood_2014_index_"+date)
 res						= True
 res@gsnFrame			= False
 res@gsnDraw				= False
@@ -1779,12 +1784,12 @@ end do ; do ivar=
 
 
 if(scatter_sub_sgm_climo)then
-wks								= gsn_open_wks(plot_type,"./figure/scatter_sgm_climo_"+vars(0))
+wks								= gsn_open_wks(plot_type,"./figure/scatter_sgm_climo_"+vars(0)+"_"+date)
 else
 	if(scatter_sub_sgm_diff)then
-		wks								= gsn_open_wks(plot_type,"./figure/scatter_sgm_diff_"+vars(0))
+		wks								= gsn_open_wks(plot_type,"./figure/scatter_sgm_diff_"+vars(0)+"_"+date)
 	else
-		wks								= gsn_open_wks(plot_type,"./figure/scatter")
+		wks								= gsn_open_wks(plot_type,"./figure/scatter_"+date)
 	end if
 end if
 
@@ -2059,7 +2064,7 @@ if(regime_mask_plot)then
 ; ======== the following part is used to verify whether the regime-sorting is right.
 ; ======== ---- yes, plots indicate that all regimes are right.
 
-wks			= gsn_open_wks(plot_type,"./figure/distribution-of-7-regimes-crit_LTS_"+LTS_criteria)
+wks			= gsn_open_wks(plot_type,"./figure/distribution-of-7-regimes-crit_LTS_"+LTS_criteria+"_"+date)
 
 res							= True
 
@@ -2212,7 +2217,7 @@ end do ; do ivar=
 
 nregimes_used				= dimsizes(regimes_name(select_idx:))
 
-wks					 	= gsn_open_wks(plot_type, "figure/Global-regime-contribution-p4K-"+vars(dimsizes(vars)-1)+"-crit_LTS_"+LTS_criteria)
+wks					 	= gsn_open_wks(plot_type, "figure/Global-regime-contribution-p4K-"+vars(dimsizes(vars)-1)+"-crit_LTS_"+LTS_criteria+"_"+date)
 
 sres 						= True
 sres@gsnDraw               = False
@@ -2429,6 +2434,7 @@ exit
 end if ; regime_contribution
 
 ;--------------------------------------------------------ALPIS-------------------------------------
+if (ALPI_type)then ; the overall switch for ALPI kind of plots and calculation
 
 ;=================================================
 ; ALPI IS DEFINE BY LTS AND PRECIPITATION.
@@ -2657,7 +2663,7 @@ if(ALPIsub_mask_plot)then
 ; ======== ---- yes, plots indicate that all regimes are right.
 
 ;wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins+"_Raster")
-wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins)
+wks			= gsn_open_wks(plot_type,"./figure/ALPI_mask_plot_nbins_"+nbins+"_"+date)
 
 ;gsn_define_colormap(wks,"NCV_manga")
 ;gsn_define_colormap(wks,"NCV_blue_red")
@@ -2794,9 +2800,9 @@ end if ; ALPI_mask_plot
 if(ALPIsub_bin_plot)then
 
 if(ALPIsub_revised)then
-wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars_nbins_"+nbins+"_revised_ALPI"+"_"+vars(dimsizes(vars)-1))
+wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars_nbins_"+nbins+"_revised_ALPI"+"_"+vars(dimsizes(vars)-1)+"_"+date)
 else
-wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars_nbins_"+nbins)
+wks  						= gsn_open_wks (plot_type,"./figure/ALPI_binned_vars_nbins_"+nbins+"_"+date)
 end if
 
 res  						= True
@@ -3223,6 +3229,8 @@ end if ; ALPIsub_bin_plot
 
 end if ; ALPI_bin_cal
 
+end if ; ALPI_type
+
 ;--------------------------------------------------------LAT_LON_PLOT-------------------------------------
 
 ;************************create plot***************
@@ -3246,14 +3254,11 @@ var4K_mm_diff		= var4K_mm(1,:)-var4K_mm(0,:)
 
 print(vars(ivar)+"		"+var4K_mm_diff(0)+"		"+var4K_mm_diff(1))
 end do ; do ivar=
-exit
-
-
 
 do ivar=0,dimsizes(vars)-1
 
 ;wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-HammerProj")
-wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-p4K-"+vars(dimsizes(vars)-1))
+wks 					= gsn_open_wks(plot_type,"figure/lat-lon-"+vars(ivar)+"-p4K-"+vars(dimsizes(vars)-1)+"_"+date)
 
 
 plot 					= new(nplots,graphic)
@@ -3339,16 +3344,16 @@ if(nplots.eq.9)then ; this is for all related plots
 						    vars_all(ivar,1,0,:,:),vars_all(ivar,1,1,:,:),vars_all_casediff(ivar,1,:,:),\ 
 						    vars_all_tagdiff(ivar,0,:,:),vars_all_tagdiff(ivar,1,:,:), vars_all_diff2(ivar,:,:)/) 
 	
-	strings4K				= (/"RH","PDF","PDF-RH",\
-						    "RH_4K","PDF_4K","PDF_4K-RH_4K",\
-						    "RH_4K-RH","PDF_4K-PDF","DIF_PDF-DIF_RH"/)
+	strings4K				= (/"RH_CTL","PDF_CTL","PDF_CTL-RH_CTL",\
+						    "RH_P4K","PDF_P4K","PDF_P4K-RH_P4K",\
+						    "RH_P4K-CTL","PDF_P4K-CTL","DIF_PDF-DIF_RH"/)
 
 else ; for some plots
 	var4K					= (/vars_all(ivar,0,0,:,:),vars_all(ivar,0,1,:,:),vars_all_casediff(ivar,0,:,:),\
 								vars_all_tagdiff(ivar,0,:,:),vars_all_tagdiff(ivar,1,:,:), vars_all_diff2(ivar,:,:)/)
 	
-	strings4K				= (/"RH","PDF","PDF-RH",\
-						        "RH_4K-RH","PDF_4K-PDF","DIF_PDF-DIF_RH"/)
+	strings4K				= (/"RH_CTL","PDF_CTL","PDF_CTL-RH_CTL",\
+						        "RH_P4K-CTL","PDF_P4K-CTL","DIF_PDF-DIF_RH"/)
 end if
 
 printVarSummary(var4K)
