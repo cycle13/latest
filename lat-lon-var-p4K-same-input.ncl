@@ -18,6 +18,8 @@ ALPIsub_revised			= True
 ALPIsub_mask_plot		= False
 ALPIsub_bin_plot		= True
 
+change_Yaxis		= True
+
 latS_trop			= -30.
 latE_trop			= 30.
 lonS_scatter		= 220.
@@ -342,6 +344,7 @@ do icase=0,dimsizes(case_nor)-1
 	tmp1					= where(crit1 .or. crit2, vars_all(ivar,itag,icase,:,:),vars_all@_FillValue)
 	data2regimes(4,ivar,itag,icase,:,:)		= (/tmp1/)
 	regimes(4,ivar,itag,icase)		= wgt_areaave_Wrap(tmp1,clat,1,0)
+	; --- 2019-07-24 23:35:01
 	delete([/crit1, crit2, tmp1/])
 	
 	; tropical trade cumulus
@@ -1145,6 +1148,7 @@ count_2		= 0
 ; -- it should be: (RH_CTL, RH_P4K, PDF_CTL, PDF_P4K)
 ; -- in order to avoid this misleading, use the following script would be clearer, although it is a little tedious.
 
+
 tmp							= new((/dimsizes(tag)*2,nbins/),float)
 tmp2						= tmp
 tmp(0:1,:)					= vars_all_bin_mean(1:2,0,icase,:)
@@ -1159,6 +1163,10 @@ tmp_diff_final(0,:)			= tmp_diff1(0,:) ;alst_prh
 tmp_diff_final(1,:)			= tmp_diff1(1,:) ;alst_gpd
 tmp_diff_final(2,:)			= tmp_diff2(:) ; difference of alst_gpd and alst_prh
 
+if(change_Yaxis)then
+	tmp_diff_final			= tmp_diff_final*10.
+end if
+
 ;res@gsnLeftString			= plots_strings(count_1)
 res@gsnLeftString			= "(a)"
 res@tiYAxisString			= "CLOUD_887hPa (fraction)"
@@ -1170,7 +1178,13 @@ count_1 = count_1 + 1
 res_diff@gsnLeftString		= "(b)" 
 ;res_diff@gsnLeftString		= plots_strings(count_2)
 ;res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
-res_diff@tiYAxisString		= "CLOUD_887hPa (fraction)"
+
+if(.not.change_Yaxis)then
+	res_diff@tiYAxisString		= "CLOUD_887hPa (fraction)"
+else
+	res_diff@tiYAxisString		= "CLOUD_887hPa (10~S~-1~N~ fraction)"
+end if
+
 plot_diff(icase)			= gsn_csm_y(wks, tmp_diff_final, res_diff)
 count_2	= count_2 + 1
 
