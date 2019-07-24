@@ -23,10 +23,10 @@ lat_lon_plot			= False
 
 Sherwood_2014			= False
 
-ALPI_type				= False
+ALPI_type				= True
 ALPI_bin_cal			= True 
 ALPIsub_revised			= True ; from LTS to EIS
-ALPIsub_mask_plot		= True
+ALPIsub_mask_plot		= False
 ALPIsub_bin_plot		= True 
 ALPI_mask_ocn			= True
 sgm_diff_plot			= False	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
@@ -44,14 +44,15 @@ scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y an
 
 zonal_mean				= False
 
-do_read_cosp			= True
-cosp_hist				= True
-plot_2D_hist			= True
-plot_1D_hist			= True
+do_read_cosp			= False ;True
+cosp_hist				= False ;True
+plot_2D_hist			= False ;True
+plot_1D_hist			= False ;True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
 plot_type			= "pdf"
+
 ; add date to each plot 
 date=systemfunc("date")
 print(date)
@@ -423,14 +424,14 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 
 ;; sgm_shal related: term1 term2 term3
 ;; need sgm_diff_plot and sgm_shal_4terms = True
-;pick_var			= (/"sgm_shal","term1_shal","term2_shal","term3_shal"/)
+pick_var			= (/"sgm_shal","term1_shal","term2_shal","term3_shal"/)
 
 ;; sgm_tota, sgm_shal, sgm_turb
 ;; need sgm_diff_plot = True
 ;pick_var			= (/"sgm_tota","sgm_shal","sgm_turb"/)
 
 ;; input for lat_lon_plot
-pick_var			= (/"SWCF","LWCF"/)
+;pick_var			= (/"SWCF","LWCF"/)
 
 ;; input for zonal_mean
 ;pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
@@ -2908,11 +2909,35 @@ end do ;ilist
 ; ---- get the common min and max value for some sgm related variables to be used as Y axis --- ends
 ;------------------------------------------------------------------------
 
+vars_change_Yaxis				= (/"sgm_tota","N1","sgm_shal","sgm_turb","term1_shal","term2_shal","term3_shal","CLDLOW"/)
+vars_change_Yaxis_units			= (/"10~S~-2~N~","10~S~-1~N~","10~S~-2~N~","10~S~-2~N~","10~S~-2~N~","10~S~-2~N~","10~S~-2~N~","fraction"/)
+vars_change_Yaxis_scale			= (/1e2, 1e1, 1e2, 1e2, 1e2, 1e2, 1e2, 1/)
+
+vars_change_Yaxis_unitsd		= (/"10~S~-3~N~","10~S~-2~N~","10~S~-3~N~","10~S~-3~N~","10~S~-3~N~","10~S~-3~N~","10~S~-3~N~","10~S~-2~N~"/)
+vars_change_Yaxis_scaled		= (/1e3, 1e2, 1e3, 1e3, 1e3, 1e3, 1e3, 1e2/)
+
+
 do ivar=0,dimsizes(vars)-1
 print(vars(ivar))
+; --------- 2019-07-24 22:13:51
+; vars_change_Yaxis: save all variables that need to change Y axis value to make it easier to read.
+; vars_change_Yaxis_units: save all variables' changed units
+; vars_change_Yaxis_scale: save all variables' needed scale to make it easier to read.
 
+iyaxis							= str_match_ind(vars_change_Yaxis,vars(ivar))
+
+if(.not.ismissing(iyaxis))then
+	print(vars_change_Yaxis(iyaxis)+"	"+vars_change_Yaxis_units(iyaxis))
+	res_diff@tiYAxisString			= vars(ivar)+" ("+vars_change_Yaxis_unitsd(iyaxis)+")"
+	res@tiYAxisString				= vars(ivar)+" ("+vars_change_Yaxis_units(iyaxis)+")"
+else
+	res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
+	res@tiYAxisString				= vars(ivar)+" ("+vars_units(ivar)+")"
+end if
+; --------- 2019-07-24 22:13:57
+
+;res@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 res@gsnLeftString			= plots_strings(count_1)
-res@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 tmp							= reshape(vars_all_bin_mean(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
 tmp2						= reshape(vars_all_bin_std(ivar,:,:,:),(/dimsizes(tag)*dimsizes(case_nor),nbins/))
 
@@ -2923,10 +2948,24 @@ tmp_diff_final(0,:)			= tmp_diff1(0,:)
 tmp_diff_final(1,:)			= tmp_diff1(1,:)
 tmp_diff_final(2,:)			= tmp_diff2(:)
 
+; -------- 2019-07-24 22:18:07
+if(.not.ismissing(iyaxis))then
+	tmp						= tmp*vars_change_Yaxis_scale(iyaxis)
+	tmp2					= tmp2*vars_change_Yaxis_scale(iyaxis)
+	tmp_diff_final			= tmp_diff_final*vars_change_Yaxis_scaled(iyaxis)
+end if
+; -------- 2019-07-24 22:18:14
+
+
 do ilist=0,0 ;ListCount(vars_yaxis)-1
 if((.not.ismissing(ind(vars_yaxis[ilist].eq.vars(ivar)))))then
-	res@trYMaxF					= all_yspan[ilist](0) 
-	res@trYMinF					= all_yspan[ilist](1) 
+	if(.not.ismissing(iyaxis))then
+		res@trYMaxF					= max((/all_yspan[ilist](0)*1.1,all_yspan[ilist](0)*0.9/))*vars_change_Yaxis_scale(iyaxis)
+		res@trYMinF					= min((/all_yspan[ilist](1)*1.1,all_yspan[ilist](1)*0.9/))*vars_change_Yaxis_scale(iyaxis)
+	else
+		res@trYMaxF					= max((/all_yspan[ilist](0)*1.1,all_yspan[ilist](0)*0.9/));all_yspan[ilist](0)*1.1
+		res@trYMinF					= min((/all_yspan[ilist](1)*1.1,all_yspan[ilist](1)*0.9/));all_yspan[ilist](1)*1.1
+	end if
 	break	; once find it, exit the loop
 else
 	res@trYMaxF					= max((/max(tmp+tmp2)*1.2,max(tmp+tmp2)*0.8/))
@@ -2941,15 +2980,21 @@ count_1 = count_1 + 1
 
 ;;;;;;;;;;;;;;;;;
 res_diff@gsnLeftString			= plots_strings(count_2)
-res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
+;res_diff@tiYAxisString			= vars(ivar)+" ("+vars_units(ivar)+")"
 
 ; --- make the sgm related variables share the same Y axis range
 do ilist=0, ListCount(vars_yaxis)-1
 ;print("ilist="+ilist+"	"+all_yspan[ilist](2)+"		"+all_yspan[ilist](3))
 
 if((.not.ismissing(ind(vars_yaxis[ilist].eq.vars(ivar)))))then
-	res_diff@trYMaxF					= all_yspan[ilist](2)*1.1
-	res_diff@trYMinF					= all_yspan[ilist](3)*1.1
+	if(.not.ismissing(iyaxis))then
+		res_diff@trYMaxF					= all_yspan[ilist](2)*1.1*vars_change_Yaxis_scaled(iyaxis)
+		res_diff@trYMinF					= all_yspan[ilist](3)*1.1*vars_change_Yaxis_scaled(iyaxis)
+	else
+		res_diff@trYMaxF					= all_yspan[ilist](2)*1.1
+		res_diff@trYMinF					= all_yspan[ilist](3)*1.1
+	end if
+
 	break ; once find it, exit the loop
 else
 	res_diff@trYMaxF					= max(tmp_diff_final(:1,:))*1.1
@@ -2971,7 +3016,7 @@ if(sgm_diff_plot)then
 	res_diff_sgm@tmYLLabelFontHeightF		=fontheight 
 	res_diff_sgm@gsnLeftString				= ""
 	if(ivar.eq.0)then
-		res_diff_sgm@tiYAxisString		= "SGM"
+		res_diff_sgm@tiYAxisString		= "SGM ("+vars_change_Yaxis_unitsd(iyaxis)+")"
 	end if
 else
 	res_diff_sgm@gsnLeftString		= ""
