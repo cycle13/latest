@@ -44,10 +44,10 @@ scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y an
 
 zonal_mean				= False
 
-do_read_cosp			= False
-cosp_hist				= False;True
-plot_2D_hist			= False;True
-plot_1D_hist			= False;True
+do_read_cosp			= True
+cosp_hist				= True
+plot_2D_hist			= True
+plot_1D_hist			= True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
@@ -1048,26 +1048,26 @@ if(cosp_hist)then
   regionInfo = (/ \
 ;   (/"long_name"          , "lats", "latn", "lonw", "lone"/), \
     (/"Global"             ,"-90.0", "90.0",  "0.0","360.0"/), \
-    (/"NH Sub-Tropics"     , "15.0", "30.0",  "0.0","360.0"/), \
-    (/"SH Sub-Tropics"     ,"-30.0","-15.0",  "0.0","360.0"/), \
-    (/"Tropics"            ,"-15.0", "15.0",  "0.0","360.0"/), \
-    (/"Tropics-Sub"        ,"-30.0", "30.0",  "0.0","360.0"/), \
-    (/"NH Mid-Lats"        , "30.0", "70.0",  "0.0","360.0"/), \
-    (/"SH Mid-Lats"        ,"-70.0","-30.0",  "0.0","360.0"/), \
-    (/"North Pole"         ," 70.0", "90.0",  "0.0","360.0"/), \
-    (/"South Pole"         ,"-90.0","-70.0",  "0.0","360.0"/), \
-    (/"Warm Pool"          ,"-15.0", "15.0","110.0","150.0"/), \
-    (/"Central Africa"     ,"-15.0",  "5.0", "15.0", "35.0"/), \
-    (/"NH Pacific Stratus" , "15.0", "35.0","210.0","240.0"/), \
-    (/"SH Pacific Stratus" ,"-30.0", "-5.0","250.0","280.0"/), \
-    (/"North Pacific"      , "40.0", "55.0","165.0","205.0"/), \
-    (/"North Atlantic"     , "40.0", "55.0","310.0","345.0"/), \
-    (/"USA"                , "31.0", "46.0","248.0","278.0"/), \
-    (/"VOCALS"             ,"-40.0",  "0.0","250.0","295.0"/), \
-    (/"Southern Ocean"     ,"-90.0","-50.0",  "0.0","360.0"/), \
-    (/"Tropical C Pacific" ,"-15.0", "15.0","150.0","240.0"/), \
-    (/"Tropical E Pacific" ,"-15.0", "15.0","240.0","280.0"/), \
-    (/"ARM SGP"            , "37.0", "37.0","263.0","263.0"/)  \
+;    (/"NH Sub-Tropics"     , "15.0", "30.0",  "0.0","360.0"/), \
+;    (/"SH Sub-Tropics"     ,"-30.0","-15.0",  "0.0","360.0"/), \
+;    (/"Tropics"            ,"-15.0", "15.0",  "0.0","360.0"/), \
+    (/"Tropics-Sub"        ,"-30.0", "30.0",  "0.0","360.0"/) \
+;    (/"NH Mid-Lats"        , "30.0", "70.0",  "0.0","360.0"/), \
+;    (/"SH Mid-Lats"        ,"-70.0","-30.0",  "0.0","360.0"/), \
+;    (/"North Pole"         ," 70.0", "90.0",  "0.0","360.0"/), \
+;    (/"South Pole"         ,"-90.0","-70.0",  "0.0","360.0"/), \
+;    (/"Warm Pool"          ,"-15.0", "15.0","110.0","150.0"/), \
+;    (/"Central Africa"     ,"-15.0",  "5.0", "15.0", "35.0"/), \
+;    (/"NH Pacific Stratus" , "15.0", "35.0","210.0","240.0"/), \
+;    (/"SH Pacific Stratus" ,"-30.0", "-5.0","250.0","280.0"/), \
+;    (/"North Pacific"      , "40.0", "55.0","165.0","205.0"/), \
+;    (/"North Atlantic"     , "40.0", "55.0","310.0","345.0"/), \
+;    (/"USA"                , "31.0", "46.0","248.0","278.0"/), \
+;    (/"VOCALS"             ,"-40.0",  "0.0","250.0","295.0"/), \
+;    (/"Southern Ocean"     ,"-90.0","-50.0",  "0.0","360.0"/), \
+;    (/"Tropical C Pacific" ,"-15.0", "15.0","150.0","240.0"/), \
+;    (/"Tropical E Pacific" ,"-15.0", "15.0","240.0","280.0"/), \
+;    (/"ARM SGP"            , "37.0", "37.0","263.0","263.0"/)  \
   /)
 
   regionNames				= regionInfo(:,0)
@@ -1082,7 +1082,7 @@ if(cosp_hist)then
     resXY                        = True
     resXY@gsnDraw                = False               ; Do not draw plot
     resXY@gsnFrame               = False               ; Do not advance frame
-	fh							 = 0.025
+	fh							 = 0.030
     resXY@tiXAxisFontHeightF     = fh
     resXY@tiYAxisFontHeightF     = fh
     resXY@tiMainFontHeightF      = fh
@@ -1169,7 +1169,7 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		if(plot_2D_hist)then
 		;======= make plots
-		wks			= gsn_open_wks(plot_type,"./figure/COSP_2D_histgram_"+str_sub_str(regionNames(nr)," ","")+"_"+date)
+		wks			= gsn_open_wks(plot_type,"./figure/COSP_2D_histgram_"+str_sub_str(regionNames(nr)," ",""))
 
 		RGB			= "/home/lyl/WORK1/cesm1_2_1/amwg_diag/rgb"
 		cmap		= RGBtoCmap(RGB+"/cloudsim.rgb")
@@ -1183,18 +1183,23 @@ do ivar=0,dimsizes(Vars_cosp)-1
 		res2D@tmYLLabels		= yBnds
 		res2D@tmXBLabels		= xBnds
 
-		fh								= 0.030
+		fh								= 0.040
 		res2D@gsnStringFontHeightF		= fh
 		res2D@tmXBLabelFontHeightF		= fh
 		res2D@tmYLLabelFontHeightF		= fh
 		res2D@tmYROn					= False
 		res2D@tmXTOn					= False
 
+;		res2D@tmXBTickSpacingF			= 1.
+
+		res2D@tiYAxisFontHeightF		= fh
+		res2D@tiXAxisFontHeightF		= fh
+
 		res2D@gsnLeftString				= ""
 		res2D@gsnRightString			= ""
 		res2D@tiXAxisOffsetYF			= 0.085
 
-		res2D@tiYAxisString				= "Pressure"
+		res2D@tiYAxisString				= "Pressure (hPa)"
 		res2D@tiXAxisString				= "Optical Depth"
 
 		res2D@pmLabelBarOrthogonalPosF	= 0.15
@@ -1218,13 +1223,14 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		do ip=0,dimsizes(plot_idx)-1
 
-			res2D@gsnLeftString		= plots_strings(ip)
+;			res2D@gsnLeftString		= plots_strings(ip)+" "+center_strings(ip)
 
 			if(plot_idx(ip).eq.0 .or. plot_idx(ip).eq.1 .or. plot_idx(ip).eq.3 .or. plot_idx(ip).eq.4)then
 				res2D@cnFillPalette       	= cmap1(:240,:)
 				res2D@cnLevels				= cnLevelsFull
 				res2D@lbLabelStrings		= sprintf("%.1f",res2D@cnLevels)
-				res2D@gsnCenterString		= center_strings(ip)
+;				res2D@gsnCenterString		= center_strings(ip)
+				res2D@gsnLeftString		= plots_strings(ip)+" "+center_strings(ip)
 				plot(ip)					= histogram2D(wks,vars_plots(ip,:,:),res2D)
 				delete(res2D@cnLevels)
 				delete(res2D@lbLabelStrings)
@@ -1233,7 +1239,8 @@ do ivar=0,dimsizes(Vars_cosp)-1
 				res2D@cnFillPalette       	= cmap2
 				res2D@cnLevels				= cnLevelsDiff
 				res2D@lbLabelStrings	= sprintf("%.1f",res2D@cnLevels)
-				res2D@gsnCenterString	= center_strings(ip)
+;				res2D@gsnCenterString	= center_strings(ip)
+				res2D@gsnLeftString		= plots_strings(ip)+" "+center_strings(ip)
 				plot(ip)					= histogram2D(wks,vars_plots(ip,:,:),res2D)
 				delete(res2D@cnLevels)
 				delete(res2D@lbLabelStrings)
@@ -1255,7 +1262,7 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		if(plot_1D_hist)then
 		; 1D histograms
-		wks								= gsn_open_wks(plot_type,"./figure/COSP_1D_histgram_"+str_sub_str(regionNames(nr)," ","")+"_"+date)
+		wks								= gsn_open_wks(plot_type,"./figure/COSP_1D_histgram_"+str_sub_str(regionNames(nr)," ",""))
 
 		; calculate distributions along each axis
 		printVarSummary(vars_cosp_2D)
