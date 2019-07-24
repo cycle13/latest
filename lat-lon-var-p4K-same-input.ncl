@@ -245,7 +245,7 @@ end do ; do itag=
 printVarSummary(vars_all)
 printVarSummary(vars_mid)
 
-; ===================== difference between p4K and cntl ==========================
+; ===================== difference between P4K and CTL ==========================
 vars_all_tagdiff		= new((/dimsizes(vars),dimsizes(case_nor),nlat,nlon/),float)
 vars_all_tagdiff		= (/vars_all(:,1,:,:,:)-vars_all(:,0,:,:,:)/)
 copy_VarCoords_1(vars_all(var|:,case|:,lat|:,lon|:,tag|:),vars_all_tagdiff)
@@ -1054,7 +1054,7 @@ end do ; do icase=
 
 do icase=0,dimsizes(case_nor)-1
 resd@gsnLeftString			= plots_strings(count_3)
-resd@gsnRightString			= "p4K-cntl_"+case_name(icase)
+resd@gsnRightString			= "P4K-CTL_"+case_name(icase)
 plot_diff2(icase)			= gsn_csm_contour_map_ce(wks, ALPI_mask_latlon_diff2(icase,:,:),resd)
 count_3	= count_3 + 1
 end do ; do icase=
@@ -1142,7 +1142,7 @@ count_2		= 0
 ; -- implication: although reshape function is useful to re-order the array, we need to take care the order of first dimension.
 ; -- (tag|:,case|:,:) --> (tag*case,:) --> the order is (0,0), (0,1), (1,0), (1,1)
 ; -- however, if you change it into: (var|:,tag|:,:) -> the tag data would be restored first. so the legend sequence should be changed later.
-; -- it should be: (RH_cntl, RH_p4K, PDF_cntl, PDF_p4K)
+; -- it should be: (RH_CTL, RH_P4K, PDF_CTL, PDF_P4K)
 ; -- in order to avoid this misleading, use the following script would be clearer, although it is a little tedious.
 
 tmp							= new((/dimsizes(tag)*2,nbins/),float)
@@ -1152,8 +1152,8 @@ tmp(2:3,:)					= vars_all_bin_mean(1:2,1,icase,:)
 tmp2(0:1,:)					= vars_all_bin_std(1:2,0,icase,:)
 tmp2(2:3,:)					= vars_all_bin_std(1:2,1,icase,:)
 
-tmp_diff1					= (/vars_all_bin_mean(1:2,1,icase,:)-vars_all_bin_mean(1:2,0,icase,:)/) ; difference between p4K and cntl
-tmp_diff2					= (/tmp_diff1(1,:)-tmp_diff1(0,:)/) ; difference between PDF_p4K-cntl and RH_p4K-cntl
+tmp_diff1					= (/vars_all_bin_mean(1:2,1,icase,:)-vars_all_bin_mean(1:2,0,icase,:)/) ; difference between P4K and CTL
+tmp_diff2					= (/tmp_diff1(1,:)-tmp_diff1(0,:)/) ; difference between PDF_P4K-CTL and RH_P4K-CTL
 tmp_diff_final				= new((/2+1,nbins/),float)
 tmp_diff_final(0,:)			= tmp_diff1(0,:) ;alst_prh
 tmp_diff_final(1,:)			= tmp_diff1(1,:) ;alst_gpd
@@ -1162,8 +1162,8 @@ tmp_diff_final(2,:)			= tmp_diff2(:) ; difference of alst_gpd and alst_prh
 ;res@gsnLeftString			= plots_strings(count_1)
 res@gsnLeftString			= "(a)"
 res@tiYAxisString			= "CLOUD_887hPa (fraction)"
-res@trYMaxF					= max(tmp+tmp2)
-res@trYMinF					= min(tmp-tmp2)
+res@trYMaxF					= max((/max(tmp+tmp2)*1.2,max(tmp+tmp2)*0.8/))
+res@trYMinF					= min((/min(tmp-tmp2)*1.2,min(tmp-tmp2)*0.8/))
 plot(icase) 				= gsn_csm_y(wks, tmp, res)
 count_1 = count_1 + 1
 
@@ -1234,7 +1234,7 @@ end do ; do idx2=
 end do ; do idx1=
 
 ;do idx1=0,dimsizes(case_nor)
-do idx1=0,2 ; number of lines: include the different line, so it is "2" rather than 1. -- three lines
+do idx1=0,1;2 ; number of lines: include the different line, so it is "2" rather than 1. -- three lines
 	polyres@gsLineColor					= colors_diff(idx1) ;colors(idx1*2)
 	polyres@gsLineDashPattern 			= dashes_diff(idx1) ;dashes(idx1*2)
 	polyres@gsLineThicknessF			= thickes_diff(idx1) ;thickes(idx1*2)
@@ -1254,8 +1254,10 @@ end do ; do icase=
 
 ; ------------------------Add legends
 ;legends                         = vars
-legends							= (/"RH_cntl","PDF_cntl","RH_p4K","PDF_p4K"/)
-legends_diff1					= (/"RH_p4K-cntl", "PDF_p4K-cntl","PDF-RH_p4K-cntl"/)
+legends							= (/"RH_CTL","PDF_CTL","RH_P4K","PDF_P4K"/)
+;legends_diff1					= (/"RH_P4K-CTL", "PDF_P4K-CTL","PDF-RH_P4K-CTL"/)
+legends_diff1					= (/"RH_P4K-CTL", "PDF_P4K-CTL"/)
+
 
 lgres							= True
 
