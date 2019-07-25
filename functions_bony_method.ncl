@@ -1,5 +1,6 @@
+
 ; 2018-09-23 
-; add standard deviation
+; add standard deviation1
 
 function bony_method_std(omega[*]:numeric,var[*]:numeric,nbinsx_in:integer,nbinsy_in:integer,binx_min_in:float,binx_max_in:float)
 
@@ -128,6 +129,7 @@ delete(ap)
 
 end
 
+; -------------------------------------------------
 ; 2018.09.16
 function pdf_omega_var_wo_obs(omega_nor[*][*][*][*]:numeric,var_nor[*][*][*][*]:numeric,\
 		       	      nbinx,nbiny,nx_min,nx_max)
