@@ -23,7 +23,7 @@ lat_lon_plot			= False
 
 Sherwood_2014			= False
 
-ALPI_type				= True
+ALPI_type				= False
 ALPI_bin_cal			= True 
 ALPIsub_revised			= True ; from LTS to EIS
 ALPIsub_mask_plot		= False
@@ -42,7 +42,7 @@ scatter_sub_one_var		= False; False	; --- one variable in X and Y axis -- only t
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
 scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y and sgm in X axis
 
-zonal_mean				= False
+zonal_mean				= True
 
 do_read_cosp			= False ;True
 cosp_hist				= False ;True
@@ -424,7 +424,7 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 
 ;; sgm_shal related: term1 term2 term3
 ;; need sgm_diff_plot and sgm_shal_4terms = True
-pick_var			= (/"sgm_shal","term1_shal","term2_shal","term3_shal"/)
+;pick_var			= (/"sgm_shal","term1_shal","term2_shal","term3_shal"/)
 
 ;; sgm_tota, sgm_shal, sgm_turb
 ;; need sgm_diff_plot = True
@@ -434,7 +434,7 @@ pick_var			= (/"sgm_shal","term1_shal","term2_shal","term3_shal"/)
 ;pick_var			= (/"SWCF","LWCF"/)
 
 ;; input for zonal_mean
-;pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
+pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
 
 
 ;------ get the index for pick_var in varsA
@@ -1345,6 +1345,16 @@ if(zonal_mean)then
 	copy_VarCoords(vars_zm(:,0,:,:),vars_zm_diff)
 	printVarSummary(vars_zm_diff)
 
+	dims			= dimsizes(vars_zm_diff) ; (4,2,73)
+	print(dims)
+
+	vars_zm_diff_rel	= vars_zm_diff
+	do ivar = 0,dims(0)-1
+		vars_zm_diff_rel(ivar,:,:)	= (/vars_zm(ivar,1,:,:)-vars_zm(ivar,0,:,:)/)/where(abs(vars_zm(ivar,0,:,:)).gt.0.1*max(abs(vars_zm(ivar,0,:,:))),vars_zm(ivar,0,:,:),vars_zm@_FillValue)
+	end do ; do ivar=
+	printVarSummary(vars_zm_diff_rel)
+	print(vars_zm_diff_rel(0,:,:))
+
 	lat				= vars_zm&lat
 	re   			= 6.37122e06
 	rad  			= 4.0 * atan(1.0) / 180.
@@ -1410,6 +1420,7 @@ if(zonal_mean)then
 
 	plot					= new(dimsizes(vars),graphic)
 	plotd					= new(dimsizes(vars),graphic)
+	plotdr					= new(dimsizes(vars),graphic)
 
 
 	do ivar=0,dimsizes(vars)-1
@@ -1424,6 +1435,10 @@ if(zonal_mean)then
 		resd@gsnLeftString		= plots_strings(ivar)
 		resd@tiYAxisString		= "~F33~D~F~"+vars(ivar)+" ("+vars_units(ivar)+")"
 		plotd(ivar)				= gsn_csm_xy(wks,clats,vars_zm_diff(ivar,:,:),resd)
+
+		resd@tiYAxisString		= "~F33~D~F~"+vars(ivar)+"/"+vars(ivar)+"_CTL (%)"
+		plotdr(ivar)			= gsn_csm_xy(wks,clats,vars_zm_diff_rel(ivar,:,:),resd)
+
 	end do
 
 	; ------------------------Add legends
@@ -1453,6 +1468,7 @@ if(zonal_mean)then
 
 	lbid1                           = gsn_create_legend(wks,dimsizes(legends),legends,lgres)
 	lbid2                           = gsn_create_legend(wks,dimsizes(legends_d),legends_d,lgresd)
+	lbid3                           = gsn_create_legend(wks,dimsizes(legends_d),legends_d,lgresd)
 
 	amres                           = True
 	amres@amJust					= "TopLeft"
@@ -1461,6 +1477,7 @@ if(zonal_mean)then
 	
 	annoid1                         = gsn_add_annotation(plot(0),lbid1,amres)
 	annoid2                         = gsn_add_annotation(plotd(0),lbid2,amres)
+	annoid3                         = gsn_add_annotation(plotdr(0),lbid3,amres)
 
 resP								= True
 resP@gsnPanelXWhiteSpacePercent		= 5.
@@ -1470,6 +1487,7 @@ resP@gsnPanelRight					= 0.95
 
 gsn_panel(wks,plot,(/2,2/),resP)
 gsn_panel(wks,plotd,(/2,2/),resP)
+gsn_panel(wks,plotdr,(/2,2/),resP)
 
 exit
 end if ; zonal_mean
