@@ -23,13 +23,13 @@ lat_lon_plot			= False
 
 Sherwood_2014			= False
 
-ALPI_type				= False
+ALPI_type				= True
 ALPI_bin_cal			= True 
 ALPIsub_revised			= True ; from LTS to EIS
 ALPIsub_mask_plot		= False
 ALPIsub_bin_plot		= True 
 ALPI_mask_ocn			= True
-sgm_diff_plot			= False	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
+sgm_diff_plot			= True	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
 sgm_shal_4terms			= False ; term1, term2 and term3 for variance of shallow convection in one figure
 								; sgm_shal_4terms should work with sgm_diff_plot = True.
 if(sgm_shal_4terms)then
@@ -42,7 +42,7 @@ scatter_sub_one_var		= False; False	; --- one variable in X and Y axis -- only t
 scatter_sub_sgm_climo	= False ; False ; --- climo: sgm related variables in Y and sgm in X axis
 scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y and sgm in X axis
 
-zonal_mean				= True
+zonal_mean				= False
 
 do_read_cosp			= False ;True
 cosp_hist				= False ;True
@@ -51,7 +51,7 @@ plot_1D_hist			= False ;True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "pdf"
+plot_type			= "x11"
 
 ; add date to each plot 
 date=systemfunc("date")
@@ -61,6 +61,8 @@ latS_trop			= -30.
 latE_trop			= 30.
 lonS_scatter		= 220.
 lonE_scatter		= 270.
+
+spec_lev			= 859
 
 select_idx			= 0		; choose how many regimes would be plotted 
 scale_factor		= 3.	; use to amplify diff to make them able to plot in non-diff plot
@@ -434,7 +436,9 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ;pick_var			= (/"SWCF","LWCF"/)
 
 ;; input for zonal_mean
-pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
+;pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
+
+pick_var_ALPI		= (/"CLOUD","CLDLIQ","sgm_tota","sgm_shal","sgm_turb"/)
 
 
 ;------ get the index for pick_var in varsA
@@ -604,7 +608,7 @@ end if
 		if(isfilevar(ftmp1,vars(ivar))) then
 			tmp									= ftmp1->$vars(ivar)$
 			if(dimsizes(dimsizes(tmp)).eq.4)then ; figure out variables having vertical level coordinate
-				tmp1							= ftmp1->$vars(ivar)$(0,{887},:,:)
+				tmp1							= ftmp1->$vars(ivar)$(0,{spec_lev},:,:)
 				if(horizon_interp)then
 				vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 				else
@@ -635,8 +639,8 @@ end if
 				vars_all(ivar,itag,icase,:,:)	= vars_all@_FillValue
 			else ; variables only for Gauss-PDF
 				if(vars(ivar).eq."term1_shal")then
-					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
-					qwu_qw_tmp				= ftmp1->qwu_qw(0,{887},:,:)
+					umf_shal_tmp			= ftmp1->umf_shal(0,{spec_lev},:,:)
+					qwu_qw_tmp				= ftmp1->qwu_qw(0,{spec_lev},:,:)
 					clddep2_tmp				= ftmp1->clddep2(0,:,:)
 					wstarPBL_tmp			= ftmp1->wstarPBL(0,:,:)
 					tmp1					= -0.5*umf_shal_tmp*qwu_qw_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
@@ -651,8 +655,8 @@ end if
 					delete([/umf_shal_tmp,qwu_qw_tmp,clddep2_tmp,wstarPBL_tmp/])
 				end if
 				if(vars(ivar).eq."term2_shal")then
-					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
-					thlu_thl_tmp			= ftmp1->thlu_thl(0,{887},:,:)
+					umf_shal_tmp			= ftmp1->umf_shal(0,{spec_lev},:,:)
+					thlu_thl_tmp			= ftmp1->thlu_thl(0,{spec_lev},:,:)
 					clddep2_tmp				= ftmp1->clddep2(0,:,:)
 					wstarPBL_tmp			= ftmp1->wstarPBL(0,:,:)
 					tmp1					= -0.5*umf_shal_tmp*thlu_thl_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
@@ -667,8 +671,8 @@ end if
 					delete([/umf_shal_tmp,thlu_thl_tmp,clddep2_tmp,wstarPBL_tmp/])
 				end if
 				if(vars(ivar).eq."term3_shal")then
-					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
-					qwu_thlu_tmp			= ftmp1->qwu_thlu(0,{887},:,:)
+					umf_shal_tmp			= ftmp1->umf_shal(0,{spec_lev},:,:)
+					qwu_thlu_tmp			= ftmp1->qwu_thlu(0,{spec_lev},:,:)
 					clddep2_tmp				= ftmp1->clddep2(0,:,:)
 					wstarPBL_tmp			= ftmp1->wstarPBL(0,:,:)
 					tmp1					= -0.5*umf_shal_tmp*qwu_thlu_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_all@_FillValue)
@@ -684,11 +688,11 @@ end if
 				end if
 
 				if(vars(ivar).eq."term1_turb")then
-					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
-					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
-					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
-					shi_tmp				= ftmp1->shi(0,{887},:,:)
-					qw2_tmp				= ftmp1->qw2(0,{887},:,:)
+					aa_gp_tmp			= ftmp1->aa_gp(0,{spec_lev},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{spec_lev},:,:)
+					lengi_tmp			= ftmp1->lengi(0,{spec_lev},:,:)
+					shi_tmp				= ftmp1->shi(0,{spec_lev},:,:)
+					qw2_tmp				= ftmp1->qw2(0,{spec_lev},:,:)
 ;					tmp1					= aa_gp_tmp^2*dqwdz_tmp^2*shi_tmp*lengi_tmp^2
 					tmp1					= 0.25*aa_gp_tmp^2*qw2_tmp
 					tmp1					= tmp1*1e6
@@ -702,11 +706,11 @@ end if
 					delete([/aa_gp_tmp,dqwdz_tmp,lengi_tmp,shi_tmp,qw2_tmp/])
 				end if
 				if(vars(ivar).eq."term2_turb")then
-					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
-					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
-					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
-					shi_tmp				= ftmp1->shi(0,{887},:,:)
-					thl2_tmp			= ftmp1->thl2(0,{887},:,:)
+					bb_gp_tmp			= ftmp1->bb_gp(0,{spec_lev},:,:)
+					dthldz_tmp			= ftmp1->dthldz(0,{spec_lev},:,:)
+					lengi_tmp			= ftmp1->lengi(0,{spec_lev},:,:)
+					shi_tmp				= ftmp1->shi(0,{spec_lev},:,:)
+					thl2_tmp			= ftmp1->thl2(0,{spec_lev},:,:)
 ;					tmp1					= bb_gp_tmp^2*dthldz_tmp^2*shi_tmp*lengi_tmp^2
 					tmp1					= 0.25*bb_gp_tmp^2*thl2_tmp
 					tmp1					= tmp1*1e6
@@ -720,13 +724,13 @@ end if
 					delete([/bb_gp_tmp,dthldz_tmp,lengi_tmp,shi_tmp,thl2_tmp/])
 				end if
 				if(vars(ivar).eq."term3_turb")then
-					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
-					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
-					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
-					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
-					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
-					shi_tmp				= ftmp1->shi(0,{887},:,:)
-					qwthl_tmp			= ftmp1->qwthl(0,{887},:,:)
+					aa_gp_tmp			= ftmp1->aa_gp(0,{spec_lev},:,:)
+					bb_gp_tmp			= ftmp1->bb_gp(0,{spec_lev},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{spec_lev},:,:)
+					dthldz_tmp			= ftmp1->dthldz(0,{spec_lev},:,:)
+					lengi_tmp			= ftmp1->lengi(0,{spec_lev},:,:)
+					shi_tmp				= ftmp1->shi(0,{spec_lev},:,:)
+					qwthl_tmp			= ftmp1->qwthl(0,{spec_lev},:,:)
 ;					tmp1					= -2.*aa_gp_tmp*bb_gp_tmp*dqwdz_tmp*dthldz_tmp*shi_tmp*lengi_tmp^2
 					tmp1				= 0.25*(-1.)*2*aa_gp_tmp*bb_gp_tmp*qwthl_tmp
 					tmp1					= tmp1*1e6
@@ -740,8 +744,8 @@ end if
 					delete([/aa_gp_tmp,bb_gp_tmp,dqwdz_tmp,dthldz_tmp,lengi_tmp,shi_tmp,qwthl_tmp/])
 				end if
 				if(vars(ivar).eq."aa2_dqwdz2")then
-					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
-					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
+					aa_gp_tmp			= ftmp1->aa_gp(0,{spec_lev},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{spec_lev},:,:)
 					tmp1					= aa_gp_tmp^2*dqwdz_tmp^2
 					copy_VarCoords(aa_gp_tmp,tmp1)
 					if(horizon_interp)then
@@ -753,8 +757,8 @@ end if
 					delete([/aa_gp_tmp,dqwdz_tmp/])
 				end if
 				if(vars(ivar).eq."bb2_dthldz2")then
-					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
-					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
+					bb_gp_tmp			= ftmp1->bb_gp(0,{spec_lev},:,:)
+					dthldz_tmp			= ftmp1->dthldz(0,{spec_lev},:,:)
 					tmp1					= bb_gp_tmp^2*dthldz_tmp^2
 					copy_VarCoords(bb_gp_tmp,tmp1)
 					if(horizon_interp)then
@@ -766,10 +770,10 @@ end if
 					delete([/bb_gp_tmp,dthldz_tmp/])
 				end if
 				if(vars(ivar).eq."ab_dqwdz_dthldz")then
-					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
-					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
-					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
-					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
+					aa_gp_tmp			= ftmp1->aa_gp(0,{spec_lev},:,:)
+					bb_gp_tmp			= ftmp1->bb_gp(0,{spec_lev},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{spec_lev},:,:)
+					dthldz_tmp			= ftmp1->dthldz(0,{spec_lev},:,:)
 					tmp1					= -2.*aa_gp_tmp*bb_gp_tmp*dqwdz_tmp*dthldz_tmp
 					copy_VarCoords(aa_gp_tmp,tmp1)
 					if(horizon_interp)then
@@ -781,8 +785,8 @@ end if
 					delete([/aa_gp_tmp,bb_gp_tmp,dqwdz_tmp,dthldz_tmp/])
 				end if
 				if(vars(ivar).eq."shi_lengi2")then
-					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
-					shi_tmp				= ftmp1->shi(0,{887},:,:)
+					lengi_tmp			= ftmp1->lengi(0,{spec_lev},:,:)
+					shi_tmp				= ftmp1->shi(0,{spec_lev},:,:)
 					tmp1					= shi_tmp*lengi_tmp^2
 					copy_VarCoords(lengi_tmp,tmp1)
 					if(horizon_interp)then
@@ -794,7 +798,7 @@ end if
 					delete([/lengi_tmp,shi_tmp/])
 				end if
 				if(vars(ivar).eq."lengi2")then
-					lengi_tmp			= ftmp1->lengi(0,{887},:,:)
+					lengi_tmp			= ftmp1->lengi(0,{spec_lev},:,:)
 					tmp1					= lengi_tmp^2
 					copy_VarCoords(lengi_tmp,tmp1)
 					if(horizon_interp)then
@@ -806,7 +810,7 @@ end if
 					delete(lengi_tmp)
 				end if
 				if(vars(ivar).eq."aa2_gp")then
-					aa_gp_tmp			= ftmp1->aa_gp(0,{887},:,:)
+					aa_gp_tmp			= ftmp1->aa_gp(0,{spec_lev},:,:)
 					tmp1					= aa_gp_tmp^2
 					copy_VarCoords(aa_gp_tmp,tmp1)
 					if(horizon_interp)then
@@ -818,7 +822,7 @@ end if
 					delete(aa_gp_tmp)
 				end if
 				if(vars(ivar).eq."bb2_gp")then
-					bb_gp_tmp			= ftmp1->bb_gp(0,{887},:,:)
+					bb_gp_tmp			= ftmp1->bb_gp(0,{spec_lev},:,:)
 					tmp1					= bb_gp_tmp^2
 					copy_VarCoords(bb_gp_tmp,tmp1)
 					if(horizon_interp)then
@@ -830,7 +834,7 @@ end if
 					delete(bb_gp_tmp)
 				end if
 				if(vars(ivar).eq."dqwdz_2")then
-					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{spec_lev},:,:)
 					tmp1					= dqwdz_tmp^2
 					copy_VarCoords(dqwdz_tmp,tmp1)
 					if(horizon_interp)then
@@ -842,7 +846,7 @@ end if
 					delete(dqwdz_tmp)
 				end if
 				if(vars(ivar).eq."dthldz_2")then
-					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
+					dthldz_tmp			= ftmp1->dthldz(0,{spec_lev},:,:)
 					tmp1					= dthldz_tmp^2
 					copy_VarCoords(dthldz_tmp,tmp1)
 					if(horizon_interp)then
@@ -854,8 +858,8 @@ end if
 					delete(dthldz_tmp)
 				end if
 				if(vars(ivar).eq."dqwdz_dthldz")then
-					dthldz_tmp			= ftmp1->dthldz(0,{887},:,:)
-					dqwdz_tmp			= ftmp1->dqwdz(0,{887},:,:)
+					dthldz_tmp			= ftmp1->dthldz(0,{spec_lev},:,:)
+					dqwdz_tmp			= ftmp1->dqwdz(0,{spec_lev},:,:)
 					tmp1					= dthldz_tmp*dqwdz_tmp
 					copy_VarCoords(dthldz_tmp,tmp1)
 					if(horizon_interp)then
@@ -868,7 +872,7 @@ end if
 				end if
 
 				if(vars(ivar).eq."vert_qwflx_turb")then
-					tmp1					= ftmp1->qw2(0,{887},:,:)
+					tmp1					= ftmp1->qw2(0,{spec_lev},:,:)
 					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					else
@@ -877,7 +881,7 @@ end if
 					delete(tmp1)
 				end if
 				if(vars(ivar).eq."vert_thlflx_turb")then
-					tmp1					= ftmp1->thl2(0,{887},:,:)
+					tmp1					= ftmp1->thl2(0,{spec_lev},:,:)
 					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
 					else
@@ -886,7 +890,7 @@ end if
 					delete(tmp1)
 				end if
 				if(vars(ivar).eq."vert_qwthlflx_turb")then
-					tmp1					= ftmp1->qwthl(0,{887},:,:)
+					tmp1					= ftmp1->qwthl(0,{spec_lev},:,:)
 					tmp1					= tmp1*(-1.)
 					if(horizon_interp)then
 					vars_all(ivar,itag,icase,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
@@ -896,8 +900,8 @@ end if
 					delete(tmp1)
 				end if
 				if(vars(ivar).eq."vert_qwflx_shal")then
-					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
-					qwu_qw_tmp				= ftmp1->qwu_qw(0,{887},:,:)
+					umf_shal_tmp			= ftmp1->umf_shal(0,{spec_lev},:,:)
+					qwu_qw_tmp				= ftmp1->qwu_qw(0,{spec_lev},:,:)
 					tmp1					= -2.*umf_shal_tmp*qwu_qw_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					if(horizon_interp)then
@@ -910,8 +914,8 @@ end if
 					delete(qwu_qw_tmp)
 				end if
 				if(vars(ivar).eq."vert_thlflx_shal")then
-					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
-					thlu_thl_tmp			= ftmp1->thlu_thl(0,{887},:,:)
+					umf_shal_tmp			= ftmp1->umf_shal(0,{spec_lev},:,:)
+					thlu_thl_tmp			= ftmp1->thlu_thl(0,{spec_lev},:,:)
 					tmp1					= -2.*umf_shal_tmp*thlu_thl_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					if(horizon_interp)then
@@ -924,8 +928,8 @@ end if
 					delete(thlu_thl_tmp)
 				end if
 				if(vars(ivar).eq."vert_qwthlflx_shal")then
-					umf_shal_tmp			= ftmp1->umf_shal(0,{887},:,:)
-					qwu_thlu_tmp			= ftmp1->qwu_thlu(0,{887},:,:)
+					umf_shal_tmp			= ftmp1->umf_shal(0,{spec_lev},:,:)
+					qwu_thlu_tmp			= ftmp1->qwu_thlu(0,{spec_lev},:,:)
 					tmp1					= -1.*umf_shal_tmp*qwu_thlu_tmp
 					copy_VarCoords(umf_shal_tmp,tmp1)
 					if(horizon_interp)then
@@ -3032,7 +3036,9 @@ if(sgm_diff_plot)then
 	res_diff_sgm@tiXAxisFontHeightF			=fontheight 
 	res_diff_sgm@tmXBLabelFontHeightF		=fontheight 
 	res_diff_sgm@tmYLLabelFontHeightF		=fontheight 
-	res_diff_sgm@gsnLeftString				= ""
+;	res_diff_sgm@gsnLeftString				= ""
+	res_diff_sgm@gsnLeftString				= spec_lev+" hPa"
+
 	if(ivar.eq.0)then
 		res_diff_sgm@tiYAxisString		= "SGM ("+vars_change_Yaxis_unitsd(iyaxis)+")"
 	end if
