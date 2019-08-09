@@ -572,6 +572,8 @@ if(ALPIsub_bin_1d_plot)then
 	printMinMax(vars_3d_bin_mean_tm,True)
 end if
 
+exit
+
 
 ; ---------------------------------------ALPIsub_mask_plot ------------------------------
 
