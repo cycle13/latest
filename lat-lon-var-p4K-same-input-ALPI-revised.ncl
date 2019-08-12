@@ -18,7 +18,7 @@ regime_contribution = False
 lat_lon_plot		= False
 
 ALPI_revised			= True
-ALPI_readout_data		= True
+ALPI_readout_data		= False
 ALPI_mask_ocn			= True
 ALPIsub_revised			= True
 
