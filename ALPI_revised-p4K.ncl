@@ -464,13 +464,37 @@ if(ALPIsub_bin_1d_plot)then
 end if
 
 ; --- for variables only in Gauss-PDF
-use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
+;use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
 
-;---- variables with the same Y axis
-use_idx_yaxis_sgm		= (/11,14,15,56,57,58/) ; sgm_tota, sgm_turb, sgm_shal
-use_idx_yaxis_crf		= (/13,3,4/)
+pick_var_pdf	= (/"sgm_tota","sgm_turb","sgm_shal","term1_shal","term2_shal","term3_shal","terms_shal_sum"/)
+
+use_idx_pdf		= new(dimsizes(pick_var_pdf),integer)
+
+do ivar=0,dimsizes(pick_var_pdf)-1
+	use_idx_pdf(ivar)	= ind(varsA.eq.pick_var_pdf(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
 
 vars_pdf			= varsA(use_idx_pdf)
+
+;---- variables with the same Y axis
+;use_idx_yaxis_sgm		= (/11,14,15,56,57,58/) ; sgm_tota, sgm_turb, sgm_shal
+
+pick_var_yaxis_sgm		= (/"sgm_tota","sgm_shal","sgm_turb","term1_shal","term2_shal","term3_shal"/)
+use_idx_yaxis_sgm		= new(dimsizes(pick_var_yaxis_sgm),integer)
+do ivar=0,dimsizes(pick_var_yaxis_sgm)-1
+	use_idx_yaxis_sgm(ivar)	= ind(varsA.eq.pick_var_yaxis_sgm(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
+
+;use_idx_yaxis_crf		= (/13,3,4/)
+pick_var_yaxis_crf		= (/"netCRF","SWCF","LWCF"/)
+use_idx_yaxis_crf		= new(dimsizes(pick_var_yaxis_crf),integer)
+do ivar=0,dimsizes(pick_var_yaxis_crf)-1
+	use_idx_yaxis_crf(ivar)	= ind(varsA.eq.pick_var_yaxis_crf(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
+
 
 vars_yaxis = NewList("lifo")
 
