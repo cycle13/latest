@@ -17,10 +17,10 @@ ALPI_mask_ocn			= True
 ALPIsub_revised			= True ; from LTS to EIS
 
 ALPIsub_mask_plot		= False
-ALPIsub_bin_2d_plot		= False
+ALPIsub_bin_2d_plot		= True
 ALPIsub_bin_1d_plot		= False 
 sgm_diff_plot			= False	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
-sgm_shal_4terms			= True  ; term1, term2 and term3 for variance of shallow convection in one figure
+sgm_shal_4terms			= False  ; term1, term2 and term3 for variance of shallow convection in one figure
 								; sgm_shal_4terms should work with sgm_diff_plot = True.
 plot_type			= "pdf"
 
@@ -114,20 +114,37 @@ TGCLDLWP_dlevs_1	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
 TGCLDLWP_dlevs_2	 	= (/-120,-100,-80,-60,-40,-20,-10,0,10,20,40,60,80,100,120/)
 TGCLDLWP_dlevs_sp	= (/-100.,-50., 50., 100. /)
 
-sgm_tota_levs		= fspan(0.,0.3,15)*0.2
+
+sgm_tota_levs		= fspan(0.,0.28,15)*0.2
 sgm_tota_dlevs_1	= fspan(-0.1,0.1,15)*0.05
 sgm_tota_dlevs_2	= sgm_tota_dlevs_1
 sgm_tota_dlevs_sp	= (/-1, -0.5, 0.5, 1/)
 
-sgm_shal_levs		= fspan(0.,0.3,15)
-sgm_shal_dlevs_1	= fspan(-0.1,0.1,15)
+sgm_turb_levs		= sgm_tota_levs
+sgm_turb_dlevs_1	= sgm_tota_dlevs_1
+sgm_turb_dlevs_2	= sgm_tota_dlevs_1
+sgm_turb_dlevs_sp	= (/-1, -0.5, 0.5, 1/)
+
+sgm_shal_levs		= sgm_tota_levs
+sgm_shal_dlevs_1	= sgm_tota_dlevs_1
 sgm_shal_dlevs_2	= sgm_tota_dlevs_1
 sgm_shal_dlevs_sp	= (/-1, -0.5, 0.5, 1/)
 
-sgm_turb_levs		= fspan(0.,0.84,15)
-sgm_turb_dlevs_1	= fspan(-0.28,0.28,15)
-sgm_turb_dlevs_2	= sgm_tota_dlevs_1
-sgm_turb_dlevs_sp	= (/-1, -0.5, 0.5, 1/)
+term1_shal_levs		= sgm_tota_levs
+term1_shal_dlevs_1	= sgm_tota_dlevs_1
+term1_shal_dlevs_2	= sgm_tota_dlevs_1
+term1_shal_dlevs_sp	= sgm_tota_dlevs_sp
+
+term2_shal_levs		= sgm_tota_levs
+term2_shal_dlevs_1	= sgm_tota_dlevs_1
+term2_shal_dlevs_2	= sgm_tota_dlevs_1
+term2_shal_dlevs_sp	= sgm_tota_dlevs_sp
+
+term3_shal_levs		= sgm_tota_levs
+term3_shal_dlevs_1	= sgm_tota_dlevs_1
+term3_shal_dlevs_2	= sgm_tota_dlevs_1
+term3_shal_dlevs_sp	= sgm_tota_dlevs_sp
+
 
 N1_levs				= fspan(0,0.84,15)*0.25
 N1_dlevs_1			= fspan(-0.28,0.28,15)*0.05
@@ -344,20 +361,20 @@ term3_turb_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.
 term3_turb_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
 term3_turb_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
-term1_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
-term1_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
-term1_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
-term1_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
-
-term2_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
-term2_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
-term2_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
-term2_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
-
-term3_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
-term3_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
-term3_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
-term3_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+;term1_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+;term1_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+;term1_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+;term1_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+;
+;term2_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+;term2_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+;term2_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+;term2_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
+;
+;term3_shal_levs			= (/.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.8,.9/)
+;term3_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+;term3_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
+;term3_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
@@ -406,7 +423,7 @@ if(sgm_shal_4terms)then
 end if
 
 if(ALPIsub_bin_2d_plot)then
-	pick_var_4d			= (/"CLOUD","CLDLIQ","RELHUM","sgm_tota","N1"/)
+	pick_var_4d			= (/"CLOUD","CLDLIQ","RELHUM","sgm_tota","N1","sgm_shal","sgm_turb","term1_shal","term2_shal","term3_shal"/)
 end if
 
 if(ALPIsub_bin_1d_plot .and. .not. sgm_shal_4terms .and. .not.sgm_diff_plot)then
@@ -571,8 +588,6 @@ if(ALPIsub_bin_1d_plot)then
 	printVarSummary(vars_3d_bin_mean_tm)
 	printMinMax(vars_3d_bin_mean_tm,True)
 end if
-
-exit
 
 
 ; ---------------------------------------ALPIsub_mask_plot ------------------------------
@@ -763,8 +778,10 @@ if(ALPIsub_bin_2d_plot)then
 	
 	res_con@vpWidthF				= 0.7
 	res_con@vpHeightF				= 0.4
+
+;	res_con@cnFillMode 				= "RasterFill"
 	
-	res_con@trYMinF					= trYMinFs(itrYMinF)
+;	res_con@trYMinF					= trYMinFs(itrYMinF)
 	
 	fontheight						= 0.035
 	res_con@tmXBMinorOn				= False
@@ -899,7 +916,8 @@ if(ALPIsub_bin_2d_plot)then
 	end do ; do ivar=
 
 	resP								= True
-	resP@gsnPanelFigureStrings			= plots_strings(0:dimsizes(Vars_4d)*3-1)
+;	resP@gsnPanelFigureStrings			= plots_strings(0:dimsizes(Vars_4d)*3-1)
+	resP@gsnPanelFigureStrings			= plots_strings(0:8)
 	resP@amJust   						= "TopLeft"
 	;resP@gsnPanelFigureStringsPerimOn	= False
 
@@ -909,7 +927,8 @@ if(ALPIsub_bin_2d_plot)then
 
 	gsn_panel(wks,plots_1,(/3,3/),resP)
 
-	resP@gsnPanelFigureStrings			= plots_strings(0:dimsizes(Vars_4d)*3-1)
+;	resP@gsnPanelFigureStrings			= plots_strings(0:dimsizes(Vars_4d)*3-1)
+;	resP@gsnPanelFigureStrings			= plots_strings(0:3)
 
 	plots_2 = (/plot_3d(0,7),\  ; CLOUD
 			  	plot_3d(1,7),\  ; CLDLIQ
@@ -922,10 +941,9 @@ if(ALPIsub_bin_2d_plot)then
 				plot_3d(4,0), plot_3d(4,1), plot_3d(4,2)/) ; N1
 	
 	gsn_panel(wks,plots_3,(/2,3/),resP)
-
-	exit
 	
 	delete([/res_con, res_cond, wks, plot_3d/])
+	exit
 	
 	end do ; do itrYMinF=
 	
