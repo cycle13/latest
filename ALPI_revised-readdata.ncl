@@ -12,6 +12,8 @@ begin
 horizon_interp			= False ; used for different input data resolution
 resolution				= "2deg"
 
+ALPI_test				= False
+
 ALPI_revised			= True ; overall control
 ALPI_readout_data		= True
 ALPI_mask_ocn			= True
@@ -399,7 +401,8 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 
 ;----- ALPI_revised
 if(ALPI_revised)then
-	pick_var_4d			= (/"CLOUD","CLDLIQ","RELHUM","sgm_tota","N1"/)
+	pick_var_4d			= (/"CLOUD","CLDLIQ","RELHUM","sgm_tota","N1","sgm_shal","sgm_turb",\
+							"term1_shal","term2_shal","term3_shal"/)
 	pick_var_3d			= (/\
 							"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1",\ ; normal
 							"sgm_tota","sgm_shal","sgm_turb",\	; sgm_diff_plot
@@ -481,7 +484,11 @@ if(ALPI_readout_data)then
 ; -------------------------read Vars_4D from monthly data set 
 
 yearS				= 1980
-yearE				= 1988
+if(ALPI_test)then
+	yearE			= 1980
+else
+	yearE			= 1988
+end if
 ntime				= (yearE-yearS+1)*12
 
 vars_4d				= new((/dimsizes(Vars_4d),dimsizes(tag),dimsizes(case_nor),ntime,nlev,nlat,nlon/),float) ; (/time,lev,lat,lon/)
@@ -598,6 +605,67 @@ print(Vars_4d(ivar))
 		if(.not.ismissing(ind(vars_pdf.eq.Vars_4d(ivar))) .and. icase.eq.0)then ; make not existing vars in park-rh as missing value.
 			print(Vars_4d(ivar))
 			vars_4d(ivar,itag,icase,:,:,:,:)	= vars_4d@_FillValue
+		else
+			if(Vars_4d(ivar).eq."term1_shal")then
+				umf_shal_tmp			= fall[:]->umf_shal(:,1:,:,:) ; on ilev (31)
+				qwu_qw_tmp				= fall[:]->qwu_qw(:,:,:,:) ; on alev (30)
+				clddep2_tmp				= fall[:]->clddep2(:,:,:)
+				wstarPBL_tmp			= fall[:]->wstarPBL(:,:,:)
+				clddep2_tmp1			= conform_dims(dimsizes(umf_shal_tmp),clddep2_tmp,(/0,2,3/))
+				wstarPBL_tmp1			= conform_dims(dimsizes(umf_shal_tmp),wstarPBL_tmp,(/0,2,3/))
+				printVarSummary(clddep2_tmp1)
+				printVarSummary(wstarPBL_tmp1)
+				printVarSummary(umf_shal_tmp)
+				printVarSummary(qwu_qw_tmp)
+				tmp1					= -0.5*umf_shal_tmp*qwu_qw_tmp*clddep2_tmp1/where(wstarPBL_tmp1.ne.0,wstarPBL_tmp1,vars_4d@_FillValue)
+				tmp1					= tmp1*1e6
+				copy_VarCoords(umf_shal_tmp,tmp1)
+				if(horizon_interp)then
+					vars_4d(ivar,itag,icase,:,:,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+					vars_4d(ivar,itag,icase,:,:,:,:)	= (/tmp1/)
+				end if
+				delete(tmp1)
+				delete([/umf_shal_tmp,qwu_qw_tmp,clddep2_tmp,wstarPBL_tmp,clddep2_tmp1,wstarPBL_tmp1/])
+			end if
+			if(Vars_4d(ivar).eq."term2_shal")then
+				umf_shal_tmp			= fall[:]->umf_shal(:,1:,:,:)
+				thlu_thl_tmp			= fall[:]->thlu_thl(:,:,:,:)
+				clddep2_tmp				= fall[:]->clddep2(:,:,:)
+				wstarPBL_tmp			= fall[:]->wstarPBL(:,:,:)
+				clddep2_tmp1			= conform_dims(dimsizes(umf_shal_tmp),clddep2_tmp,(/0,2,3/))
+				wstarPBL_tmp1			= conform_dims(dimsizes(umf_shal_tmp),wstarPBL_tmp,(/0,2,3/))
+				tmp1					= -0.5*umf_shal_tmp*thlu_thl_tmp*clddep2_tmp1/where(wstarPBL_tmp1.ne.0,wstarPBL_tmp1,vars_4d@_FillValue)
+				tmp1					= tmp1*1e6
+				copy_VarCoords(umf_shal_tmp,tmp1)
+				if(horizon_interp)then
+					vars_4d(ivar,itag,icase,:,:,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+					vars_4d(ivar,itag,icase,:,:,:,:)	= (/tmp1/)
+				end if 
+				delete(tmp1)
+				delete([/umf_shal_tmp,thlu_thl_tmp,clddep2_tmp,wstarPBL_tmp,clddep2_tmp1,wstarPBL_tmp1/])
+			end if
+			if(Vars_4d(ivar).eq."term3_shal")then
+				umf_shal_tmp			= fall[:]->umf_shal(:,1:,:,:)
+				qwu_thlu_tmp			= fall[:]->qwu_thlu(:,:,:,:)
+				clddep2_tmp				= fall[:]->clddep2(:,:,:)
+				wstarPBL_tmp			= fall[:]->wstarPBL(:,:,:)
+				clddep2_tmp1			= conform_dims(dimsizes(umf_shal_tmp),clddep2_tmp,(/0,2,3/))
+				wstarPBL_tmp1			= conform_dims(dimsizes(umf_shal_tmp),wstarPBL_tmp,(/0,2,3/))
+				tmp1					= -0.5*umf_shal_tmp*qwu_thlu_tmp*clddep2_tmp1/where(wstarPBL_tmp1.ne.0,wstarPBL_tmp1,vars_4d@_FillValue)
+				tmp1					= tmp1*1e6
+				copy_VarCoords(umf_shal_tmp,tmp1)
+				if(horizon_interp)then
+					vars_4d(ivar,itag,icase,:,:,:,:)	= linint2_Wrap(tmp1&lon,tmp1&lat,tmp1,True,klon,klat,0)
+				else
+					vars_4d(ivar,itag,icase,:,:,:,:)	= (/tmp1/)
+				end if
+				delete(tmp1)
+				delete([/umf_shal_tmp,qwu_thlu_tmp,clddep2_tmp,wstarPBL_tmp,clddep2_tmp1,wstarPBL_tmp1/])
+			end if
+
+			
 		end if
 	end if
 end do ; do ivar=
@@ -1065,7 +1133,11 @@ printMinMax(vars_3d_bin_mean,True)
 ; ----------------- try to output the binned variables for convenience -----------------------------------
 
 outdir						= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
-outfile						= "ALPI_binned_vars.nc"
+if(ALPI_test)then
+	outfile						= "ALPI_binned_vars_test.nc"
+else
+	outfile						= "ALPI_binned_vars.nc"
+end if
 
 Vars_out_4d					= Vars_4d
 Vars_out_3d					= Vars_3d
@@ -1099,6 +1171,8 @@ do itag=0,dimsizes(tag)-1
 	end do ; do ivar=
 end do ; do itag=
 
+date=systemfunc("date")
+print(date)
 exit
 end if ; ALPI_readout_data
 
