@@ -12,7 +12,7 @@ begin
 horizon_interp			= False ; used for different input data resolution
 resolution				= "2deg"
 
-ALPI_test				= False
+ALPI_test				= True
 
 ALPI_revised			= True ; overall control
 ALPI_readout_data		= True
@@ -366,6 +366,11 @@ term3_shal_dlevs_1			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.
 term3_shal_dlevs_2			= (/-0.25,-0.2,-0.16,-0.12,-0.08,-0.04,-0.02,0,0.02,0.04,0.08,0.12,0.16,0.20,0.25/)
 term3_shal_dlevs_sp		= (/-0.1,-0.05,0.05,0.1/)
 
+terms_shal_sum_levs		= sgm_tota_levs
+terms_shal_sum_dlevs_1	= sgm_tota_dlevs_1
+terms_shal_sum_dlevs_2	= sgm_tota_dlevs_2
+terms_shal_sum_dlevs_sp	= sgm_tota_dlevs_sp
+
 
 Vars_mid	= (/"T", "Q", "OMEGA", "RELHUM"/)
 
@@ -389,24 +394,28 @@ Vars_mid_3d		= (/"PRECT", "PRECL", "PRECC"/)
 ; so pls dont use vert_qwflx_turb later if possible.
 
 ;				   0            1          2           3           4            5          6	    7      8       9		10	      11	  12 	 13        14         15           16        17         18      19			20		   21         22      23     24       25         26       27      28        29      30     31       32         33          34			35               36				    37				   38			   39			   40			    41					42	            43       44        45           46           47        48          49         50              51               52            53            54           55               56           57           58          59
-varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb", "RELHUM", "FREQSH", "CMFMC","umf_shal", "clddep2", "wstarPBL", "lengi", "shi", "aa_gp",	"bb_gp", "beta_gp", "dqwdz", "dthldz", "qw2", "thl2", "qwthl", "qwu_qw", "thlu_thl", "qwu_thlu", "qtu_shal", "vert_qwflx_shal", "vert_thlflx_shal","vert_qwthlflx_shal","tau_shal","vert_qwflx_turb","vert_thlflx_turb","vert_qwthlflx_turb","lengi2","dqwdz_2","dthldz_2","dqwdz_dthldz","aa2_gp", "bb2_gp", "aa2_dqwdz2","bb2_dthldz2","ab_dqwdz_dthldz","shi_lengi2", "term1_turb", "term2_turb", "term3_turb", "term1_shal", "term2_shal", "term3_shal","TREFHT","CLOUD", "CLDLIQ"/)
-varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs,sgm_shal_levs, sgm_turb_levs, RELHUM_levs, FREQSH_levs, CMFMC_levs, umf_shal_levs, clddep2_levs, wstarPBL_levs, lengi_levs, shi_levs, aa_gp_levs, bb_gp_levs, beta_gp_levs, dqwdz_levs, dthldz_levs, qw2_levs, thl2_levs, qwthl_levs, qwu_qw_levs, thlu_thl_levs, qwu_thlu_levs, qtu_shal_levs,vert_qwflx_shal_levs, vert_thlflx_shal_levs, vert_qwthlflx_shal_levs, tau_shal_levs, vert_qwflx_turb_levs, vert_thlflx_turb_levs, vert_qwthlflx_turb_levs, lengi2_levs,dqwdz_2_levs, dthldz_2_levs, dqwdz_dthldz_levs, aa2_gp_levs, bb2_gp_levs, aa2_dqwdz2_levs, bb2_dthldz2_levs, ab_dqwdz_dthldz_levs, shi_lengi2_levs, term1_turb_levs, term2_turb_levs, term3_turb_levs, term1_shal_levs, term2_shal_levs, term3_shal_levs, TREFHT_levs, CLOUD_levs, CLDLIQ_levs/)
-varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1, sgm_shal_dlevs_1, sgm_turb_dlevs_1, RELHUM_dlevs_1, FREQSH_dlevs_1, CMFMC_dlevs_1, umf_shal_dlevs_1, clddep2_dlevs_1, wstarPBL_dlevs_1, lengi_dlevs_1, shi_dlevs_1, aa_gp_dlevs_1, bb_gp_dlevs_1, beta_gp_dlevs_1, dqwdz_dlevs_1, dthldz_dlevs_1, qw2_dlevs_1, thl2_dlevs_1, qwthl_dlevs_1, qwu_qw_dlevs_1, thlu_thl_dlevs_1, qwu_thlu_dlevs_1, qtu_shal_dlevs_1,vert_qwflx_shal_dlevs_1, vert_thlflx_shal_dlevs_1, vert_qwthlflx_shal_dlevs_1, tau_shal_dlevs_1, vert_qwflx_turb_dlevs_1, vert_thlflx_turb_dlevs_1, vert_qwthlflx_turb_dlevs_1, lengi2_dlevs_1, dqwdz_2_dlevs_1, dthldz_2_dlevs_1, dqwdz_dthldz_dlevs_1, aa2_gp_dlevs_1, bb2_gp_dlevs_1,aa2_dqwdz2_dlevs_1, bb2_dthldz2_dlevs_1, ab_dqwdz_dthldz_dlevs_1, shi_lengi2_dlevs_1, term1_turb_dlevs_1, term2_turb_dlevs_1, term3_turb_dlevs_1, term1_shal_dlevs_1, term2_shal_dlevs_1, term3_shal_dlevs_1, TREFHT_dlevs_1, CLOUD_dlevs_1, CLDLIQ_dlevs_1/)
-varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2, bb_gp_dlevs_2, beta_gp_dlevs_2, dqwdz_dlevs_2, dthldz_dlevs_2, qw2_dlevs_2, thl2_dlevs_2, qwthl_dlevs_2, qwu_qw_dlevs_2, thlu_thl_dlevs_2, qwu_thlu_dlevs_2, qtu_shal_dlevs_2,vert_qwflx_shal_dlevs_2, vert_thlflx_shal_dlevs_2, vert_qwthlflx_shal_dlevs_2, tau_shal_dlevs_2, vert_qwflx_turb_dlevs_2, vert_thlflx_turb_dlevs_2, vert_qwthlflx_turb_dlevs_2,lengi2_dlevs_2, dqwdz_2_dlevs_2, dthldz_2_dlevs_2, dqwdz_dthldz_dlevs_2, aa2_gp_dlevs_2, bb2_gp_dlevs_2,aa2_dqwdz2_dlevs_2, bb2_dthldz2_dlevs_2, ab_dqwdz_dthldz_dlevs_2, shi_lengi2_dlevs_2, term1_turb_dlevs_2, term2_turb_dlevs_2, term3_turb_dlevs_2, term1_shal_dlevs_2, term2_shal_dlevs_2, term3_shal_dlevs_2, TREFHT_dlevs_2, CLOUD_dlevs_2, CLDLIQ_dlevs_2/)
-varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp, bb_gp_dlevs_sp, beta_gp_dlevs_sp, dqwdz_dlevs_sp, dthldz_dlevs_sp, qw2_dlevs_sp, thl2_dlevs_sp, qwthl_dlevs_sp, qwu_qw_dlevs_sp, thlu_thl_dlevs_sp, qwu_thlu_dlevs_sp, qtu_shal_dlevs_sp, vert_qwflx_shal_dlevs_sp, vert_thlflx_shal_dlevs_sp, vert_qwthlflx_shal_dlevs_sp, tau_shal_dlevs_sp, vert_qwflx_turb_dlevs_sp, vert_thlflx_turb_dlevs_sp, vert_qwthlflx_turb_dlevs_sp, lengi2_dlevs_sp, dqwdz_2_dlevs_sp, dthldz_2_dlevs_sp, dqwdz_dthldz_dlevs_sp, aa2_gp_dlevs_sp, bb2_gp_dlevs_sp, aa2_dqwdz2_dlevs_sp, bb2_dthldz2_dlevs_sp, ab_dqwdz_dthldz_dlevs_sp, shi_lengi2_dlevs_sp, term1_turb_dlevs_sp, term2_turb_dlevs_sp, term3_turb_dlevs_sp, term1_shal_dlevs_sp, term2_shal_dlevs_sp, term3_shal_dlevs_sp, TREFHT_dlevs_sp, CLOUD_dlevs_sp, CLDLIQ_dlevs_sp/)
+varsA		= (/"PRECT",	"PRECC",	"PRECL",	"SWCF",		"LWCF",		"CLDLOW",	"CLDHGH", "LTS", "EIS", "ECTEI","TGCLDLWP","sgm_tota","N1", "netCRF","sgm_shal","sgm_turb", "RELHUM", "FREQSH", "CMFMC","umf_shal", "clddep2", "wstarPBL", "lengi", "shi", "aa_gp",	"bb_gp", "beta_gp", "dqwdz", "dthldz", "qw2", "thl2", "qwthl", "qwu_qw", "thlu_thl", "qwu_thlu", "qtu_shal", "vert_qwflx_shal", "vert_thlflx_shal","vert_qwthlflx_shal","tau_shal","vert_qwflx_turb","vert_thlflx_turb","vert_qwthlflx_turb","lengi2","dqwdz_2","dthldz_2","dqwdz_dthldz","aa2_gp", "bb2_gp", "aa2_dqwdz2","bb2_dthldz2","ab_dqwdz_dthldz","shi_lengi2", "term1_turb", "term2_turb", "term3_turb", "term1_shal", "term2_shal", "term3_shal","TREFHT","CLOUD", "CLDLIQ", "terms_shal_sum"/)
+varsA_levs	= (/PRECT_levs, PRECT_levs,     PRECT_levs,     SWCF_levs,      LWCF_levs, 	CLDLOW_levs,	CLDHGH_levs, LTS_levs, EIS_levs, ECTEI_levs,TGCLDLWP_levs,sgm_tota_levs, N1_levs, netCRF_levs,sgm_shal_levs, sgm_turb_levs, RELHUM_levs, FREQSH_levs, CMFMC_levs, umf_shal_levs, clddep2_levs, wstarPBL_levs, lengi_levs, shi_levs, aa_gp_levs, bb_gp_levs, beta_gp_levs, dqwdz_levs, dthldz_levs, qw2_levs, thl2_levs, qwthl_levs, qwu_qw_levs, thlu_thl_levs, qwu_thlu_levs, qtu_shal_levs,vert_qwflx_shal_levs, vert_thlflx_shal_levs, vert_qwthlflx_shal_levs, tau_shal_levs, vert_qwflx_turb_levs, vert_thlflx_turb_levs, vert_qwthlflx_turb_levs, lengi2_levs,dqwdz_2_levs, dthldz_2_levs, dqwdz_dthldz_levs, aa2_gp_levs, bb2_gp_levs, aa2_dqwdz2_levs, bb2_dthldz2_levs, ab_dqwdz_dthldz_levs, shi_lengi2_levs, term1_turb_levs, term2_turb_levs, term3_turb_levs, term1_shal_levs, term2_shal_levs, term3_shal_levs, TREFHT_levs, CLOUD_levs, CLDLIQ_levs, terms_shal_sum_levs/)
+varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1,     LWCF_dlevs_1,	CLDLOW_dlevs_1,	CLDHGH_dlevs_1, LTS_dlevs_1, EIS_dlevs_1,	ECTEI_dlevs_1,TGCLDLWP_dlevs_1, sgm_tota_dlevs_1, N1_dlevs_1, netCRF_dlevs_1, sgm_shal_dlevs_1, sgm_turb_dlevs_1, RELHUM_dlevs_1, FREQSH_dlevs_1, CMFMC_dlevs_1, umf_shal_dlevs_1, clddep2_dlevs_1, wstarPBL_dlevs_1, lengi_dlevs_1, shi_dlevs_1, aa_gp_dlevs_1, bb_gp_dlevs_1, beta_gp_dlevs_1, dqwdz_dlevs_1, dthldz_dlevs_1, qw2_dlevs_1, thl2_dlevs_1, qwthl_dlevs_1, qwu_qw_dlevs_1, thlu_thl_dlevs_1, qwu_thlu_dlevs_1, qtu_shal_dlevs_1,vert_qwflx_shal_dlevs_1, vert_thlflx_shal_dlevs_1, vert_qwthlflx_shal_dlevs_1, tau_shal_dlevs_1, vert_qwflx_turb_dlevs_1, vert_thlflx_turb_dlevs_1, vert_qwthlflx_turb_dlevs_1, lengi2_dlevs_1, dqwdz_2_dlevs_1, dthldz_2_dlevs_1, dqwdz_dthldz_dlevs_1, aa2_gp_dlevs_1, bb2_gp_dlevs_1,aa2_dqwdz2_dlevs_1, bb2_dthldz2_dlevs_1, ab_dqwdz_dthldz_dlevs_1, shi_lengi2_dlevs_1, term1_turb_dlevs_1, term2_turb_dlevs_1, term3_turb_dlevs_1, term1_shal_dlevs_1, term2_shal_dlevs_1, term3_shal_dlevs_1, TREFHT_dlevs_1, CLOUD_dlevs_1, CLDLIQ_dlevs_1, terms_shal_sum_dlevs_1/)
+varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2, bb_gp_dlevs_2, beta_gp_dlevs_2, dqwdz_dlevs_2, dthldz_dlevs_2, qw2_dlevs_2, thl2_dlevs_2, qwthl_dlevs_2, qwu_qw_dlevs_2, thlu_thl_dlevs_2, qwu_thlu_dlevs_2, qtu_shal_dlevs_2,vert_qwflx_shal_dlevs_2, vert_thlflx_shal_dlevs_2, vert_qwthlflx_shal_dlevs_2, tau_shal_dlevs_2, vert_qwflx_turb_dlevs_2, vert_thlflx_turb_dlevs_2, vert_qwthlflx_turb_dlevs_2,lengi2_dlevs_2, dqwdz_2_dlevs_2, dthldz_2_dlevs_2, dqwdz_dthldz_dlevs_2, aa2_gp_dlevs_2, bb2_gp_dlevs_2,aa2_dqwdz2_dlevs_2, bb2_dthldz2_dlevs_2, ab_dqwdz_dthldz_dlevs_2, shi_lengi2_dlevs_2, term1_turb_dlevs_2, term2_turb_dlevs_2, term3_turb_dlevs_2, term1_shal_dlevs_2, term2_shal_dlevs_2, term3_shal_dlevs_2, TREFHT_dlevs_2, CLOUD_dlevs_2, CLDLIQ_dlevs_2, terms_shal_sum_dlevs_2/)
+varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp, bb_gp_dlevs_sp, beta_gp_dlevs_sp, dqwdz_dlevs_sp, dthldz_dlevs_sp, qw2_dlevs_sp, thl2_dlevs_sp, qwthl_dlevs_sp, qwu_qw_dlevs_sp, thlu_thl_dlevs_sp, qwu_thlu_dlevs_sp, qtu_shal_dlevs_sp, vert_qwflx_shal_dlevs_sp, vert_thlflx_shal_dlevs_sp, vert_qwthlflx_shal_dlevs_sp, tau_shal_dlevs_sp, vert_qwflx_turb_dlevs_sp, vert_thlflx_turb_dlevs_sp, vert_qwthlflx_turb_dlevs_sp, lengi2_dlevs_sp, dqwdz_2_dlevs_sp, dthldz_2_dlevs_sp, dqwdz_dthldz_dlevs_sp, aa2_gp_dlevs_sp, bb2_gp_dlevs_sp, aa2_dqwdz2_dlevs_sp, bb2_dthldz2_dlevs_sp, ab_dqwdz_dthldz_dlevs_sp, shi_lengi2_dlevs_sp, term1_turb_dlevs_sp, term2_turb_dlevs_sp, term3_turb_dlevs_sp, term1_shal_dlevs_sp, term2_shal_dlevs_sp, term3_shal_dlevs_sp, TREFHT_dlevs_sp, CLOUD_dlevs_sp, CLDLIQ_dlevs_sp, terms_shal_sum_dlevs_sp/)
 
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m~S~2~N~", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m~S~2~N~/s", "kg/m~S~2~N~/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","K", "fraction", "g/kg"/)
+varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m~S~2~N~", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m~S~2~N~/s", "kg/m~S~2~N~/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","K", "fraction", "g/kg", "-"/)
 plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","(k)","(l)","(m)","(n)","(o)","(p)","(q)","(r)","(s)","(t)","(u)","(v)","(w)","(x)","(y)","(z)"/)
 
 
 ;----- ALPI_revised
 if(ALPI_revised)then
-	pick_var_4d			= (/"CLOUD","CLDLIQ","RELHUM","sgm_tota","N1","sgm_shal","sgm_turb",\
-							"term1_shal","term2_shal","term3_shal"/)
+;	pick_var_4d			= (/"CLOUD","CLDLIQ","RELHUM","sgm_tota","N1","sgm_shal","sgm_turb",\
+;							"term1_shal","term2_shal","term3_shal","terms_shal_sum"/)
+
+	pick_var_4d			= (/"sgm_shal","terms_shal_sum"/)
+
 	pick_var_3d			= (/\
 							"netCRF","SWCF","CLDLOW","TGCLDLWP","sgm_tota","N1",\ ; normal
 							"sgm_tota","sgm_shal","sgm_turb",\	; sgm_diff_plot
 							"sgm_shal","term1_shal","term2_shal","term3_shal"\ ; sgm_shal_4terms
+							,"terms_shal_sum"\
 							/)
 
 	use_idx_4d		= new(dimsizes(pick_var_4d),integer)
@@ -439,13 +448,37 @@ if(ALPI_revised)then
 end if
 
 ; --- for variables only in Gauss-PDF
-use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
+;use_idx_pdf			= (/11,12,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58/)
 
-;---- variables with the same Y axis
-use_idx_yaxis_sgm		= (/11,14,15,56,57,58/) ; sgm_tota, sgm_turb, sgm_shal
-use_idx_yaxis_crf		= (/13,3,4/)
+pick_var_pdf	= (/"sgm_tota","sgm_turb","sgm_shal","term1_shal","term2_shal","term3_shal","terms_shal_sum"/)
+
+use_idx_pdf		= new(dimsizes(pick_var_pdf),integer)
+
+do ivar=0,dimsizes(pick_var_pdf)-1
+	use_idx_pdf(ivar)	= ind(varsA.eq.pick_var_pdf(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
 
 vars_pdf			= varsA(use_idx_pdf)
+
+;---- variables with the same Y axis
+;use_idx_yaxis_sgm		= (/11,14,15,56,57,58/) ; sgm_tota, sgm_turb, sgm_shal
+
+pick_var_yaxis_sgm		= (/"sgm_tota","sgm_shal","sgm_turb","term1_shal","term2_shal","term3_shal"/)
+use_idx_yaxis_sgm		= new(dimsizes(pick_var_yaxis_sgm),integer)
+do ivar=0,dimsizes(pick_var_yaxis_sgm)-1
+	use_idx_yaxis_sgm(ivar)	= ind(varsA.eq.pick_var_yaxis_sgm(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
+
+;use_idx_yaxis_crf		= (/13,3,4/)
+pick_var_yaxis_crf		= (/"netCRF","SWCF","LWCF"/)
+use_idx_yaxis_crf		= new(dimsizes(pick_var_yaxis_crf),integer)
+do ivar=0,dimsizes(pick_var_yaxis_crf)-1
+	use_idx_yaxis_crf(ivar)	= ind(varsA.eq.pick_var_yaxis_crf(ivar))
+	print(varsA(ivar))
+end do ; do ivar=
+
 
 vars_yaxis = NewList("lifo")
 
@@ -664,7 +697,32 @@ print(Vars_4d(ivar))
 				delete(tmp1)
 				delete([/umf_shal_tmp,qwu_thlu_tmp,clddep2_tmp,wstarPBL_tmp,clddep2_tmp1,wstarPBL_tmp1/])
 			end if
-
+			if(Vars_4d(ivar).eq."terms_shal_sum")then
+				umf_shal_tmp			= fall[:]->umf_shal(:,1:,:,:)
+				qwu_thlu_tmp			= fall[:]->qwu_thlu(:,:,:,:)
+				qwu_qw_tmp				= fall[:]->qwu_qw
+				thlu_thl_tmp			= fall[:]->thlu_thl
+				clddep2_tmp				= fall[:]->clddep2(:,:,:)
+				wstarPBL_tmp			= fall[:]->wstarPBL(:,:,:)
+				sgm_shal_tmp			= fall[:]->sgm_shal
+				sgm_shal_tmp			= abs(sgm_shal_tmp)*1e6
+				clddep2_tmp1			= conform_dims(dimsizes(umf_shal_tmp),clddep2_tmp,(/0,2,3/))
+				wstarPBL_tmp1			= conform_dims(dimsizes(umf_shal_tmp),wstarPBL_tmp,(/0,2,3/))
+				tmp1					= 0.5*umf_shal_tmp*qwu_qw_tmp*clddep2_tmp1/where(wstarPBL_tmp1.ne.0,wstarPBL_tmp1,vars_4d@_FillValue)
+				tmp2					= 0.5*umf_shal_tmp*thlu_thl_tmp*clddep2_tmp1/where(wstarPBL_tmp1.ne.0,wstarPBL_tmp1,vars_4d@_FillValue)
+				tmp3					= 0.5*umf_shal_tmp*qwu_thlu_tmp*clddep2_tmp1/where(wstarPBL_tmp1.ne.0,wstarPBL_tmp1,vars_4d@_FillValue)
+				tmp4					= abs(tmp1+tmp2+tmp3)*1e6
+				copy_VarCoords(umf_shal_tmp,tmp4)
+				if(horizon_interp)then
+					vars_4d(ivar,itag,icase,:,:,:,:)	= linint2_Wrap(tmp4&lon,tmp4&lat,tmp4,True,klon,klat,0)
+				else
+					vars_4d(ivar,itag,icase,:,:,:,:)	= (/tmp4/)
+				end if
+				print(sgm_shal_tmp(:,{900},{-20},{260})+"	"+tmp4(:,{900},{-20},{260}))
+				exit
+				delete([/tmp1,tmp2,tmp3,tmp4/])
+				delete([/umf_shal_tmp,qwu_qw_tmp,thlu_thl_tmp,qwu_thlu_tmp,clddep2_tmp,wstarPBL_tmp,clddep2_tmp1,wstarPBL_tmp1/])
+			end if
 			
 		end if
 	end if
@@ -768,6 +826,27 @@ do ivar=0,dimsizes(Vars_3d)-1
 				delete(tmp1)
 				delete([/umf_shal_tmp,qwu_thlu_tmp,clddep2_tmp,wstarPBL_tmp/])
 			end if
+			if(Vars_3d(ivar).eq."terms_shal_sum")then
+				umf_shal_tmp			= fall[:]->umf_shal(:,{spec_lev},:,:)
+				qwu_qw_tmp				= fall[:]->qwu_qw(:,{spec_lev},:,:)
+				thlu_thl_tmp			= fall[:]->thlu_thl(:,{spec_lev},:,:)
+				qwu_thlu_tmp			= fall[:]->qwu_thlu(:,{spec_lev},:,:)
+				clddep2_tmp				= fall[:]->clddep2(:,:,:)
+				wstarPBL_tmp			= fall[:]->wstarPBL(:,:,:)
+				tmp1					= 0.5*umf_shal_tmp*qwu_qw_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_4d@_FillValue)
+				tmp2					= 0.5*umf_shal_tmp*thlu_thl_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_4d@_FillValue)
+				tmp3					= 0.5*umf_shal_tmp*qwu_thlu_tmp*clddep2_tmp/where(wstarPBL_tmp.ne.0,wstarPBL_tmp,vars_4d@_FillValue)
+				tmp4					= abs(tmp1+tmp2+tmp3)*1e6
+				copy_VarCoords(umf_shal_tmp,tmp4)
+				if(horizon_interp)then
+					vars_3d(ivar,itag,icase,:,:,:)	= linint2_Wrap(tmp4&lon,tmp4&lat,tmp4,True,klon,klat,0)
+				else
+					vars_3d(ivar,itag,icase,:,:,:)	= tmp4
+				end if
+				delete([/tmp1,tmp2,tmp3,tmp4/])
+				delete([/umf_shal_tmp,qwu_qw_tmp, thlu_thl_tmp, qwu_thlu_tmp,clddep2_tmp,wstarPBL_tmp/])
+			end if
+
 		end if
 	end if
 end do ; do ivar=
