@@ -11,21 +11,21 @@ begin
 ;fdir_append			= "/atm/hist/"
 
 horizon_interp			= False ; used for different input data resolution
+resolution				= "2deg"
 
+pattern_correlation		= False
+regime_contribution 	= False 
+lat_lon_plot			= False
 
-pattern_correlation	= False
-regime_contribution = False 
-lat_lon_plot		= False
-
+ALPI_test				= False
 ALPI_revised			= True
 ALPI_readout_data		= False
-ALPI_mask_ocn			= True
+ALPIsub_mask_ocn		= True
 ALPIsub_revised			= True
 
 ALPIsub_mask_plot		= False
 ALPIsub_bin_1d_plot		= True
 ALPIsub_bin_2d_plot		= True
-
 
 
 change_Yaxis		= True
@@ -61,10 +61,14 @@ fdir				= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
 ; therefore, even though two or more plots are obtained in one figure, they are the same thing. 
 ;case_nor 				= (/"FAMIPC5_f09f09_mac2_amip_outSGM","FAMIPC5_f09f09_mac2_amip_outSGM"/)
 ;case_p4K		 		= (/"FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM","FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM"/)
-; --- 2019-04-29 22:40:55
-; --- it is pity that I did not output the two cloud fractions from new 2deg simulation
-case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
-case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
+
+if(resolution.eq."2deg")then
+	case_nor 				= (/"FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output","FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output"/)
+	case_p4K		 		= (/"FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output-p4K"/)
+else
+	case_nor 				= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output"/)
+	case_p4K		 		= (/"FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K","FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K"/)
+end if
 
 
 case_name				= (/"RH","PDF"/)
@@ -168,11 +172,30 @@ vars_dlevs_2		= varsA_dlevs_2(use_idx,:)
 vars_dlevs_sp		= varsA_dlevs_sp(use_idx,:)
 vars_units			= varsA_units(use_idx)
 
-nlat				= 192
-nlon				= 288
-
 nlev				= 30
 
+if(.not.horizon_interp)then
+	if(resolution.eq."2deg")then
+		nlat				= 96
+		nlon				= 144
+	else
+		nlat				= 192
+		nlon				= 288
+	end if
+else
+	nlat				= 73		; number of output latitudes
+	nlon				= 144		; number of output longitudes
+	klon = ispan(0,nlon-1,1)*2.5	; to 2.5 x 2.5
+	klat = ispan(0,nlat-1,1)*2.5-90.
+	
+	;nlat				= 181		; number of output latitudes
+	;nlon				= 360		; number of output longitudes
+	;klon = ispan(0,nlon-1,1)*1.0	; to 1.0 x 1.0
+	;klat = ispan(0,nlat-1,1)*1.0-90.
+end if
+
+
+; -------------------- start defining variables ---------------------------------
 vars_mid			= new((/dimsizes(Vars_mid),dimsizes(tag),dimsizes(case_nor),nlev,nlat,nlon/),float)
 vars_mid!0			= "var"
 vars_mid&var		= fspan(0,dimsizes(Vars_mid)-1,dimsizes(Vars_mid))
@@ -199,7 +222,7 @@ vars_all!2		 	= "case"
 vars_all&case		= fspan(0,dimsizes(case_nor)-1,dimsizes(case_nor))
 end if
 
-
+; ------------------- read variables -------------------------------
 do itag=0,dimsizes(tag)-1
 do icase=0,dimsizes(case_nor)-1
 
@@ -802,7 +825,12 @@ if(ALPI_readout_data)then
 ; -------------------------read Vars_4D from monthly data set 
 
 yearS				= 1980
-yearE				= 1984
+if(ALPI_test)then
+	yearE			= 1980
+else
+	yearE			= 1988
+end if
+
 ntime				= (yearE-yearS+1)*12
 
 vars_4d				= new((/dimsizes(Vars_4d),dimsizes(tag),dimsizes(case_nor),ntime,nlev,nlat,nlon/),float) ; (/time,lev,lat,lon/)
@@ -1125,7 +1153,7 @@ copy_VarCoords(LTS(tag|0,case|0,time|:,lat|:,lon|:),OCNFRAC_3d)
 printVarSummary(OCNFRAC_3d)
 printMinMax(OCNFRAC_3d,True)
 
-if(ALPI_mask_ocn)then
+if(ALPIsub_mask_ocn)then
 	; addition: mask land region
 	LTS_ocn			= LTS
 	EIS_ocn			= EIS
@@ -1144,7 +1172,7 @@ else
 	LTS_ocn			= LTS
 	EIS_ocn			= EIS 
 	prect_ocn		= prect
-end if ; ALPI_mask_ocn
+end if ; ALPIsub_mask_ocn
 
 LTS_tropics	 	= LTS_ocn(:,:,:,{latS_trop:latE_trop},:)
 EIS_tropics	 	= EIS_ocn(:,:,:,{latS_trop:latE_trop},:)
@@ -1371,7 +1399,11 @@ printMinMax(vars_3d_bin_mean,True)
 ; ----------------- try to output the binned variables for convenience -----------------------------------
 
 outdir						= "/home/share3/lyl/work3/qinyi/mid-data/cfmip/"
-outfile						= "ALPI_binned_vars_same_input.nc"
+if(ALPI_test)then
+	outfile					= "ALPI_binned_vars_same_input_test.nc"
+else
+	outfile					= "ALPI_binned_vars_same_input.nc"
+end if
 
 Vars_out_4d					= Vars_4d
 Vars_out_3d					= Vars_3d
@@ -1531,6 +1563,8 @@ if(ALPIsub_bin_2d_plot)then
 	
 	res_con@vpWidthF				= 0.7
 	res_con@vpHeightF				= 0.4
+
+	res_con@cnFillMode				= "CellFill"
 	
 ;	res_con@trYMinF					= trYMinFs(itrYMinF)
 	
@@ -1539,12 +1573,12 @@ if(ALPIsub_bin_2d_plot)then
 	res_con@tmYLMinorOn				= False
 	res_con@tmXTOn					= False
 	res_con@tmYROn					= False
-	res_con@gsnStringFontHeightF	= fontheight
+	res_con@gsnStringFontHeightF	= fontheight*0.9
 	res_con@tiXAxisFontHeightF		= fontheight
 	res_con@tiYAxisFontHeightF		= fontheight
 	res_con@tmXBLabelFontHeightF	= fontheight*1.05
 	res_con@tmYLLabelFontHeightF	= fontheight*1.05
-	res_con@gsnRightStringFontHeightF	= fontheight*0.5
+	res_con@gsnRightStringFontHeightF	= fontheight*0.9
 
 	;res_con@pmLabelBarOrthogonalPosF	= 0.4
 	
@@ -1573,8 +1607,8 @@ if(ALPIsub_bin_2d_plot)then
 	
 	
 ;	do ivar=0,dimsizes(Vars_4d)-1
-		res_con@gsnRightString = "CLOUD_"+spec_lev+" hPa"
-		res_cond@gsnRightString = "CLOUD_"+spec_lev+" hPa"
+		res_con@gsnRightString = "AST"
+		res_cond@gsnRightString = "AST"
 	
 		leftstring						= (/"RH_CTL","PDF_CTL","PDF-RH_CTL",\
 											"RH_P4K","PDF_P4K","PDF-RH_P4K",\
@@ -1598,7 +1632,7 @@ if(ALPIsub_bin_2d_plot)then
 		do it = 0,dimsizes(leftstring)-1
 			print(it)
 			if(it.eq.0 .or. it.eq.1 .or. it.eq.3 .or. it.eq.4)then
-				res_con@gsnLeftString		= plots_strings(count)+" "+leftstring(it)
+;				res_con@gsnLeftString		= plots_strings(count)+" "+leftstring(it)
 				res_con@gsnLeftString		= leftstring(it)
 
 				res_con@cnLevels            = levels(it,:)
@@ -1626,11 +1660,15 @@ if(ALPIsub_bin_2d_plot)then
 ;	end do ; do ivar=
 
 
-;	resP								= True
+	resP								= True
 ;	resP@gsnPanelFigureStrings			= plots_strings(0:dimsizes(Vars_4d)*3-1)
-;	resP@amJust   						= "TopLeft"
-;	;resP@gsnPanelFigureStringsPerimOn	= False
+	resP@gsnPanelFigureStrings			= plots_strings(0:8)
+	resP@amJust   						= "TopLeft"
+	;resP@gsnPanelFigureStringsPerimOn	= False
 
+	plots_1 = (/plot_3d(6),plot_3d(7),plot_3d(8)/)  ; (/RH_P4K-CTL, PDF_P4K-CTL, PDF-RH_P4K-CTL/)
+
+	gsn_panel(wks,plots_1,(/1,3/),resP)
 
 	delete([/res_con, res_cond, wks, plot_3d/])
 	
