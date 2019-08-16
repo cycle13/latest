@@ -1557,7 +1557,9 @@ if(ALPIsub_bin_2d_plot)then
 	res_con@cnLinesOn				= False
 	;res_con@cnLineLabelsOn			= False
 	res_con@tiYAxisString			= "Pressure (hPa)"
-	;res_con@tiXAxisString           = "ALPI percentile (%)"
+	res_con@tiXAxisString           = "ALPI percentile (%)"
+	res_con@lbOrientation			= "vertical"
+
 	res_con@gsnFrame				= False
 	res_con@gsnDraw					= False
 	
@@ -1568,7 +1570,7 @@ if(ALPIsub_bin_2d_plot)then
 	
 ;	res_con@trYMinF					= trYMinFs(itrYMinF)
 	
-	fontheight						= 0.035
+	fontheight						= 0.030
 	res_con@tmXBMinorOn				= False
 	res_con@tmYLMinorOn				= False
 	res_con@tmXTOn					= False
@@ -1587,6 +1589,8 @@ if(ALPIsub_bin_2d_plot)then
 	res_con@tmXBMode				= "Explicit"
 	res_con@tmXBValues				= fspan(0,nbins,nbins+1)
 	res_con@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
+	res_con@sfXArray				= res_con@tmXBValues
+	
 	
 	res_cond						= res_con
 	res_cond@cnLinesOn				= False
@@ -1604,6 +1608,10 @@ if(ALPIsub_bin_2d_plot)then
 	copy_VarCoords(vars_4d_bin_mean_tm(0,:,0,:,:),vars_4d_bin_mean_tm_casediff)
 	copy_VarCoords(vars_4d_bin_mean_tm(:,0,0,:,:),vars_4d_bin_mean_tm_tagdiff)
 	copy_VarCoords(vars_4d_bin_mean_tm(0,0,0,:,:),vars_4d_bin_mean_tm_diff2)
+
+	resP								= True
+	resP@gsnPanelXWhiteSpacePercent     = 5.0
+	resP@gsnPanelYWhiteSpacePercent     = 5.0
 	
 	
 ;	do ivar=0,dimsizes(Vars_4d)-1
@@ -1655,7 +1663,7 @@ if(ALPIsub_bin_2d_plot)then
 			end if
 		count = count +1
 		end do ; do it=
-		gsn_panel(wks,plot_3d(:),(/3,3/),False)
+		gsn_panel(wks,plot_3d(:),(/3,3/),resP)
 		delete([/data,leftstring,levels/])
 ;	end do ; do ivar=
 
@@ -1717,7 +1725,7 @@ if(ALPIsub_bin_1d_plot)then
 		res@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
 		res@trXMaxF					= (nbins)
 		
-		fontheight					= 0.035
+		fontheight					= 0.028
 		res@tiYAxisFontHeightF		=fontheight 
 		res@tiXAxisFontHeightF		=fontheight 
 		res@tmXBLabelFontHeightF	=fontheight 
