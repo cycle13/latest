@@ -12,7 +12,7 @@ begin
 horizon_interp			= False ; used for different input data resolution
 resolution				= "2deg"
 
-ALPI_test				= True
+ALPI_test				= False
 ALPI_revised			= True ; overall control
 ALPI_mask_ocn			= True
 ALPIsub_revised			= True ; from LTS to EIS
@@ -21,9 +21,9 @@ ALPIsub_mask_plot		= False
 ALPIsub_bin_2d_plot		= False
 ALPIsub_bin_1d_plot		= True 
 sgm_diff_plot			= False	; plot sgm_diff for sgm_tota, sgm_shal, sgm_turb in one figure by overlay
-sgm_shal_4terms			= True  ; term1, term2 and term3 for variance of shallow convection in one figure
+sgm_shal_4terms			= False  ; term1, term2 and term3 for variance of shallow convection in one figure
 								; sgm_shal_4terms should work with sgm_diff_plot = True.
-test_shal_sum			= True
+test_shal_sum			= False
 
 plot_type			= "pdf"
 
@@ -822,8 +822,13 @@ if(ALPIsub_bin_2d_plot)then
 	res_con@cnFillOn				= True
 	res_con@cnLinesOn				= False
 	;res_con@cnLineLabelsOn			= False
+
 	res_con@tiYAxisString			= "Pressure (hPa)"
-	;res_con@tiXAxisString           = "ALPI percentile (%)"
+	res_con@tiXAxisString           = "ALPI percentile (%)"
+	;res_con@pmLabelBarOrthogonalPosF	= 0.22
+	;res_con@tiXAxisOffsetYF			= 0.075
+	res_con@lbOrientation 			= "vertical"
+
 	res_con@gsnFrame				= False
 	res_con@gsnDraw					= False
 	
@@ -835,25 +840,24 @@ if(ALPIsub_bin_2d_plot)then
 	
 ;	res_con@trYMinF					= trYMinFs(itrYMinF)
 	
-	fontheight						= 0.035
+	fontheight						= 0.033
 	res_con@tmXBMinorOn				= False
 	res_con@tmYLMinorOn				= False
 	res_con@tmXTOn					= False
 	res_con@tmYROn					= False
 	res_con@gsnStringFontHeightF	= fontheight*0.9
 	res_con@tiXAxisFontHeightF		= fontheight
-	res_con@tiYAxisFontHeightF		= fontheight
-	res_con@tmXBLabelFontHeightF	= fontheight*1.05
-	res_con@tmYLLabelFontHeightF	= fontheight*1.05
+	res_con@tiYAxisFontHeightF		= fontheight*1.02
+	res_con@tmXBLabelFontHeightF	= fontheight*1.02
+	res_con@tmYLLabelFontHeightF	= fontheight*1.02
 	res_con@gsnRightStringFontHeightF	= fontheight*0.9
-
-	;res_con@pmLabelBarOrthogonalPosF	= 0.4
 	
 	res_con@cnLevelSelectionMode	= "ExplicitLevels"
 	
 	res_con@tmXBMode				= "Explicit"
 	res_con@tmXBValues				= fspan(0,nbins,nbins+1)
 	res_con@tmXBLabels				= fspan(0,nbins,nbins+1)*100/nbins
+	res_con@sfXArray				= res_con@tmXBValues
 	
 	res_cond						= res_con
 	res_cond@cnLinesOn				= False
@@ -870,6 +874,10 @@ if(ALPIsub_bin_2d_plot)then
 	copy_VarCoords(vars_4d_bin_mean_tm(:,:,0,:,:),vars_4d_bin_mean_tm_casediff)
 	copy_VarCoords(vars_4d_bin_mean_tm(:,0,:,:,:),vars_4d_bin_mean_tm_tagdiff)
 	copy_VarCoords(vars_4d_bin_mean_tm(:,0,0,:,:),vars_4d_bin_mean_tm_diff2)
+
+	resP								= True
+	resP@gsnPanelXWhiteSpacePercent     = 5.0
+	resP@gsnPanelYWhiteSpacePercent     = 5.0
 	
 	
 	do ivar=0,dimsizes(Vars_4d)-1
@@ -913,7 +921,7 @@ if(ALPIsub_bin_2d_plot)then
 				end if
 			count = count +1
 			end do ; do it=
-			gsn_panel(wks,plot_3d(ivar,:dimsizes(leftstring)-1),(/1,3/),False)
+			gsn_panel(wks,plot_3d(ivar,:dimsizes(leftstring)-1),(/1,3/),resP)
 			delete([/data,leftstring,levels/])
 	
 		else ; not for vars_pdf
@@ -962,7 +970,7 @@ if(ALPIsub_bin_2d_plot)then
 				end if
 			count = count +1
 			end do ; do it=
-			gsn_panel(wks,plot_3d(ivar,:),(/3,3/),False)
+			gsn_panel(wks,plot_3d(ivar,:),(/3,3/),resP)
 			delete([/data,leftstring,levels/])
 		end if
 	end do ; do ivar=
@@ -1248,33 +1256,46 @@ if(ALPIsub_bin_1d_plot)then
 		
 			; -----------------------add error bar-----------------------
 			polyres						= True
-			polyres@gsMarkerIndex		= 1
-			polyres@gsMarkerSizeF		= 0.02
+			polyres@gsMarkerIndex		= 9 ; 4
+			polyres@gsMarkerSizeF		= 0.015
+
+			polyres@gsLineThicknessF	= 3.0
+			polyres@gsMarkerThicknessF	= polyres@gsLineThicknessF
 			
 			polyres_sgm					= polyres
 		
 			colors						= (/"red","blue","red","blue","black","black"/)
 			;dashes						= (/0,12,0,12,0,12/)
 			dashes						= (/0,0,12,12,0,12/)
-			thickes						= (/1.5,1.5,1.5,1.5,3,3/) ;(/2,2,2,2,4,4/)
+;			dashes						= (/16,16,16,16,16,16/)
+;			thickes						= (/3,3,3,3,3,3,3/) ;(/2,2,2,2,4,4/)
+			thickes						= (/1.5,1.5,1.5,1.5,1.5,3,3/) ;(/2,2,2,2,4,4/)
+			markers						= (/0,0,0,0,0,0/)
 			
 			colors_diff					= (/"red","blue","black"/)
-			dashes_diff					= (/0,0,0/)
-			thickes_diff				= (/1.5,1.5,3./)
+			dashes_diff					= (/16,16,16/)
+			thickes_diff				= (/3,3,3./)
+			markers_diff				= (/9,9,9/)
 			
 										  ;sgm_tota, sgm_shal, sgm_turb
 										  ; or
 										  ; sgm_shal, term1, term2, term3
 ;			colors_sgm					= (/"black","red","blue","cyan"/)
-			colors_sgm					= (/"black","red","blue",\
-											"deeppink","orange","darkorange3",\
+			colors_sgm					= (/"black","blue","red",\
+											"cyan2","deepskyblue","dodgerblue4",\
+;											"hotpink","plum","violetred3",\
+;											"orange","orangered","red4",\
+;											"deeppink","orange","darkorange3",\
 											"cyan","purple"/)
-			dashes_sgm					= (/0,12,0,12,0,12,\
+			dashes_sgm					= (/16,12,16,12,16,12,\
 											16,12,16,12,16,12,\
 											16,12,16,12/)
-			thickes_sgm					= (/2,2,2,2,2,2,\
+			thickes_sgm					= (/4,4,4,4,4,4,\
 											2,2,2,2,2,2,\
 											2,2,2,2/)
+			markers_sgm					= (/9,9,9,9,9,9,\
+											9,9,9,9,9,9,\
+											9,9,9,9/)
 			
 			;polyres@gsLineColor		= (/"red","blue","lightpink","cyan"/)
 
@@ -1290,6 +1311,9 @@ if(ALPIsub_bin_1d_plot)then
 					polyres@gsLineColor			= colors(idx1)
 					polyres@gsLineDashPattern	= dashes(idx1)
 					polyres@gsLineThicknessF	= thickes(idx1)
+					polyres@gsMarkerIndex		= markers(idx1)
+					polyres@gsMarkerColor		= polyres@gsLineColor
+					polyres@gsMarkerThicknessF	= polyres@gsLineThicknessF
 			
 					lines(ivar,idx1)				= gsn_add_polyline(wks,plot(ivar),ispan(0,nbins-1,1)+0.5,tmp(idx1,:),polyres)
 					
@@ -1335,11 +1359,17 @@ if(ALPIsub_bin_1d_plot)then
 					polyres@gsLineColor					= colors_diff(idx1) ;colors(idx1*2)
 					polyres@gsLineDashPattern 			= dashes_diff(idx1) ;dashes(idx1*2)
 					polyres@gsLineThicknessF			= thickes_diff(idx1) ;thickes(idx1*2)
+					polyres@gsMarkerIndex				= markers_diff(idx1)
+					polyres@gsMarkerColor				= polyres@gsLineColor
+					polyres@gsMarkerThicknessF			= polyres@gsLineThicknessF
 				
 					if(sgm_diff_plot)then
 						polyres_sgm@gsLineColor					= colors_sgm(ivar)
 						polyres_sgm@gsLineDashPattern 			= dashes_sgm(ivar*idx1*2)
 						polyres_sgm@gsLineThicknessF			= thickes_sgm(ivar*idx1*2)
+						polyres_sgm@gsMarkerIndex				= markers_sgm(ivar*idx1*2)
+						polyres_sgm@gsMarkerColor				= polyres_sgm@gsLineColor
+						polyres_sgm@gsMarkerThicknessF			= polyres_sgm@gsLineThicknessF
 					end if
 					
 					; ------------------------ plot the climatological difference line --------------------
@@ -1353,10 +1383,10 @@ if(ALPIsub_bin_1d_plot)then
 
 					; ------------------------ add line marker --------------------
 					do idx2=0,nbins-1
-						if(idx1.eq.2)then
-						centers_diff(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar),idx2+0.5,\
-																			tmp_diff_final(idx1,idx2),polyres)
-						end if
+;						if(idx1.eq.2)then
+							centers_diff(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff(ivar),idx2+0.5,\
+																				tmp_diff_final(idx1,idx2),polyres)
+;						end if
 						if(sgm_diff_plot)then
 							centers_diff_sgm(ivar,idx1,idx2)	= gsn_add_polymarker(wks,plot_diff_sgm(ivar),idx2+0.5,\
 																			tmp_diff_final(idx1,idx2),polyres_sgm)
@@ -1431,7 +1461,7 @@ if(ALPIsub_bin_1d_plot)then
 			lgres@lgLabelFontHeightF        = 0.05
 		end if
 		
-		lgres@vpWidthF                  = 0.25
+		lgres@vpWidthF                  = 0.3
 		lgres@vpHeightF                 = 0.15
 		lgres@lgPerimOn                 = False
 		
@@ -1447,6 +1477,7 @@ if(ALPIsub_bin_1d_plot)then
 		lgres2@lgLineThicknessF			= res@xyLineThicknessF
 		;lgres2@lgDashIndexes			= dashes(::2)
 		lgres2@lgDashIndexes			= (/0,0,0/) ;dashes(::2)
+		lgres2@lgLabelFontHeightF		= 0.1
 		
 		
 		lgres_sgm@lgLineColors				= colors_sgm;((/1,3,4/))
@@ -1476,6 +1507,11 @@ if(ALPIsub_bin_1d_plot)then
 		end if
 		
 		annoid1                         = gsn_add_annotation(plot(1),lbid1,amres)
+
+		amres@amJust					= "TopLeft"
+		amres@amParallelPosF            = -0.5
+		amres@amOrthogonalPosF          = -0.5
+	
 		annoid2                         = gsn_add_annotation(plot_diff(1),lbid2,amres)
 		if(sgm_diff_plot)then
 		annoid3                         = gsn_add_annotation(plot_diff_sgm(0),lbid3,amres_sgm)
