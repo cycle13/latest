@@ -1,30 +1,14 @@
 
 ## process model data
 #--------------------------------Settings Start-------------------------------------------------------------
-#casename=(FAMIPC5_f19f19_MG15_amip FAMIPC5_f19f19_MG15_amip-p4K)
-casename=(FAMIPC5_f19f19_mac2_amip_outSGM FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM)
+casename=(FAMIPC5_f19f19_MG15_amip FAMIPC5_f19f19_MG15_amip-p4K)
+#casename=(FAMIPC5_f19f19_mac2_amip_outSGM FAMIPC5_f19f19_mac2_amip-p4K_debug_outSGM)
 #casename=(FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output-p4K)
-
-#casename=(FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K FAMIPC5_f09f09_MG15_amip-4xCO2 \
-#	  FAMIPC5_f09f09_mac2_amip FAMIPC5_f09f09_mac2_amip-p4K_debug FAMIPC5_f09f09_mac2_amip-4xCO2)
-
-#casename=(FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K \
-#	  FAMIPC5_f09f09_mac2_amip_outSGM FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM)
 
 #casename=(FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K)
 #casename=(FAMIPC5_f09f09_mac2_amip_outSGM FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM)
-
 #casename=(FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output FAMIPC5_f09f09_Park-RH_add_Gauss-PDF-output-p4K)
 
-#casename=(FAMIPC5_f09f09_MG10_amip FAMIPC5_f09f09_MG10_amip-p4K FAMIPC5_f09f09_mac2_amip_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10 \
-#		  FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10 \
-#		  FAMIPC5_f09f09_MG15_amip FAMIPC5_f09f09_MG15_amip-p4K \
-#	      FAMIPC5_f09f09_mac2_amip_outSGM FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM)
-
-#casename=(FAMIPC5_f09f09_MG10_amip FAMIPC5_f09f09_MG10_amip-p4K FAMIPC5_f09f09_mac2_amip_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10)
-#casename=(FAMIPC5_f09f09_mac2_amip_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debug_outSGM_MG10 FAMIPC5_f09f09_mac2_amip-p4K_debugoff_outSGM_MG10)
-
-#casename=(FAMIPC5_f09f09_mac2_amip)
 
 ann_mean=true
 climatology=true
@@ -32,6 +16,8 @@ refine=false
 regrid=false
 glb_mean=false
 db_check_TS=false
+# 2019-08-24 17:23:36 tropical mean
+trop_mean=true
 
 int_year=1980
 #end_year=1984	# for f09f09
@@ -40,16 +26,19 @@ end_year=1988	# for f19f19
 int_year_4d=`printf %04d $int_year`
 end_year_4d=`printf %04d $end_year`
 
-#vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,sgm_tota,sgm_shal,sgm_turb,delta_q,deltaq_uns,deltaq_sat,N1,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,alst_def,alst_gp,CLOUD,TS,TREFHT,aa_gp,delta_q,deltaq_uns,deltaq_sat,qtu_shal,thlu_shal,umf_shal,clddep2,wstarPBL,lengi,shi,FREQSH,CMFMC)
-
+if [ "${casename[0]}" == "FAMIPC5_f19f19_mac2_amip_outSGM" ]; then
 ## for Gauss-PDF f19f19 with more ouput
-vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,sgm_tota,sgm_shal,sgm_turb,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,alst_def,alst_gp,CLOUD,TS,TREFHT,aa_gp,bb_gp,beta_gp,delta_q,deltaq_uns,deltaq_sat,N1,qtu_shal,thlu_shal,umf_shal,clddep2,wstarPBL,lengi,shi,FREQSH,CMFMC,dqwdz,dthldz,qw2,thl2,qwthl,qwu_qw,thlu_thl,qwu_thlu,FISCCP1_COSP,CLMODIS,CLD_MISR,term1_shal,term2_shal,term3_shal)
-
+vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,sgm_tota,sgm_shal,sgm_turb,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,alst_def,alst_gp,CLOUD,TS,TREFHT,aa_gp,bb_gp,beta_gp,delta_q,deltaq_uns,deltaq_sat,N1,qtu_shal,thlu_shal,umf_shal,clddep2,wstarPBL,lengi,shi,FREQSH,CMFMC,dqwdz,dthldz,qw2,thl2,qwthl,qwu_qw,thlu_thl,qwu_thlu,FISCCP1_COSP,CLMODIS,CLD_MISR,term1_shal,term2_shal,term3_shal,CLDTOT_ISCCP)
+fi
+if [ "${casename[0]}" == "FAMIPC5_f19f19_MG15_amip" ]; then
 # for Park-RH f19f19 with more output
-#vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD,TS,TREFHT,FREQSH,CMFMC,FISCCP1_COSP,CLMODIS,CLD_MISR)
+vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD,TS,TREFHT,FREQSH,CMFMC,FISCCP1_COSP,CLMODIS,CLD_MISR,CLDTOT_ISCCP)
+fi
 
+if [ "${casename[0]}" == "FAMIPC5_f19f19_Park-RH_add_Gauss-PDF-output" ]; then
 ## for Park_RH_add_PDF_output
-#vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD,al_st_prh,al_st_gpd,al_st_nc_prh,al_st_nc_gpd,conden_st_nc_gpd,sgm_gpd,FISCCP1_COSP,CLMODIS,CLD_MISR) 
+vars=(gw,FSNT,FSNTC,FLNT,FLNTC,FSNS,FSNSC,FLNS,FLNSC,LHFLX,SHFLX,PRECC,PRECL,SWCF,LWCF,U,V,OMEGA,CLDLOW,CLDHGH,TGCLDLWP,T,Q,AREL,DCCLDLIQ,ZMDLIQ,DPDLFLIQ,CMFDLIQ,SHDLFLIQ,MACPDLIQ,MPDLIQ,VDCLDLIQ,DCQ,ZMDQ,CMFDQ,MACPDQ,MPDQ,VD01,DTCOND,ZMDT,DPDLFT,CMFDT,SHDLFT,MACPDT,MPDT,DTV,RELHUM,OCNFRAC,CLOUD,al_st_prh,al_st_gpd,al_st_nc_prh,al_st_nc_gpd,conden_st_nc_gpd,sgm_gpd,FISCCP1_COSP,CLMODIS,CLD_MISR) 
+fi
 
 echo $vars
 #--------------------------------Settings End-------------------------------------------------------------
@@ -122,6 +111,10 @@ fi
 
 if [ ${glb_mean} == "true" ]; then
 	ncwa -a lat,lon -w gw $outdir/${casename[icase]}.ANN.climo.nc $outdir/${casename[icase]}.ANN.climo.globmean.nc
+fi
+
+if [ ${trop_mean} == "true" ]; then
+	ncwa -d lat,-30.0,30.0 -a lat,lon -w gw $outdir/${casename[icase]}.ANN.climo.nc $outdir/${casename[icase]}.ANN.climo.tropmean.nc
 fi
 
 #-------------------------------------------------------------------------
