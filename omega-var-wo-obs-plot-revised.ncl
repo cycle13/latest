@@ -16,8 +16,8 @@ load "./functions_bony_method.ncl"
 begin
 
 do_read_data			= False
-do_pdf_var 				= True
-do_pdf_component		= False;True
+do_pdf_var 				= False
+do_pdf_component		= True
 
 omega_trh				= fspan(-120,120,25)
 print(omega_trh)
@@ -101,11 +101,11 @@ Vars_bin	= (/"SWCF","LWCF","CLDLOW","CLDMED","CLDHGH","CLDTOT","TGCLDLWP","netCR
 stringsA	= Vars_bin ; except for omega itself, and add Net CRF
 valminA		= (/-140,	-20,	0,		  0,	   0,		0 ,		0,        -60., 	0,	       0,     0,	     0.,           0./)
 valmaxA		= (/20,		100,	60,		 90,	   90,		90,		150,      0.,   	0.3,       1,     0.1,         0.3,          0.5/)
-unitsA		= (/"(W/m~S~2~N~)",	"(W/m~S~2~N~)",	"(fraction)",	"(fraction)",	"(fraction)",	"(fraction)","(g/m~S~2~N~)",	"(W/m~S~2~N~)", " ", "(fraction)", "(g/kg)", "", ""/)
+unitsA		= (/"(W m~S~-2~N~)",	"(W m~S~-2~N~)",	"(fraction)",	"(fraction)",	"(fraction)",	"(fraction)","(g m~S~-2~N~)",	"(W m~S~-2~N~)", " ", "(fraction)", "(g kg~S~-1~N~)", "", ""/)
 
 ;use_idx		= (/0,1,7,2,6,8/)
 ;use_idx		= (/7,0,1,2,4,6/)
-use_idx			= (/7,0,1,2,6/)
+use_idx			= (/7,0,2,6,1,5/)
 ;use_idx		= (/0,1/) ;--- for test
 Vars_use	= Vars_bin(use_idx)
 strings		= stringsA(use_idx)
@@ -116,6 +116,7 @@ units		= unitsA(use_idx)
 ;colors 		= (/"red","blue","orange","cyan","deepskyblue","firebrick","cyan3","darkseagreen3"/)
 colors 		= (/"red","blue","red","blue","deepskyblue","firebrick","cyan3","darkseagreen3"/)
 thicks		= (/4,2,4,2/)
+;thicks		= (/1.5,3.0,1.5,3.0/)
 dashes		= (/0,0,16,16/)
 
 ; ------ setting for global grid information
@@ -515,7 +516,6 @@ print(Vars_out_fix+"Park-RH 	"+sprintf("%9.5f",CwPw_all_avg_1(:,0,0))+"	"+sprint
 print("")
 print(Vars_out_fix+"Gaus-PDF	"+sprintf("%9.5f",CwPw_all_avg_1(:,0,1))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,1,1))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,2,1))+"	"+sprintf("%9.5f",CwPw_all_avg_1(:,3,1))+"	"+sprintf("%9.5f",PwCw_sep_1(:,1)))
 print("")
-exit
 
 
 ;====================== Plotting starts here .... ===============================================
@@ -569,7 +569,7 @@ res@vpHeightF 					= 0.4
 res@trXMinF 					= omega_trh(0)
 res@trXMaxF 					= omega_trh(dimsizes(omega_trh)-1)
 
-res@tiXAxisString 				= "vertical velocity (hPa/day)"
+res@tiXAxisString 				= "vertical velocity (hPa day~S~-1~N~)"
 
 res@xyLineThicknessF 			= 2.5
 res@xyDashPattern 				= 0
@@ -608,6 +608,7 @@ res2								= res
 res2@tiYAxisString					= ""
 res2@xyLineColors					= colors;colors(vector)
 res2@gsnYRefLine					= 0.
+res2@xyLineThicknesses				= thicks
 res2@gsnLeftString					= "(b)"
 
 tmp					= reshape(omega_PDF_bin_diff(:,:),(/dimsizes(case_nor),dimsizes(omega_trh)/))
@@ -652,6 +653,7 @@ do ifig = 0,dimsizes(tag)*dimsizes(case_nor)-1
 
 	res3@xyLineColors 	= colors(ifig)
 	res3@xyDashPatterns	= dashes(ifig)
+	res3@xyLineThicknesses = thicks(ifig)
 	plot_tmp			= gsn_csm_xy (wks,varsdata&bin,tmp(ifig,:), res3)
 
 	;************************************************
@@ -686,7 +688,8 @@ delete(plot_int)
 ; for varsdata_diff, there is no "tag" dimension anymore. this is the revised version.
 tmp									= reshape(varsdata_diff(ivar,:,:),(/dimsizes(case_nor),dimsizes(omega_trh)/))
 
-res4@gsnLeftString			= plots_strings(count)
+res4@gsnLeftString					= plots_strings(count)
+res4@xyLineThicknesses				= thicks
 plotdiff(ivar) 						= gsn_csm_xy (wks,varsdata_diff&bin,tmp, res4)
 delete(tmp)
 
@@ -738,20 +741,20 @@ lgres@vpHeightF 					= 0.17
 lgres@lgPerimThicknessF 			= 1.0
 ;lgres@lgMonoDashIndex 				= True
 ;lgres@lgDashIndex 					= 0
-lgres@lgMonoLineThickness			= True
+lgres@lgMonoLineThickness			= False
 ;lgres@lgMonoDashIndex				= True
 
 
 lgres1								= lgres
 lgres1@lgLineColors 				= colors
-lgres1@lgLineThicknessF 			= res1@xyLineThicknessF
+lgres1@lgLineThicknesses 			= res1@xyLineThicknesses
 lgres1@lgDashIndexes				= dashes ; res1@xyDashPatterns
 
 labels_1 							= (/"RH_CTL","PDF_CTL","RH_P4K","PDF_P4K"/)
 
 lgres2								= lgres
 lgres2@lgLineColors					= colors ;colors(vector)
-lgres2@lgLineThicknessF 			= res@xyLineThicknessF
+lgres2@lgLineThicknesses			= res2@xyLineThicknesses
 lgres2@lgMonoDashIndex				= True
 
 labels_2 							= labels_1((/2,3/)) ;labels_1(vector)

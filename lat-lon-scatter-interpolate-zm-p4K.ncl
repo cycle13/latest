@@ -23,7 +23,7 @@ lat_lon_plot			= False
 
 Sherwood_2014			= False
 
-ALPI_type				= True
+ALPI_type				= False
 ALPI_bin_cal			= True 
 ALPIsub_revised			= True ; from LTS to EIS
 ALPIsub_mask_plot		= False
@@ -44,14 +44,14 @@ scatter_sub_sgm_diff	= False ; True ; --- P4K-CTL: sgm related variables in Y an
 
 zonal_mean				= False
 
-do_read_cosp			= False ;True
-cosp_hist				= False ;True
+do_read_cosp			= True
+cosp_hist				= True
 plot_2D_hist			= False ;True
-plot_1D_hist			= False ;True
+plot_1D_hist			= True
 
 sherwood_index		= (/"SS","DD","LTMI"/)
 
-plot_type			= "x11"
+plot_type			= "pdf"
 
 ; add date to each plot 
 date=systemfunc("date")
@@ -406,7 +406,7 @@ varsA_dlevs_1	= (/PRECT_dlevs_1,PRECT_dlevs_1,    PRECT_dlevs_1,    SWCF_dlevs_1
 varsA_dlevs_2	= (/PRECT_dlevs_2,PRECT_dlevs_2,    PRECT_dlevs_2,    SWCF_dlevs_2,     LWCF_dlevs_2,	CLDLOW_dlevs_2,	CLDHGH_dlevs_2, LTS_dlevs_2, EIS_dlevs_2,	ECTEI_dlevs_2,TGCLDLWP_dlevs_2, sgm_tota_dlevs_2, N1_dlevs_2, netCRF_dlevs_2, sgm_shal_dlevs_2, sgm_turb_dlevs_2, RELHUM_dlevs_2, FREQSH_dlevs_2, CMFMC_dlevs_2, umf_shal_dlevs_2, clddep2_dlevs_2, wstarPBL_dlevs_2, lengi_dlevs_2, shi_dlevs_2, aa_gp_dlevs_2, bb_gp_dlevs_2, beta_gp_dlevs_2, dqwdz_dlevs_2, dthldz_dlevs_2, qw2_dlevs_2, thl2_dlevs_2, qwthl_dlevs_2, qwu_qw_dlevs_2, thlu_thl_dlevs_2, qwu_thlu_dlevs_2, qtu_shal_dlevs_2,vert_qwflx_shal_dlevs_2, vert_thlflx_shal_dlevs_2, vert_qwthlflx_shal_dlevs_2, tau_shal_dlevs_2, vert_qwflx_turb_dlevs_2, vert_thlflx_turb_dlevs_2, vert_qwthlflx_turb_dlevs_2,lengi2_dlevs_2, dqwdz_2_dlevs_2, dthldz_2_dlevs_2, dqwdz_dthldz_dlevs_2, aa2_gp_dlevs_2, bb2_gp_dlevs_2,aa2_dqwdz2_dlevs_2, bb2_dthldz2_dlevs_2, ab_dqwdz_dthldz_dlevs_2, shi_lengi2_dlevs_2, term1_turb_dlevs_2, term2_turb_dlevs_2, term3_turb_dlevs_2, term1_shal_dlevs_2, term2_shal_dlevs_2, term3_shal_dlevs_2, TREFHT_dlevs_2/)
 varsA_dlevs_sp	= (/PRECT_dlevs_sp,PRECT_dlevs_sp,    PRECT_dlevs_sp,    SWCF_dlevs_sp,     LWCF_dlevs_sp,	CLDLOW_dlevs_sp,	CLDHGH_dlevs_sp, LTS_dlevs_sp, EIS_dlevs_sp, ECTEI_dlevs_sp,TGCLDLWP_dlevs_sp, sgm_tota_dlevs_sp, N1_dlevs_sp, netCRF_dlevs_sp, sgm_shal_dlevs_sp, sgm_turb_dlevs_sp, RELHUM_dlevs_sp, FREQSH_dlevs_sp, CMFMC_dlevs_sp, umf_shal_dlevs_sp, clddep2_dlevs_sp, wstarPBL_dlevs_sp, lengi_dlevs_sp, shi_dlevs_sp, aa_gp_dlevs_sp, bb_gp_dlevs_sp, beta_gp_dlevs_sp, dqwdz_dlevs_sp, dthldz_dlevs_sp, qw2_dlevs_sp, thl2_dlevs_sp, qwthl_dlevs_sp, qwu_qw_dlevs_sp, thlu_thl_dlevs_sp, qwu_thlu_dlevs_sp, qtu_shal_dlevs_sp, vert_qwflx_shal_dlevs_sp, vert_thlflx_shal_dlevs_sp, vert_qwthlflx_shal_dlevs_sp, tau_shal_dlevs_sp, vert_qwflx_turb_dlevs_sp, vert_thlflx_turb_dlevs_sp, vert_qwthlflx_turb_dlevs_sp, lengi2_dlevs_sp, dqwdz_2_dlevs_sp, dthldz_2_dlevs_sp, dqwdz_dthldz_dlevs_sp, aa2_gp_dlevs_sp, bb2_gp_dlevs_sp, aa2_dqwdz2_dlevs_sp, bb2_dthldz2_dlevs_sp, ab_dqwdz_dthldz_dlevs_sp, shi_lengi2_dlevs_sp, term1_turb_dlevs_sp, term2_turb_dlevs_sp, term3_turb_dlevs_sp, term1_shal_dlevs_sp, term2_shal_dlevs_sp, term3_shal_dlevs_sp, TREFHT_dlevs_sp/)
 
-varsA_units	= (/"mm/day",   "mm/day",       "mm/day",       "W/m~S~2~N~",   "W/m~S~2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g/m~S~2~N~", "-", "fraction", "W/m~S~2~N~", "-", "-", "%", "fraction","kg/m~S~2~N~/s", "kg/m~S~2~N~/s","m", "m/s", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","K"/)
+varsA_units	= (/"mm day~S~-1~N~",   "mm day~S~-1~N~",       "mm day~S~-1~N~",       "W m~S~-2~N~",   "W m~S~-2~N~",	"fraction",	"fraction", "K",	"K",	"K", "g m~S~-2~N~", "-", "fraction", "W m~S~-2~N~", "-", "-", "%", "fraction","kg m~S~-2~N~ s~S~-1~N~", "kg m~S~-2~N~ s~S~-1~N~","m", "m s~S~-1~N~", "m", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","K"/)
 plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","(k)","(l)","(m)","(n)","(o)","(p)","(q)","(r)","(s)","(t)","(u)","(v)","(w)","(x)","(y)","(z)"/)
 
 
@@ -433,7 +433,7 @@ plotsA_strings	= (/"(a)","(b)","(c)","(d)","(e)","(f)","(g)","(h)","(i)","(j)","
 ;pick_var			= (/"sgm_tota","sgm_shal","sgm_turb"/)
 
 ;; input for lat_lon_plot
-;pick_var			= (/"SWCF","LWCF"/)
+pick_var			= (/"SWCF","LWCF"/)
 
 ;; input for zonal_mean
 ;pick_var			= (/"PRECT","netCRF","SWCF","LWCF"/)
@@ -1099,7 +1099,7 @@ if(cosp_hist)then
     resXY@lgLabelFontHeightF     = .020
     resXY@txFontHeightF 		= 0.015
     resXY@xyDashPatterns         = (/0.,0.,1.0,1.0/)          ; solid, solid, dashed, dashed
-    resXY@xyLineThicknesses      = (/2.,2.,2.0,2.0/)
+    resXY@xyLineThicknesses      = (/1.5,3.,1.5,3.0/)
 	resXY@xyLineColors			= (/"red","blue","red","blue"/)
 	resXY@xyLineColor 			= "black"
 
@@ -1300,9 +1300,11 @@ do ivar=0,dimsizes(Vars_cosp)-1
 		resX								= resXY
 		resX@xyExplicitLegendLabels			= plotData_string
 		resX@tmXBMode						= "Explicit"
+		resX@pmLegendWidthF					= 0.3
+		resX@pmLegendHeightF				= 0.15
 		resX@tmXBLabels						= sprintf("%.1f",xBnds)
 		resX@tmXBValues						= ispan(0,dimsizes(resX@tmXBLabels)-1,1)-0.5
-		resX@tiYAxisString					= "Cloud Amount (fraction)"
+		resX@tiYAxisString					= "Cloud Amount (%)"
 		resX@tiXAxisString					= vars_cosp_2D_X&$xDim$@long_name
 		
 		resX@gsnLeftString					= "(a)"
@@ -1311,11 +1313,13 @@ do ivar=0,dimsizes(Vars_cosp)-1
 
 		resY								= resXY
 		resY@xyExplicitLegendLabels			= resX@xyExplicitLegendLabels
+		resY@pmLegendWidthF					= resX@pmLegendWidthF
+		resY@pmLegendHeightF				= resX@pmLegendHeightF
 		resY@tmYLMode						= "Explicit"
 		resY@tmYLLabels						= sprintf("%.1f",yBnds)
 		resY@tmYLValues						= ispan(0,dimsizes(resY@tmYLLabels)-1,1)-0.5
-		resY@tiXAxisString 					= "Cloud Amount (fraction)"
-		resY@tiYAxisString                  = vars_cosp_2D_Y&$yDim$@long_name
+		resY@tiXAxisString 					= "Cloud Amount (%)"
+		resY@tiYAxisString                  = vars_cosp_2D_Y&$yDim$@long_name+" (hPa)"
 		resY@gsnLeftString					= "(b)"
 
 		plotY								= gsn_csm_xy(wks,plotDataY,ispan(0,dimsizes(vars_cosp_2D_Y(0,0,:))-1,1),resY)
@@ -1409,12 +1413,12 @@ if(zonal_mean)then
 
 	res@xyMarkLineModes		= (/"Lines","Lines","Lines","Lines"/)
 	res@xyLineColors		= (/"red","blue","red","blue"/)
-	res@xyLineThicknesses	= (/1,1,1,1/)
+	res@xyLineThicknesses	= (/1.5,3,1.5,3/)
 	res@xyDashPatterns		= (/0,0,16,16/)
 
 	resd@xyMarkLineModes	= (/"Lines","Lines"/)
 	resd@xyLineColors		= (/"red","blue"/)
-	resd@xyLineThicknesses	= (/3,3/)
+	resd@xyLineThicknesses	= (/1.5,3.0/)
 	resd@xyDashPatterns		= (/0,0/)
 
 	resd@gsnYRefLine		= 0.
@@ -1454,10 +1458,15 @@ if(zonal_mean)then
 	lgres@vpWidthF                  = 0.25
 	lgres@vpHeightF                 = 0.15
 	;lgres@lgPerimOn                 = False
+	lgres@lgMonoItemType             = False
+	lgres@lgMonoLineThickness		= False
+	lgres@lgMonoDashIndex			= False
 
 	lgresd							= lgres
 	
 	lgres@lgMonoItemType             = False
+	lgres@lgMonoLineThickness		= False
+	lgres@lgMonoDashIndex			= False
 	lgres@lgItemTypes				= res@xyMarkLineModes
 	lgres@lgLineColors				= res@xyLineColors
 	lgres@lgLineThicknesses			= res@xyLineThicknesses
